@@ -1,0 +1,1 @@
+# Run ```go build && ./benchmark``` to generate queries
