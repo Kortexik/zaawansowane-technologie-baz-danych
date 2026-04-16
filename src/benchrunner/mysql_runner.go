@@ -102,17 +102,29 @@ func (r *MySQLRunner) RunQueryFile(queryFile string, limit int) (*Result, error)
 	}
 
 	// Split by semicolons and clean up
-	queries := []string{}
+	rawQueries := []string{}
 	parts := strings.Split(string(content), ";")
 
 	for _, part := range parts {
 		query := strings.TrimSpace(part)
 		if query != "" && !strings.HasPrefix(query, "--") {
-			queries = append(queries, query)
-			if limit > 0 && len(queries) >= limit {
-				break
+			// Make INSERT idempotent for MySQL using INSERT IGNORE
+			upperQuery := strings.ToUpper(query)
+			if strings.HasPrefix(upperQuery, "INSERT INTO") {
+				query = "INSERT IGNORE" + query[6:]
 			}
+			rawQueries = append(rawQueries, query)
 		}
+	}
+
+	if len(rawQueries) == 0 {
+		return nil, fmt.Errorf("no queries found in file: %s", queryFile)
+	}
+
+	// Cycle through queries to reach the desired limit
+	queries := make([]string, 0, limit)
+	for len(queries) < limit {
+		queries = append(queries, rawQueries[len(queries)%len(rawQueries)])
 	}
 
 	numQueries := len(queries)
@@ -124,7 +136,7 @@ func (r *MySQLRunner) RunQueryFile(queryFile string, limit int) (*Result, error)
 	for i, query := range queries {
 		if _, err := r.db.Exec(query); err != nil {
 			// Log error but continue
-			if i < 5 { // Only log first few errors
+			if i < 3 { // Only log first few errors
 				fmt.Printf("  Warning: Query %d failed: %v\n", i+1, err)
 			}
 		}

@@ -69,7 +69,8 @@ func (r *MongoDBRunner) Close() error {
 }
 
 // RunQueryFile executes queries from a file and measures time
-func (r *MongoDBRunner) RunQueryFile(queryFile string, limit int) (*Result, error) {
+// entity is used to determine which collection to operate on
+func (r *MongoDBRunner) RunQueryFile(queryFile, entity string, limit int) (*Result, error) {
 	// Read entire file
 	content, err := os.ReadFile(queryFile)
 	if err != nil {
@@ -77,51 +78,54 @@ func (r *MongoDBRunner) RunQueryFile(queryFile string, limit int) (*Result, erro
 	}
 
 	// Split by semicolons and clean up
-	queries := []string{}
+	rawQueries := []string{}
 	parts := strings.Split(string(content), ";")
 
 	for _, part := range parts {
 		query := strings.TrimSpace(part)
 		if query != "" && !strings.HasPrefix(query, "--") && !strings.HasPrefix(query, "//") {
-			queries = append(queries, query)
-			if limit > 0 && len(queries) >= limit {
-				break
-			}
+			rawQueries = append(rawQueries, query)
 		}
+	}
+
+	if len(rawQueries) == 0 {
+		return nil, fmt.Errorf("no queries found in file: %s", queryFile)
+	}
+
+	// Cycle through queries to reach the desired limit
+	queries := make([]string, 0, limit)
+	for len(queries) < limit {
+		queries = append(queries, rawQueries[len(queries)%len(rawQueries)])
 	}
 
 	numQueries := len(queries)
 	fmt.Printf("  Running %d queries...\n", numQueries)
+
+	// Determine collection from entity name
+	collection := r.db.Collection(entity)
 
 	// Execute queries and measure time
 	startTime := time.Now()
 	ctx := context.Background()
 
 	for _, query := range queries {
-		// Parse and execute MongoDB shell command
 		parsedQuery := strings.TrimSpace(query)
-		
+
 		if strings.Contains(parsedQuery, "find") || strings.Contains(parsedQuery, "Find") {
-			// Execute find operation - simple query for benchmark
-			// db.collection.find({}) returns all documents
-			collection := r.db.Collection("users")
 			opts := options.Find().SetLimit(1)
 			_, _ = collection.Find(ctx, map[string]interface{}{}, opts)
 		} else if strings.Contains(parsedQuery, "insertOne") {
-			// Execute insertOne operation
-			collection := r.db.Collection("users")
-			_, _ = collection.InsertOne(ctx, map[string]interface{}{"benchmark": "test"})
+			// Use upsert-style to avoid duplicate key errors on repeat runs
+			_, _ = collection.InsertOne(ctx, map[string]interface{}{"_bench": true})
 		} else if strings.Contains(parsedQuery, "update") || strings.Contains(parsedQuery, "Update") {
-			// Execute updateOne operation
-			collection := r.db.Collection("users")
-			_, _ = collection.UpdateOne(ctx, map[string]interface{}{}, map[string]interface{}{"$set": map[string]interface{}{"updated": true}})
+			_, _ = collection.UpdateOne(ctx,
+				map[string]interface{}{"_bench": true},
+				map[string]interface{}{"$set": map[string]interface{}{"updated": true}},
+				options.Update().SetUpsert(true),
+			)
 		} else if strings.Contains(parsedQuery, "delete") || strings.Contains(parsedQuery, "Delete") {
-			// Execute deleteOne operation
-			collection := r.db.Collection("users")
-			_, _ = collection.DeleteOne(ctx, map[string]interface{}{})
+			_, _ = collection.DeleteOne(ctx, map[string]interface{}{"_bench": true})
 		} else {
-			// Default to find operation
-			collection := r.db.Collection("users")
 			opts := options.Find().SetLimit(1)
 			_, _ = collection.Find(ctx, map[string]interface{}{}, opts)
 		}
@@ -151,7 +155,7 @@ func (r *MongoDBRunner) BenchmarkScenario(entity, operation, queryFile string, b
 	for trial := 1; trial <= numTrials; trial++ {
 		fmt.Printf("\nTrial %d/%d:\n", trial, numTrials)
 
-		result, err := r.RunQueryFile(queryFile, batchSize)
+		result, err := r.RunQueryFile(queryFile, entity, batchSize)
 		if err != nil {
 			return nil, fmt.Errorf("trial %d failed: %w", trial, err)
 		}

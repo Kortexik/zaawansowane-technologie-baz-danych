@@ -106,13 +106,12 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 	// Data scales for Grade 4.0 requirement
 	dataScales := []int{500000, 1000000, 10000000}
 	
-	// Define test scenarios
-	scenarios := []struct {
+	// SELECT scenarios (tested with and without indexes)
+	selectScenarios := []struct {
 		entity    string
 		operation string
 		queryFile string
 	}{
-		// Focus on SELECT operations for index testing
 		{"users", "select", "queries/users_sql_select.sql"},
 		{"categories", "select", "queries/categories_sql_select.sql"},
 		{"products", "select", "queries/products_sql_select.sql"},
@@ -120,11 +119,34 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 		{"orders", "select", "queries/orders_sql_select.sql"},
 	}
 
-	// Test without indexes first
-	fmt.Println("\n📊 Testing WITHOUT indexes...")
+	// CRUD scenarios (INSERT, UPDATE, DELETE - no index comparison needed)
+	crudScenarios := []struct {
+		entity    string
+		operation string
+		queryFile string
+	}{
+		{"users", "insert", "queries/users_sql_insert.sql"},
+		{"categories", "insert", "queries/categories_sql_insert.sql"},
+		{"products", "insert", "queries/products_sql_insert.sql"},
+		{"addresses", "insert", "queries/addresses_sql_insert.sql"},
+		{"orders", "insert", "queries/orders_sql_insert.sql"},
+		{"users", "update", "queries/users_sql_update.sql"},
+		{"categories", "update", "queries/categories_sql_update.sql"},
+		{"products", "update", "queries/products_sql_update.sql"},
+		{"addresses", "update", "queries/addresses_sql_update.sql"},
+		{"orders", "update", "queries/orders_sql_update.sql"},
+		{"users", "delete", "queries/users_sql_delete.sql"},
+		{"categories", "delete", "queries/categories_sql_delete.sql"},
+		{"products", "delete", "queries/products_sql_delete.sql"},
+		{"addresses", "delete", "queries/addresses_sql_delete.sql"},
+		{"orders", "delete", "queries/orders_sql_delete.sql"},
+	}
+
+	// Test SELECT without indexes first
+	fmt.Println("\n📊 Testing SELECT WITHOUT indexes...")
 	for _, dataScale := range dataScales {
 		fmt.Printf("\n  Data Scale: %d records\n", dataScale)
-		for _, scenario := range scenarios {
+		for _, scenario := range selectScenarios {
 			results, err := runner.BenchmarkScenario(
 				scenario.entity,
 				scenario.operation,
@@ -136,7 +158,6 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
 				continue
 			}
-
 			for _, r := range results {
 				r.DataScale = dataScale
 				r.WithIndex = false
@@ -151,11 +172,11 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 		log.Printf("Index creation failed: %v", err)
 	}
 
-	// Test with indexes
-	fmt.Println("\n📊 Testing WITH indexes...")
+	// Test SELECT with indexes
+	fmt.Println("\n📊 Testing SELECT WITH indexes...")
 	for _, dataScale := range dataScales {
 		fmt.Printf("\n  Data Scale: %d records\n", dataScale)
-		for _, scenario := range scenarios {
+		for _, scenario := range selectScenarios {
 			results, err := runner.BenchmarkScenario(
 				scenario.entity,
 				scenario.operation,
@@ -167,7 +188,6 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
 				continue
 			}
-
 			for _, r := range results {
 				r.DataScale = dataScale
 				r.WithIndex = true
@@ -180,6 +200,30 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 	fmt.Println("\n📊 Cleaning up indexes...")
 	if err := runner.DropIndexes(); err != nil {
 		log.Printf("Index drop failed: %v", err)
+	}
+
+	// Test INSERT / UPDATE / DELETE (without index toggling)
+	fmt.Println("\n📊 Testing INSERT / UPDATE / DELETE...")
+	for _, dataScale := range dataScales {
+		fmt.Printf("\n  Data Scale: %d records\n", dataScale)
+		for _, scenario := range crudScenarios {
+			results, err := runner.BenchmarkScenario(
+				scenario.entity,
+				scenario.operation,
+				scenario.queryFile,
+				batchSize,
+				numTrials,
+			)
+			if err != nil {
+				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
+				continue
+			}
+			for _, r := range results {
+				r.DataScale = dataScale
+				r.WithIndex = false
+				resultSet.Results = append(resultSet.Results, *r)
+			}
+		}
 	}
 
 	return nil
@@ -196,16 +240,13 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 	}
 	defer runner.Close()
 
-	// Data scales for Grade 4.0 requirement
 	dataScales := []int{500000, 1000000, 10000000}
-	
-	// Define test scenarios - focus on SELECT for index testing
-	scenarios := []struct {
+
+	selectScenarios := []struct {
 		entity    string
 		operation string
 		queryFile string
 	}{
-		// Focus on SELECT operations for index testing
 		{"users", "select", "queries/users_sql_select.sql"},
 		{"categories", "select", "queries/categories_sql_select.sql"},
 		{"products", "select", "queries/products_sql_select.sql"},
@@ -213,11 +254,32 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 		{"orders", "select", "queries/orders_sql_select.sql"},
 	}
 
-	// Test without indexes first
-	fmt.Println("\n📊 Testing WITHOUT indexes...")
+	crudScenarios := []struct {
+		entity    string
+		operation string
+		queryFile string
+	}{
+		{"users", "insert", "queries/users_sql_insert.sql"},
+		{"categories", "insert", "queries/categories_sql_insert.sql"},
+		{"products", "insert", "queries/products_sql_insert.sql"},
+		{"addresses", "insert", "queries/addresses_sql_insert.sql"},
+		{"orders", "insert", "queries/orders_sql_insert.sql"},
+		{"users", "update", "queries/users_sql_update.sql"},
+		{"categories", "update", "queries/categories_sql_update.sql"},
+		{"products", "update", "queries/products_sql_update.sql"},
+		{"addresses", "update", "queries/addresses_sql_update.sql"},
+		{"orders", "update", "queries/orders_sql_update.sql"},
+		{"users", "delete", "queries/users_sql_delete.sql"},
+		{"categories", "delete", "queries/categories_sql_delete.sql"},
+		{"products", "delete", "queries/products_sql_delete.sql"},
+		{"addresses", "delete", "queries/addresses_sql_delete.sql"},
+		{"orders", "delete", "queries/orders_sql_delete.sql"},
+	}
+
+	fmt.Println("\n📊 Testing SELECT WITHOUT indexes...")
 	for _, dataScale := range dataScales {
 		fmt.Printf("\n  Data Scale: %d records\n", dataScale)
-		for _, scenario := range scenarios {
+		for _, scenario := range selectScenarios {
 			results, err := runner.BenchmarkScenario(
 				scenario.entity,
 				scenario.operation,
@@ -229,7 +291,6 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
 				continue
 			}
-
 			for _, r := range results {
 				r.DataScale = dataScale
 				r.WithIndex = false
@@ -238,17 +299,15 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 		}
 	}
 
-	// Create indexes
 	fmt.Println("\n📊 Creating indexes...")
 	if err := runner.CreateIndexes(); err != nil {
 		log.Printf("Index creation failed: %v", err)
 	}
 
-	// Test with indexes
-	fmt.Println("\n📊 Testing WITH indexes...")
+	fmt.Println("\n📊 Testing SELECT WITH indexes...")
 	for _, dataScale := range dataScales {
 		fmt.Printf("\n  Data Scale: %d records\n", dataScale)
-		for _, scenario := range scenarios {
+		for _, scenario := range selectScenarios {
 			results, err := runner.BenchmarkScenario(
 				scenario.entity,
 				scenario.operation,
@@ -260,7 +319,6 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
 				continue
 			}
-
 			for _, r := range results {
 				r.DataScale = dataScale
 				r.WithIndex = true
@@ -269,10 +327,32 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 		}
 	}
 
-	// Drop indexes
 	fmt.Println("\n📊 Cleaning up indexes...")
 	if err := runner.DropIndexes(); err != nil {
 		log.Printf("Index drop failed: %v", err)
+	}
+
+	fmt.Println("\n📊 Testing INSERT / UPDATE / DELETE...")
+	for _, dataScale := range dataScales {
+		fmt.Printf("\n  Data Scale: %d records\n", dataScale)
+		for _, scenario := range crudScenarios {
+			results, err := runner.BenchmarkScenario(
+				scenario.entity,
+				scenario.operation,
+				scenario.queryFile,
+				batchSize,
+				numTrials,
+			)
+			if err != nil {
+				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
+				continue
+			}
+			for _, r := range results {
+				r.DataScale = dataScale
+				r.WithIndex = false
+				resultSet.Results = append(resultSet.Results, *r)
+			}
+		}
 	}
 
 	return nil
@@ -289,19 +369,25 @@ func runMongoDBBenchmarks(config benchrunner.MongoDBConfig, numTrials, batchSize
 	}
 	defer runner.Close()
 
-	// Data scales for Grade 4.0 requirement
 	dataScales := []int{500000, 1000000, 10000000}
-	
-	// Define test scenarios
+
 	scenarios := []struct {
 		entity    string
 		operation string
 		queryFile string
 	}{
-		// Focus on core CRUD operations
 		{"users", "find", "queries/users_mongo_find.js"},
 		{"categories", "find", "queries/categories_mongo_find.js"},
 		{"products", "find", "queries/products_mongo_find.js"},
+		{"users", "insertOne", "queries/users_mongo_insert.js"},
+		{"categories", "insertOne", "queries/categories_mongo_insert.js"},
+		{"products", "insertOne", "queries/products_mongo_insert.js"},
+		{"users", "updateOne", "queries/users_mongo_update.js"},
+		{"categories", "updateOne", "queries/categories_mongo_update.js"},
+		{"products", "updateOne", "queries/products_mongo_update.js"},
+		{"users", "deleteOne", "queries/users_mongo_delete.js"},
+		{"categories", "deleteOne", "queries/categories_mongo_delete.js"},
+		{"products", "deleteOne", "queries/products_mongo_delete.js"},
 	}
 
 	for _, dataScale := range dataScales {
@@ -318,7 +404,6 @@ func runMongoDBBenchmarks(config benchrunner.MongoDBConfig, numTrials, batchSize
 				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
 				continue
 			}
-
 			for _, r := range results {
 				r.DataScale = dataScale
 				resultSet.Results = append(resultSet.Results, *r)
@@ -340,20 +425,25 @@ func runRedisBenchmarks(config benchrunner.RedisConfig, numTrials, batchSize int
 	}
 	defer runner.Close()
 
-	// Data scales for Grade 4.0 requirement
 	dataScales := []int{500000, 1000000, 10000000}
-	
-	// Define test scenarios  
+
 	scenarios := []struct {
 		entity    string
 		operation string
 		queryFile string
 	}{
-		// Focus on core operations
 		{"users", "get", "queries/users_redis_get.txt"},
 		{"categories", "get", "queries/categories_redis_get.txt"},
 		{"products", "get", "queries/products_redis_get.txt"},
 		{"orders", "get", "queries/orders_redis_get.txt"},
+		{"users", "set", "queries/users_redis_set.txt"},
+		{"categories", "set", "queries/categories_redis_set.txt"},
+		{"products", "set", "queries/products_redis_set.txt"},
+		{"orders", "set", "queries/orders_redis_set.txt"},
+		{"users", "del", "queries/users_redis_delete.txt"},
+		{"categories", "del", "queries/categories_redis_delete.txt"},
+		{"products", "del", "queries/products_redis_delete.txt"},
+		{"orders", "del", "queries/orders_redis_delete.txt"},
 	}
 
 	for _, dataScale := range dataScales {
@@ -370,7 +460,6 @@ func runRedisBenchmarks(config benchrunner.RedisConfig, numTrials, batchSize int
 				log.Printf("Scenario %s-%s failed: %v", scenario.entity, scenario.operation, err)
 				continue
 			}
-
 			for _, r := range results {
 				r.DataScale = dataScale
 				resultSet.Results = append(resultSet.Results, *r)

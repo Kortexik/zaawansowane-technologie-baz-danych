@@ -62,17 +62,24 @@ func (r *RedisRunner) RunQueryFile(queryFile string, limit int) (*Result, error)
 	// GET key:1
 	// DEL key:1
 	// etc.
-	queries := []string{}
+	rawQueries := []string{}
 	lines := strings.Split(string(content), "\n")
 
 	for _, line := range lines {
 		line := strings.TrimSpace(line)
 		if line != "" && !strings.HasPrefix(line, "--") && !strings.HasPrefix(line, "#") {
-			queries = append(queries, line)
-			if limit > 0 && len(queries) >= limit {
-				break
-			}
+			rawQueries = append(rawQueries, line)
 		}
+	}
+
+	if len(rawQueries) == 0 {
+		return nil, fmt.Errorf("no queries found in file: %s", queryFile)
+	}
+
+	// Cycle through queries to reach the desired limit
+	queries := make([]string, 0, limit)
+	for len(queries) < limit {
+		queries = append(queries, rawQueries[len(queries)%len(rawQueries)])
 	}
 
 	numQueries := len(queries)
