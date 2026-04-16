@@ -20,6 +20,10 @@ func NewOrderGenerator(id, usersTotal, addressesTotal int) *OrderGenerator {
 	}
 }
 
+func (g *OrderGenerator) SQLSelect(id int) string {
+	return fmt.Sprintf("SELECT * FROM orders WHERE status = '%s';", g.order.Status)
+}
+
 func (g *OrderGenerator) SQLInsert() string {
 	o := g.order
 	return fmt.Sprintf(

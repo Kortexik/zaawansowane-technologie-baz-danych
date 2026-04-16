@@ -5,16 +5,16 @@ import (
 )
 
 type User struct {
-	ID        int
-	Email     string
-	Password  string
-	FirstName string
-	LastName  string
-	Phone     string
-	CreatedAt time.Time
-	Country   string
-	City      string
-	IsActive  bool
+	ID           int
+	Email        string
+	PasswordHash string
+	FirstName    string
+	LastName     string
+	Phone        string
+	CreatedAt    time.Time
+	Country      string
+	City         string
+	IsActive     bool
 }
 
 type Address struct {

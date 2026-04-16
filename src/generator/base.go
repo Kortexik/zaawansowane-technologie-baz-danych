@@ -24,11 +24,21 @@ func NewBase(table, collection, keyPrefix string, id int, data any) Base {
 }
 
 // BoolToInt converts a boolean to the 0/1 integer SQL expects.
+// Deprecated: Use BoolToSQL for better compatibility.
 func BoolToInt(b bool) int {
 	if b {
 		return 1
 	}
 	return 0
+}
+
+// BoolToSQL converts a boolean to a SQL-compatible string.
+// Returns "true"/"false" which works for both MySQL and PostgreSQL.
+func BoolToSQL(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
 }
 
 // FormatMongoValue wraps strings in single quotes; other types are printed as-is.

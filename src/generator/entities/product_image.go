@@ -23,8 +23,8 @@ func NewProductImageGenerator(id, productID int) *ProductImageGenerator {
 func (g *ProductImageGenerator) SQLInsert() string {
 	pi := g.image
 	return fmt.Sprintf(
-		"INSERT INTO product_images (id, product_id, image_url, alt_text, is_main, created_at, width, height, format, size_kb) VALUES (%d, %d, '%s', '%s', %d, '%s', %d, %d, '%s', %d);",
-		pi.ID, pi.ProductID, pi.ImageURL, pi.AltText, generator.BoolToInt(pi.IsMain),
+		"INSERT INTO product_images (id, product_id, image_url, alt_text, is_main, created_at, width, height, format, size_kb) VALUES (%d, %d, '%s', '%s', %s, '%s', %d, %d, '%s', %d);",
+		pi.ID, pi.ProductID, pi.ImageURL, pi.AltText, generator.BoolToSQL(pi.IsMain),
 		pi.CreatedAt.Format(generator.SQLTimeFormat), pi.Width, pi.Height, pi.Format, pi.SizeKB,
 	)
 }

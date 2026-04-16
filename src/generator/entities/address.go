@@ -23,9 +23,9 @@ func NewAddressGenerator(id, userID int) *AddressGenerator {
 func (g *AddressGenerator) SQLInsert() string {
 	a := g.address
 	return fmt.Sprintf(
-		"INSERT INTO addresses (id, user_id, street, city, postal_code, country, created_at, is_default, latitude, longitude) VALUES (%d, %d, '%s', '%s', '%s', '%s', '%s', %d, %.6f, %.6f);",
+		"INSERT INTO addresses (id, user_id, street, city, postal_code, country, created_at, is_default, latitude, longitude) VALUES (%d, %d, '%s', '%s', '%s', '%s', '%s', %s, %.6f, %.6f);",
 		a.ID, a.UserID, a.Street, a.City, a.PostalCode, a.Country,
-		a.CreatedAt.Format(generator.SQLTimeFormat), generator.BoolToInt(a.IsDefault), a.Latitude, a.Longitude,
+		a.CreatedAt.Format(generator.SQLTimeFormat), generator.BoolToSQL(a.IsDefault), a.Latitude, a.Longitude,
 	)
 }
 

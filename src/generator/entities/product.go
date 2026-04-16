@@ -20,12 +20,16 @@ func NewProductGenerator(id int) *ProductGenerator {
 	}
 }
 
+func (g *ProductGenerator) SQLSelect(id int) string {
+	return fmt.Sprintf("SELECT * FROM products WHERE category_id = %d;", g.product.CategoryID)
+}
+
 func (g *ProductGenerator) SQLInsert() string {
 	p := g.product
 	return fmt.Sprintf(
-		"INSERT INTO products (id, name, description, category_id, price, currency, stock, weight, created_at, is_active) VALUES (%d, '%s', '%s', %d, %.2f, '%s', %d, %.2f, '%s', 1);",
+		"INSERT INTO products (id, name, description, category_id, price, currency, stock_quantity, weight, created_at, is_active) VALUES (%d, '%s', '%s', %d, %.2f, '%s', %d, %.2f, '%s', %s);",
 		p.ID, p.Name, p.Description, p.CategoryID, p.Price, p.Currency, p.Stock, p.Weight,
-		p.CreatedAt.Format(generator.SQLTimeFormat),
+		p.CreatedAt.Format(generator.SQLTimeFormat), generator.BoolToSQL(p.IsActive),
 	)
 }
 
