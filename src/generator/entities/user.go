@@ -20,20 +20,24 @@ func NewUserGenerator(id int) *UserGenerator {
 	}
 }
 
+func (g *UserGenerator) SQLSelect(id int) string {
+	return fmt.Sprintf("SELECT * FROM users WHERE country = '%s';", g.user.Country)
+}
+
 func (g *UserGenerator) SQLInsert() string {
 	u := g.user
 	return fmt.Sprintf(
-		"INSERT INTO users (id, email, password, first_name, last_name, phone, created_at, country, city, is_active) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d);",
-		u.ID, u.Email, u.Password, u.FirstName, u.LastName, u.Phone,
-		u.CreatedAt.Format(generator.SQLTimeFormat), u.Country, u.City, generator.BoolToInt(u.IsActive),
+		"INSERT INTO users (id, email, password_hash, first_name, last_name, phone, created_at, country, city, is_active) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s);",
+		u.ID, u.Email, u.PasswordHash, u.FirstName, u.LastName, u.Phone,
+		u.CreatedAt.Format(generator.SQLTimeFormat), u.Country, u.City, generator.BoolToSQL(u.IsActive),
 	)
 }
 
 func (g *UserGenerator) MongoInsert() string {
 	u := g.user
 	return fmt.Sprintf(
-		"db.users.insertOne({_id: %d, email: '%s', password: '%s', firstName: '%s', lastName: '%s', phone: '%s', createdAt: ISODate('%s'), country: '%s', city: '%s', isActive: %v});\n",
-		u.ID, u.Email, u.Password, u.FirstName, u.LastName, u.Phone,
+		"db.users.insertOne({_id: %d, email: '%s', passwordHash: '%s', firstName: '%s', lastName: '%s', phone: '%s', createdAt: ISODate('%s'), country: '%s', city: '%s', isActive: %v});\n",
+		u.ID, u.Email, u.PasswordHash, u.FirstName, u.LastName, u.Phone,
 		u.CreatedAt.Format(time.RFC3339), u.Country, u.City, u.IsActive,
 	)
 }

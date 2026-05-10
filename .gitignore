@@ -1,3 +1,15 @@
 queries/*
-
 !queries/README.md
+
+# Compiled binaries
+bin/
+
+# Results
+results/*.json
+results/*.csv
+
+.DS_Store
+.idea/
+.vscode/
+
+benchmark_run.log

@@ -18,16 +18,16 @@ var (
 
 func GenerateUser(id int) *types.User {
 	return &types.User{
-		ID:        id,
-		Email:     fmt.Sprintf("user%d@example.com", id),
-		Password:  "hashed_pw",
-		FirstName: fmt.Sprintf("Name%d", id),
-		LastName:  fmt.Sprintf("Surname%d", id),
-		Phone:     fmt.Sprintf("+100000%04d", id%10000),
-		CreatedAt: time.Now(),
-		Country:   "Poland",
-		City:      "Warsaw",
-		IsActive:  rng.Intn(2) == 0,
+		ID:           id,
+		Email:        fmt.Sprintf("user%d@example.com", id),
+		PasswordHash: "hashed_pw",
+		FirstName:    fmt.Sprintf("Name%d", id),
+		LastName:     fmt.Sprintf("Surname%d", id),
+		Phone:        fmt.Sprintf("+100000%04d", id%10000),
+		CreatedAt:    time.Now(),
+		Country:      "Poland",
+		City:         "Warsaw",
+		IsActive:     rng.Intn(2) == 0,
 	}
 }
 

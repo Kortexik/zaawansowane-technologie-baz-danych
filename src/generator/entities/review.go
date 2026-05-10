@@ -23,10 +23,10 @@ func NewReviewGenerator(id, userID, productID int) *ReviewGenerator {
 func (g *ReviewGenerator) SQLInsert() string {
 	r := g.review
 	return fmt.Sprintf(
-		"INSERT INTO reviews (id, user_id, product_id, rating, title, comment, created_at, updated_at, is_verified, helpful_votes) VALUES (%d, %d, %d, %d, '%s', '%s', '%s', '%s', %d, %d);",
+		"INSERT INTO reviews (id, user_id, product_id, rating, title, comment, created_at, updated_at, is_verified, helpful_votes) VALUES (%d, %d, %d, %d, '%s', '%s', '%s', '%s', %s, %d);",
 		r.ID, r.UserID, r.ProductID, r.Rating, r.Title, r.Comment,
 		r.CreatedAt.Format(generator.SQLTimeFormat), r.UpdatedAt.Format(generator.SQLTimeFormat),
-		generator.BoolToInt(r.IsVerified), r.HelpfulVotes,
+		generator.BoolToSQL(r.IsVerified), r.HelpfulVotes,
 	)
 }
 
