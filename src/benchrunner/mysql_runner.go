@@ -170,21 +170,39 @@ func (r *MySQLRunner) LoadInsertsFromFile(queryFile string, count int) error {
 	return nil
 }
 
+// MySQL 8 has no `IF [NOT] EXISTS` on CREATE/DROP INDEX, so we use plain DDL
+// and tolerate the two errors that mean "the desired state is already true":
+// 1061 = duplicate key name, 1091 = can't drop because doesn't exist.
+// Any other error is real and fails loudly — silently logging used to mask
+// the missing-index bug that wasted a 12 h Phase B run.
+const (
+	mysqlErrDupKeyName    = "Error 1061"
+	mysqlErrIndexNotFound = "Error 1091"
+)
+
+var mysqlBenchIndexes = []struct {
+	name, table, column string
+}{
+	{"idx_users_country", "users", "country"},
+	{"idx_products_category_id", "products", "category_id"},
+	{"idx_orders_status", "orders", "status"},
+	{"idx_categories_display_order", "categories", "display_order"},
+	{"idx_addresses_postal_code", "addresses", "postal_code"},
+}
+
 // CreateIndexes creates indexes on non-index test columns to measure index impact
 func (r *MySQLRunner) CreateIndexes() error {
-	indexes := []string{
-		"CREATE INDEX IF NOT EXISTS idx_users_country ON users(country)",
-		"CREATE INDEX IF NOT EXISTS idx_products_category_id ON products(category_id)",
-		"CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status)",
-		"CREATE INDEX IF NOT EXISTS idx_categories_display_order ON categories(display_order)",
-		"CREATE INDEX IF NOT EXISTS idx_addresses_postal_code ON addresses(postal_code)",
-	}
-
-	for _, idx := range indexes {
-		if _, err := r.db.Exec(idx); err != nil {
-			// Log but continue - index might already exist
-			fmt.Printf("  Index creation notice: %v\n", err)
+	for _, idx := range mysqlBenchIndexes {
+		stmt := fmt.Sprintf("CREATE INDEX %s ON %s(%s)", idx.name, idx.table, idx.column)
+		if _, err := r.db.Exec(stmt); err != nil {
+			if strings.Contains(err.Error(), mysqlErrDupKeyName) {
+				continue
+			}
+			return fmt.Errorf("create %s: %w", idx.name, err)
 		}
+	}
+	if err := r.verifyIndexesExist(true); err != nil {
+		return err
 	}
 	fmt.Println("✓ Indexes created")
 	return nil
@@ -192,21 +210,35 @@ func (r *MySQLRunner) CreateIndexes() error {
 
 // DropIndexes drops all created indexes
 func (r *MySQLRunner) DropIndexes() error {
-	indexes := []string{
-		"ALTER TABLE users DROP INDEX IF EXISTS idx_users_country",
-		"ALTER TABLE products DROP INDEX IF EXISTS idx_products_category_id",
-		"ALTER TABLE orders DROP INDEX IF EXISTS idx_orders_status",
-		"ALTER TABLE categories DROP INDEX IF EXISTS idx_categories_display_order",
-		"ALTER TABLE addresses DROP INDEX IF EXISTS idx_addresses_postal_code",
-	}
-
-	for _, idx := range indexes {
-		if _, err := r.db.Exec(idx); err != nil {
-			// Log but continue
-			fmt.Printf("  Index drop notice: %v\n", err)
+	for _, idx := range mysqlBenchIndexes {
+		stmt := fmt.Sprintf("DROP INDEX %s ON %s", idx.name, idx.table)
+		if _, err := r.db.Exec(stmt); err != nil {
+			if strings.Contains(err.Error(), mysqlErrIndexNotFound) {
+				continue
+			}
+			return fmt.Errorf("drop %s: %w", idx.name, err)
 		}
 	}
 	fmt.Println("✓ Indexes dropped")
+	return nil
+}
+
+// verifyIndexesExist checks INFORMATION_SCHEMA so we crash loudly if any
+// expected index is missing — defense against future DDL drift.
+func (r *MySQLRunner) verifyIndexesExist(shouldExist bool) error {
+	for _, idx := range mysqlBenchIndexes {
+		var n int
+		err := r.db.QueryRow(
+			"SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?",
+			idx.table, idx.name,
+		).Scan(&n)
+		if err != nil {
+			return fmt.Errorf("verify %s: %w", idx.name, err)
+		}
+		if shouldExist && n == 0 {
+			return fmt.Errorf("index %s missing on %s after CreateIndexes", idx.name, idx.table)
+		}
+	}
 	return nil
 }
 

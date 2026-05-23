@@ -33,7 +33,8 @@ func capScale(entity string, scale int) int {
 
 func main() {
 	numTrials := flag.Int("trials", 3, "Number of trials for each benchmark")
-	batchSize := flag.Int("batch", 10000, "Number of queries to run per benchmark")
+	batchSize := flag.Int("batch", 10000, "Queries per benchmark for Phase B (indexed) and fast paths")
+	batchNoIdx := flag.Int("batch-noidx", 1000, "Smaller batch for Phase A (no indexes) — full-table scans are slow")
 	database := flag.String("db", "all", "Database to benchmark (mysql, postgres, mongodb, redis, all)")
 	flag.Parse()
 
@@ -41,10 +42,12 @@ func main() {
 	fmt.Println("║        Database Performance Benchmark Suite               ║")
 	fmt.Println("╚════════════════════════════════════════════════════════════╝")
 	fmt.Printf("\nConfiguration:\n")
-	fmt.Printf("  Trials per test: %d\n", *numTrials)
-	fmt.Printf("  Batch size: %d\n", *batchSize)
-	fmt.Printf("  Target database: %s\n", *database)
-	fmt.Printf("  Data scales: %v\n\n", dataScales)
+	fmt.Printf("  Trials per test:       %d\n", *numTrials)
+	fmt.Printf("  Batch (Phase B/fast):  %d\n", *batchSize)
+	fmt.Printf("  Batch (Phase A/scan):  %d\n", *batchNoIdx)
+	fmt.Printf("  Target database:       %s\n", *database)
+	fmt.Printf("  Data scales:           %v\n", dataScales)
+	fmt.Printf("  Phase A runs at:       %d only (smallest scale)\n\n", dataScales[0])
 
 	dbConfig := benchrunner.DefaultDBConfig()
 
@@ -55,12 +58,12 @@ func main() {
 	explainCollector := benchrunner.NewExplainCollector()
 
 	if *database == "all" || *database == "mysql" {
-		if err := runMySQLBenchmarks(dbConfig.MySQL, *numTrials, *batchSize, resultSet, explainCollector); err != nil {
+		if err := runMySQLBenchmarks(dbConfig.MySQL, *numTrials, *batchSize, *batchNoIdx, resultSet, explainCollector); err != nil {
 			log.Printf("MySQL benchmarks failed: %v", err)
 		}
 	}
 	if *database == "all" || *database == "postgres" {
-		if err := runPostgresBenchmarks(dbConfig.Postgres, *numTrials, *batchSize, resultSet, explainCollector); err != nil {
+		if err := runPostgresBenchmarks(dbConfig.Postgres, *numTrials, *batchSize, *batchNoIdx, resultSet, explainCollector); err != nil {
 			log.Printf("PostgreSQL benchmarks failed: %v", err)
 		}
 	}
@@ -165,7 +168,7 @@ var sqlCRUDScenarios = []scenario{
 	{"orders", "delete", "queries/orders_sql_delete.sql"},
 }
 
-func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int, resultSet *benchrunner.ResultSet, explainCollector *benchrunner.ExplainCollector) error {
+func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize, batchNoIdx int, resultSet *benchrunner.ResultSet, explainCollector *benchrunner.ExplainCollector) error {
 	fmt.Println("\n" + strings.Repeat("=", 60))
 	fmt.Println("Starting MySQL Benchmarks")
 	fmt.Println(strings.Repeat("=", 60))
@@ -176,8 +179,7 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 	}
 	defer runner.Close()
 
-	// EXPLAIN is collected only at the largest scale — the planner needs
-	// realistic statistics for the comparison to be meaningful.
+	smallestScale := dataScales[0]
 	largestScale := dataScales[len(dataScales)-1]
 
 	loadAll := func(scale int) {
@@ -192,17 +194,22 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 		fmt.Printf("\n▶ MySQL @ scale=%d\n", scale)
 
 		// ── Phase A: without indexes ─────────────────────────────────────
-		fmt.Println("  Phase A: WITHOUT indexes")
-		if err := runner.Reset(); err != nil {
-			return fmt.Errorf("reset A: %w", err)
-		}
-		loadAll(scale)
+		// Only at the smallest scale. Beyond that, full-table scans dominate
+		// the runtime budget without adding insight that's not already
+		// captured by the small-scale Phase A/B comparison.
+		if scale == smallestScale {
+			fmt.Println("  Phase A: WITHOUT indexes")
+			if err := runner.Reset(); err != nil {
+				return fmt.Errorf("reset A: %w", err)
+			}
+			loadAll(scale)
 
-		if scale == largestScale {
 			collectMySQLExplains(runner, sqlSelectScenarios, scale, false, explainCollector)
+			runScenarios(runner.BenchmarkScenario, sqlSelectScenarios, batchNoIdx, numTrials, resultSet, scale, false)
+			runScenarios(runner.BenchmarkScenario, sqlCRUDScenarios, batchNoIdx, numTrials, resultSet, scale, false)
+		} else {
+			fmt.Printf("  Phase A: SKIPPED (only runs at smallest scale=%d)\n", smallestScale)
 		}
-		runScenarios(runner.BenchmarkScenario, sqlSelectScenarios, batchSize, numTrials, resultSet, scale, false)
-		runScenarios(runner.BenchmarkScenario, sqlCRUDScenarios, batchSize, numTrials, resultSet, scale, false)
 
 		// ── Phase B: with indexes ────────────────────────────────────────
 		// Reset+reload so DELETEs in phase A don't make phase B's UPDATEs/
@@ -213,7 +220,7 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 		}
 		loadAll(scale)
 		if err := runner.CreateIndexes(); err != nil {
-			log.Printf("Index create failed: %v", err)
+			return fmt.Errorf("index create failed: %w", err)
 		}
 
 		if scale == largestScale {
@@ -223,7 +230,7 @@ func runMySQLBenchmarks(config benchrunner.MySQLConfig, numTrials, batchSize int
 		runScenarios(runner.BenchmarkScenario, sqlCRUDScenarios, batchSize, numTrials, resultSet, scale, true)
 
 		if err := runner.DropIndexes(); err != nil {
-			log.Printf("Index drop failed: %v", err)
+			return fmt.Errorf("index drop failed: %w", err)
 		}
 	}
 
@@ -257,7 +264,7 @@ func collectMySQLExplains(runner *benchrunner.MySQLRunner, scenarios []scenario,
 
 // ── PostgreSQL ───────────────────────────────────────────────────────────────
 
-func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSize int, resultSet *benchrunner.ResultSet, explainCollector *benchrunner.ExplainCollector) error {
+func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSize, batchNoIdx int, resultSet *benchrunner.ResultSet, explainCollector *benchrunner.ExplainCollector) error {
 	fmt.Println("\n" + strings.Repeat("=", 60))
 	fmt.Println("Starting PostgreSQL Benchmarks")
 	fmt.Println(strings.Repeat("=", 60))
@@ -268,6 +275,7 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 	}
 	defer runner.Close()
 
+	smallestScale := dataScales[0]
 	largestScale := dataScales[len(dataScales)-1]
 
 	loadAll := func(scale int) {
@@ -282,17 +290,19 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 		fmt.Printf("\n▶ PostgreSQL @ scale=%d\n", scale)
 
 		// ── Phase A: without indexes ─────────────────────────────────────
-		fmt.Println("  Phase A: WITHOUT indexes")
-		if err := runner.Reset(); err != nil {
-			return fmt.Errorf("reset A: %w", err)
-		}
-		loadAll(scale)
+		if scale == smallestScale {
+			fmt.Println("  Phase A: WITHOUT indexes")
+			if err := runner.Reset(); err != nil {
+				return fmt.Errorf("reset A: %w", err)
+			}
+			loadAll(scale)
 
-		if scale == largestScale {
 			collectPostgresExplains(runner, sqlSelectScenarios, scale, false, explainCollector)
+			runScenarios(runner.BenchmarkScenario, sqlSelectScenarios, batchNoIdx, numTrials, resultSet, scale, false)
+			runScenarios(runner.BenchmarkScenario, sqlCRUDScenarios, batchNoIdx, numTrials, resultSet, scale, false)
+		} else {
+			fmt.Printf("  Phase A: SKIPPED (only runs at smallest scale=%d)\n", smallestScale)
 		}
-		runScenarios(runner.BenchmarkScenario, sqlSelectScenarios, batchSize, numTrials, resultSet, scale, false)
-		runScenarios(runner.BenchmarkScenario, sqlCRUDScenarios, batchSize, numTrials, resultSet, scale, false)
 
 		// ── Phase B: with indexes ────────────────────────────────────────
 		fmt.Println("  Phase B: WITH indexes")
@@ -301,7 +311,7 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 		}
 		loadAll(scale)
 		if err := runner.CreateIndexes(); err != nil {
-			log.Printf("Index create failed: %v", err)
+			return fmt.Errorf("index create failed: %w", err)
 		}
 
 		if scale == largestScale {
@@ -311,7 +321,7 @@ func runPostgresBenchmarks(config benchrunner.PostgresConfig, numTrials, batchSi
 		runScenarios(runner.BenchmarkScenario, sqlCRUDScenarios, batchSize, numTrials, resultSet, scale, true)
 
 		if err := runner.DropIndexes(); err != nil {
-			log.Printf("Index drop failed: %v", err)
+			return fmt.Errorf("index drop failed: %w", err)
 		}
 	}
 

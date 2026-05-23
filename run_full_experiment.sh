@@ -14,16 +14,21 @@
 #
 # Knobs (env or flags):
 #   --trials N         number of trials per scenario (default 3)
-#   --batch N          number of queries per benchmark run (default 10000)
+#   --batch N          queries per benchmark for Phase B / fast paths (default 10000)
+#   --batch-noidx N    smaller batch for Phase A / no-index scans (default 1000)
 #   --db NAME          mysql|postgres|mongodb|redis|all (default all)
 #   --skip-gen         do not regenerate query files (use cached ones)
 #   --skip-notebook    do not execute the Jupyter notebook
 #   --skip-reset       do not docker compose down -v (keep existing data on disk)
+#
+# Phase A (no indexes) runs only at the smallest scale; Phase B (with
+# indexes) runs at every scale. This is hardcoded in main.go.
 
 set -euo pipefail
 
 TRIALS=${TRIALS:-3}
 BATCH=${BATCH:-10000}
+BATCH_NOIDX=${BATCH_NOIDX:-1000}
 DATABASE=${DATABASE:-all}
 SKIP_GEN=${SKIP_GEN:-0}
 SKIP_NOTEBOOK=${SKIP_NOTEBOOK:-0}
@@ -33,6 +38,7 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --trials) TRIALS="$2"; shift 2 ;;
         --batch) BATCH="$2"; shift 2 ;;
+        --batch-noidx) BATCH_NOIDX="$2"; shift 2 ;;
         --db) DATABASE="$2"; shift 2 ;;
         --skip-gen) SKIP_GEN=1; shift ;;
         --skip-notebook) SKIP_NOTEBOOK=1; shift ;;
@@ -70,18 +76,19 @@ cat <<BANNER
 ╔═══════════════════════════════════════════════════════════════╗
 ║          Full Benchmark Experiment — ${TS}             ║
 ╚═══════════════════════════════════════════════════════════════╝
-  Trials:           ${TRIALS}
-  Batch size:       ${BATCH}
-  Database target:  ${DATABASE}
-  Skip generation:  ${SKIP_GEN}
-  Skip reset:       ${SKIP_RESET}
-  Skip notebook:    ${SKIP_NOTEBOOK}
-  Log file:         ${LOG}
+  Trials:                  ${TRIALS}
+  Batch (Phase B/fast):    ${BATCH}
+  Batch (Phase A/no-idx):  ${BATCH_NOIDX}
+  Database target:         ${DATABASE}
+  Skip generation:         ${SKIP_GEN}
+  Skip reset:              ${SKIP_RESET}
+  Skip notebook:           ${SKIP_NOTEBOOK}
+  Log file:                ${LOG}
 
 Data scales: 500_000, 1_000_000, 10_000_000  (per src/cmd/run_benchmarks/main.go)
-Each scale runs in TWO phases (without indexes, then with indexes), so the
-database is reset + reloaded twice per scale to keep tests independent.
-Expected runtime at full scale: roughly 6–10 hours on a laptop.
+Phase A (no indexes) runs only at the smallest scale. Phase B (with
+indexes) runs at every scale. With tuned MySQL/Postgres buffers, expected
+runtime is ~3–5 hours.
 
 BANNER
 
@@ -143,7 +150,11 @@ ok "bin/bench built."
 
 # ── 4. Run benchmark ─────────────────────────────────────────────────────────
 step "Step 5/6 — Run benchmark (this is the long phase)"
-./bin/bench -trials="$TRIALS" -batch="$BATCH" -db="$DATABASE"
+./bin/bench \
+    -trials="$TRIALS" \
+    -batch="$BATCH" \
+    -batch-noidx="$BATCH_NOIDX" \
+    -db="$DATABASE"
 LATEST_CSV=$(ls -t results/benchmark_results_*.csv 2>/dev/null | head -1 || true)
 LATEST_JSON=$(ls -t results/benchmark_results_*.json 2>/dev/null | head -1 || true)
 ok "Benchmark complete: $LATEST_CSV"

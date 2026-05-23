@@ -1,0 +1,3622 @@
+╔═══════════════════════════════════════════════════════════════╗
+║          Full Benchmark Experiment — 20260523_125848             ║
+╚═══════════════════════════════════════════════════════════════╝
+  Trials:                  3
+  Batch (Phase B/fast):    10000
+  Batch (Phase A/no-idx):  1000
+  Database target:         all
+  Skip generation:         0
+  Skip reset:              0
+  Skip notebook:           0
+  Log file:                logs/run_20260523_125848.log
+
+Data scales: 500_000, 1_000_000, 10_000_000  (per src/cmd/run_benchmarks/main.go)
+Phase A (no indexes) runs only at the smallest scale. Phase B (with
+indexes) runs at every scale. With tuned MySQL/Postgres buffers, expected
+runtime is ~3–5 hours.
+
+
+[1m[1;33m▶ Step 1/6 — Reset Docker containers (volumes wiped)[0m
+
+time="2026-05-23T12:58:48+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container bench-postgres  Stopping
+ Container bench-mongo  Stopping
+ Container bench-redis  Stopping
+ Container bench-mysql  Stopping
+ Container bench-mysql  Stopped
+ Container bench-mysql  Removing
+ Container bench-mongo  Stopped
+ Container bench-mongo  Removing
+ Container bench-postgres  Stopped
+ Container bench-postgres  Removing
+ Container bench-redis  Stopped
+ Container bench-redis  Removing
+ Container bench-mysql  Removed
+ Container bench-postgres  Removed
+ Container bench-redis  Removed
+ Container bench-mongo  Removed
+ Volume zaawansowane-technologie-baz-danych_redis_data  Removing
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Removing
+ Network zaawansowane-technologie-baz-danych_default  Removing
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Removing
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Removing
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Removed
+ Volume zaawansowane-technologie-baz-danych_redis_data  Removed
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Removed
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Removed
+ Network zaawansowane-technologie-baz-danych_default  Removed
+time="2026-05-23T12:58:48+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Network zaawansowane-technologie-baz-danych_default  Creating
+ Network zaawansowane-technologie-baz-danych_default  Created
+ Volume zaawansowane-technologie-baz-danych_redis_data  Creating
+ Volume zaawansowane-technologie-baz-danych_redis_data  Created
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Creating
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Created
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Creating
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Created
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Creating
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Created
+ Container bench-mongo  Creating
+ Container bench-mysql  Creating
+ Container bench-postgres  Creating
+ Container bench-redis  Creating
+ Container bench-mongo  Created
+ Container bench-redis  Created
+ Container bench-mysql  Created
+ Container bench-postgres  Created
+ Container bench-mongo  Starting
+ Container bench-postgres  Starting
+ Container bench-redis  Starting
+ Container bench-mysql  Starting
+ Container bench-redis  Started
+ Container bench-mysql  Started
+ Container bench-mongo  Started
+ Container bench-postgres  Started
+
+[1m[1;33m▶ Step 2/6 — Waiting for databases to become ready[0m
+
+  waiting (1/60): mysql=0 pg=0 mongo=1 redis=1
+  waiting (2/60): mysql=0 pg=1 mongo=1 redis=1
+  waiting (3/60): mysql=0 pg=1 mongo=1 redis=1
+[0;32m✓ All four databases reachable.[0m
+
+[1m[1;33m▶ Step 3/6 — Regenerate query files (this is slow at 10M scale)[0m
+
+Starting benchmark data generation...
+
+--- category SQL inserts ---
+
+--- category Mongo inserts ---
+
+--- category Redis sets ---
+
+--- category SQL selects ---
+
+--- category SQL updates ---
+
+--- category SQL deletes ---
+
+--- category Mongo finds ---
+
+--- category Mongo updates ---
+
+--- category Mongo deletes ---
+
+--- category Redis updates ---
+
+--- category Redis deletes ---
+
+--- category Redis gets ---
+
+--- user SQL inserts ---
+  100000 / 10000000 user SQL inserts
+  200000 / 10000000 user SQL inserts
+  300000 / 10000000 user SQL inserts
+  400000 / 10000000 user SQL inserts
+  500000 / 10000000 user SQL inserts
+  600000 / 10000000 user SQL inserts
+  700000 / 10000000 user SQL inserts
+  800000 / 10000000 user SQL inserts
+  900000 / 10000000 user SQL inserts
+  1000000 / 10000000 user SQL inserts
+  1100000 / 10000000 user SQL inserts
+  1200000 / 10000000 user SQL inserts
+  1300000 / 10000000 user SQL inserts
+  1400000 / 10000000 user SQL inserts
+  1500000 / 10000000 user SQL inserts
+  1600000 / 10000000 user SQL inserts
+  1700000 / 10000000 user SQL inserts
+  1800000 / 10000000 user SQL inserts
+  1900000 / 10000000 user SQL inserts
+  2000000 / 10000000 user SQL inserts
+  2100000 / 10000000 user SQL inserts
+  2200000 / 10000000 user SQL inserts
+  2300000 / 10000000 user SQL inserts
+  2400000 / 10000000 user SQL inserts
+  2500000 / 10000000 user SQL inserts
+  2600000 / 10000000 user SQL inserts
+  2700000 / 10000000 user SQL inserts
+  2800000 / 10000000 user SQL inserts
+  2900000 / 10000000 user SQL inserts
+  3000000 / 10000000 user SQL inserts
+  3100000 / 10000000 user SQL inserts
+  3200000 / 10000000 user SQL inserts
+  3300000 / 10000000 user SQL inserts
+  3400000 / 10000000 user SQL inserts
+  3500000 / 10000000 user SQL inserts
+  3600000 / 10000000 user SQL inserts
+  3700000 / 10000000 user SQL inserts
+  3800000 / 10000000 user SQL inserts
+  3900000 / 10000000 user SQL inserts
+  4000000 / 10000000 user SQL inserts
+  4100000 / 10000000 user SQL inserts
+  4200000 / 10000000 user SQL inserts
+  4300000 / 10000000 user SQL inserts
+  4400000 / 10000000 user SQL inserts
+  4500000 / 10000000 user SQL inserts
+  4600000 / 10000000 user SQL inserts
+  4700000 / 10000000 user SQL inserts
+  4800000 / 10000000 user SQL inserts
+  4900000 / 10000000 user SQL inserts
+  5000000 / 10000000 user SQL inserts
+  5100000 / 10000000 user SQL inserts
+  5200000 / 10000000 user SQL inserts
+  5300000 / 10000000 user SQL inserts
+  5400000 / 10000000 user SQL inserts
+  5500000 / 10000000 user SQL inserts
+  5600000 / 10000000 user SQL inserts
+  5700000 / 10000000 user SQL inserts
+  5800000 / 10000000 user SQL inserts
+  5900000 / 10000000 user SQL inserts
+  6000000 / 10000000 user SQL inserts
+  6100000 / 10000000 user SQL inserts
+  6200000 / 10000000 user SQL inserts
+  6300000 / 10000000 user SQL inserts
+  6400000 / 10000000 user SQL inserts
+  6500000 / 10000000 user SQL inserts
+  6600000 / 10000000 user SQL inserts
+  6700000 / 10000000 user SQL inserts
+  6800000 / 10000000 user SQL inserts
+  6900000 / 10000000 user SQL inserts
+  7000000 / 10000000 user SQL inserts
+  7100000 / 10000000 user SQL inserts
+  7200000 / 10000000 user SQL inserts
+  7300000 / 10000000 user SQL inserts
+  7400000 / 10000000 user SQL inserts
+  7500000 / 10000000 user SQL inserts
+  7600000 / 10000000 user SQL inserts
+  7700000 / 10000000 user SQL inserts
+  7800000 / 10000000 user SQL inserts
+  7900000 / 10000000 user SQL inserts
+  8000000 / 10000000 user SQL inserts
+  8100000 / 10000000 user SQL inserts
+  8200000 / 10000000 user SQL inserts
+  8300000 / 10000000 user SQL inserts
+  8400000 / 10000000 user SQL inserts
+  8500000 / 10000000 user SQL inserts
+  8600000 / 10000000 user SQL inserts
+  8700000 / 10000000 user SQL inserts
+  8800000 / 10000000 user SQL inserts
+  8900000 / 10000000 user SQL inserts
+  9000000 / 10000000 user SQL inserts
+  9100000 / 10000000 user SQL inserts
+  9200000 / 10000000 user SQL inserts
+  9300000 / 10000000 user SQL inserts
+  9400000 / 10000000 user SQL inserts
+  9500000 / 10000000 user SQL inserts
+  9600000 / 10000000 user SQL inserts
+  9700000 / 10000000 user SQL inserts
+  9800000 / 10000000 user SQL inserts
+  9900000 / 10000000 user SQL inserts
+  10000000 / 10000000 user SQL inserts
+
+--- user SQL selects ---
+  100000 / 10000000 user SQL selects
+  200000 / 10000000 user SQL selects
+  300000 / 10000000 user SQL selects
+  400000 / 10000000 user SQL selects
+  500000 / 10000000 user SQL selects
+  600000 / 10000000 user SQL selects
+  700000 / 10000000 user SQL selects
+  800000 / 10000000 user SQL selects
+  900000 / 10000000 user SQL selects
+  1000000 / 10000000 user SQL selects
+  1100000 / 10000000 user SQL selects
+  1200000 / 10000000 user SQL selects
+  1300000 / 10000000 user SQL selects
+  1400000 / 10000000 user SQL selects
+  1500000 / 10000000 user SQL selects
+  1600000 / 10000000 user SQL selects
+  1700000 / 10000000 user SQL selects
+  1800000 / 10000000 user SQL selects
+  1900000 / 10000000 user SQL selects
+  2000000 / 10000000 user SQL selects
+  2100000 / 10000000 user SQL selects
+  2200000 / 10000000 user SQL selects
+  2300000 / 10000000 user SQL selects
+  2400000 / 10000000 user SQL selects
+  2500000 / 10000000 user SQL selects
+  2600000 / 10000000 user SQL selects
+  2700000 / 10000000 user SQL selects
+  2800000 / 10000000 user SQL selects
+  2900000 / 10000000 user SQL selects
+  3000000 / 10000000 user SQL selects
+  3100000 / 10000000 user SQL selects
+  3200000 / 10000000 user SQL selects
+  3300000 / 10000000 user SQL selects
+  3400000 / 10000000 user SQL selects
+  3500000 / 10000000 user SQL selects
+  3600000 / 10000000 user SQL selects
+  3700000 / 10000000 user SQL selects
+  3800000 / 10000000 user SQL selects
+  3900000 / 10000000 user SQL selects
+  4000000 / 10000000 user SQL selects
+  4100000 / 10000000 user SQL selects
+  4200000 / 10000000 user SQL selects
+  4300000 / 10000000 user SQL selects
+  4400000 / 10000000 user SQL selects
+  4500000 / 10000000 user SQL selects
+  4600000 / 10000000 user SQL selects
+  4700000 / 10000000 user SQL selects
+  4800000 / 10000000 user SQL selects
+  4900000 / 10000000 user SQL selects
+  5000000 / 10000000 user SQL selects
+  5100000 / 10000000 user SQL selects
+  5200000 / 10000000 user SQL selects
+  5300000 / 10000000 user SQL selects
+  5400000 / 10000000 user SQL selects
+  5500000 / 10000000 user SQL selects
+  5600000 / 10000000 user SQL selects
+  5700000 / 10000000 user SQL selects
+  5800000 / 10000000 user SQL selects
+  5900000 / 10000000 user SQL selects
+  6000000 / 10000000 user SQL selects
+  6100000 / 10000000 user SQL selects
+  6200000 / 10000000 user SQL selects
+  6300000 / 10000000 user SQL selects
+  6400000 / 10000000 user SQL selects
+  6500000 / 10000000 user SQL selects
+  6600000 / 10000000 user SQL selects
+  6700000 / 10000000 user SQL selects
+  6800000 / 10000000 user SQL selects
+  6900000 / 10000000 user SQL selects
+  7000000 / 10000000 user SQL selects
+  7100000 / 10000000 user SQL selects
+  7200000 / 10000000 user SQL selects
+  7300000 / 10000000 user SQL selects
+  7400000 / 10000000 user SQL selects
+  7500000 / 10000000 user SQL selects
+  7600000 / 10000000 user SQL selects
+  7700000 / 10000000 user SQL selects
+  7800000 / 10000000 user SQL selects
+  7900000 / 10000000 user SQL selects
+  8000000 / 10000000 user SQL selects
+  8100000 / 10000000 user SQL selects
+  8200000 / 10000000 user SQL selects
+  8300000 / 10000000 user SQL selects
+  8400000 / 10000000 user SQL selects
+  8500000 / 10000000 user SQL selects
+  8600000 / 10000000 user SQL selects
+  8700000 / 10000000 user SQL selects
+  8800000 / 10000000 user SQL selects
+  8900000 / 10000000 user SQL selects
+  9000000 / 10000000 user SQL selects
+  9100000 / 10000000 user SQL selects
+  9200000 / 10000000 user SQL selects
+  9300000 / 10000000 user SQL selects
+  9400000 / 10000000 user SQL selects
+  9500000 / 10000000 user SQL selects
+  9600000 / 10000000 user SQL selects
+  9700000 / 10000000 user SQL selects
+  9800000 / 10000000 user SQL selects
+  9900000 / 10000000 user SQL selects
+  10000000 / 10000000 user SQL selects
+
+--- user SQL updates ---
+  100000 / 10000000 user SQL updates
+  200000 / 10000000 user SQL updates
+  300000 / 10000000 user SQL updates
+  400000 / 10000000 user SQL updates
+  500000 / 10000000 user SQL updates
+  600000 / 10000000 user SQL updates
+  700000 / 10000000 user SQL updates
+  800000 / 10000000 user SQL updates
+  900000 / 10000000 user SQL updates
+  1000000 / 10000000 user SQL updates
+  1100000 / 10000000 user SQL updates
+  1200000 / 10000000 user SQL updates
+  1300000 / 10000000 user SQL updates
+  1400000 / 10000000 user SQL updates
+  1500000 / 10000000 user SQL updates
+  1600000 / 10000000 user SQL updates
+  1700000 / 10000000 user SQL updates
+  1800000 / 10000000 user SQL updates
+  1900000 / 10000000 user SQL updates
+  2000000 / 10000000 user SQL updates
+  2100000 / 10000000 user SQL updates
+  2200000 / 10000000 user SQL updates
+  2300000 / 10000000 user SQL updates
+  2400000 / 10000000 user SQL updates
+  2500000 / 10000000 user SQL updates
+  2600000 / 10000000 user SQL updates
+  2700000 / 10000000 user SQL updates
+  2800000 / 10000000 user SQL updates
+  2900000 / 10000000 user SQL updates
+  3000000 / 10000000 user SQL updates
+  3100000 / 10000000 user SQL updates
+  3200000 / 10000000 user SQL updates
+  3300000 / 10000000 user SQL updates
+  3400000 / 10000000 user SQL updates
+  3500000 / 10000000 user SQL updates
+  3600000 / 10000000 user SQL updates
+  3700000 / 10000000 user SQL updates
+  3800000 / 10000000 user SQL updates
+  3900000 / 10000000 user SQL updates
+  4000000 / 10000000 user SQL updates
+  4100000 / 10000000 user SQL updates
+  4200000 / 10000000 user SQL updates
+  4300000 / 10000000 user SQL updates
+  4400000 / 10000000 user SQL updates
+  4500000 / 10000000 user SQL updates
+  4600000 / 10000000 user SQL updates
+  4700000 / 10000000 user SQL updates
+  4800000 / 10000000 user SQL updates
+  4900000 / 10000000 user SQL updates
+  5000000 / 10000000 user SQL updates
+  5100000 / 10000000 user SQL updates
+  5200000 / 10000000 user SQL updates
+  5300000 / 10000000 user SQL updates
+  5400000 / 10000000 user SQL updates
+  5500000 / 10000000 user SQL updates
+  5600000 / 10000000 user SQL updates
+  5700000 / 10000000 user SQL updates
+  5800000 / 10000000 user SQL updates
+  5900000 / 10000000 user SQL updates
+  6000000 / 10000000 user SQL updates
+  6100000 / 10000000 user SQL updates
+  6200000 / 10000000 user SQL updates
+  6300000 / 10000000 user SQL updates
+  6400000 / 10000000 user SQL updates
+  6500000 / 10000000 user SQL updates
+  6600000 / 10000000 user SQL updates
+  6700000 / 10000000 user SQL updates
+  6800000 / 10000000 user SQL updates
+  6900000 / 10000000 user SQL updates
+  7000000 / 10000000 user SQL updates
+  7100000 / 10000000 user SQL updates
+  7200000 / 10000000 user SQL updates
+  7300000 / 10000000 user SQL updates
+  7400000 / 10000000 user SQL updates
+  7500000 / 10000000 user SQL updates
+  7600000 / 10000000 user SQL updates
+  7700000 / 10000000 user SQL updates
+  7800000 / 10000000 user SQL updates
+  7900000 / 10000000 user SQL updates
+  8000000 / 10000000 user SQL updates
+  8100000 / 10000000 user SQL updates
+  8200000 / 10000000 user SQL updates
+  8300000 / 10000000 user SQL updates
+  8400000 / 10000000 user SQL updates
+  8500000 / 10000000 user SQL updates
+  8600000 / 10000000 user SQL updates
+  8700000 / 10000000 user SQL updates
+  8800000 / 10000000 user SQL updates
+  8900000 / 10000000 user SQL updates
+  9000000 / 10000000 user SQL updates
+  9100000 / 10000000 user SQL updates
+  9200000 / 10000000 user SQL updates
+  9300000 / 10000000 user SQL updates
+  9400000 / 10000000 user SQL updates
+  9500000 / 10000000 user SQL updates
+  9600000 / 10000000 user SQL updates
+  9700000 / 10000000 user SQL updates
+  9800000 / 10000000 user SQL updates
+  9900000 / 10000000 user SQL updates
+  10000000 / 10000000 user SQL updates
+
+--- user SQL deletes ---
+  100000 / 10000000 user SQL deletes
+  200000 / 10000000 user SQL deletes
+  300000 / 10000000 user SQL deletes
+  400000 / 10000000 user SQL deletes
+  500000 / 10000000 user SQL deletes
+  600000 / 10000000 user SQL deletes
+  700000 / 10000000 user SQL deletes
+  800000 / 10000000 user SQL deletes
+  900000 / 10000000 user SQL deletes
+  1000000 / 10000000 user SQL deletes
+  1100000 / 10000000 user SQL deletes
+  1200000 / 10000000 user SQL deletes
+  1300000 / 10000000 user SQL deletes
+  1400000 / 10000000 user SQL deletes
+  1500000 / 10000000 user SQL deletes
+  1600000 / 10000000 user SQL deletes
+  1700000 / 10000000 user SQL deletes
+  1800000 / 10000000 user SQL deletes
+  1900000 / 10000000 user SQL deletes
+  2000000 / 10000000 user SQL deletes
+  2100000 / 10000000 user SQL deletes
+  2200000 / 10000000 user SQL deletes
+  2300000 / 10000000 user SQL deletes
+  2400000 / 10000000 user SQL deletes
+  2500000 / 10000000 user SQL deletes
+  2600000 / 10000000 user SQL deletes
+  2700000 / 10000000 user SQL deletes
+  2800000 / 10000000 user SQL deletes
+  2900000 / 10000000 user SQL deletes
+  3000000 / 10000000 user SQL deletes
+  3100000 / 10000000 user SQL deletes
+  3200000 / 10000000 user SQL deletes
+  3300000 / 10000000 user SQL deletes
+  3400000 / 10000000 user SQL deletes
+  3500000 / 10000000 user SQL deletes
+  3600000 / 10000000 user SQL deletes
+  3700000 / 10000000 user SQL deletes
+  3800000 / 10000000 user SQL deletes
+  3900000 / 10000000 user SQL deletes
+  4000000 / 10000000 user SQL deletes
+  4100000 / 10000000 user SQL deletes
+  4200000 / 10000000 user SQL deletes
+  4300000 / 10000000 user SQL deletes
+  4400000 / 10000000 user SQL deletes
+  4500000 / 10000000 user SQL deletes
+  4600000 / 10000000 user SQL deletes
+  4700000 / 10000000 user SQL deletes
+  4800000 / 10000000 user SQL deletes
+  4900000 / 10000000 user SQL deletes
+  5000000 / 10000000 user SQL deletes
+  5100000 / 10000000 user SQL deletes
+  5200000 / 10000000 user SQL deletes
+  5300000 / 10000000 user SQL deletes
+  5400000 / 10000000 user SQL deletes
+  5500000 / 10000000 user SQL deletes
+  5600000 / 10000000 user SQL deletes
+  5700000 / 10000000 user SQL deletes
+  5800000 / 10000000 user SQL deletes
+  5900000 / 10000000 user SQL deletes
+  6000000 / 10000000 user SQL deletes
+  6100000 / 10000000 user SQL deletes
+  6200000 / 10000000 user SQL deletes
+  6300000 / 10000000 user SQL deletes
+  6400000 / 10000000 user SQL deletes
+  6500000 / 10000000 user SQL deletes
+  6600000 / 10000000 user SQL deletes
+  6700000 / 10000000 user SQL deletes
+  6800000 / 10000000 user SQL deletes
+  6900000 / 10000000 user SQL deletes
+  7000000 / 10000000 user SQL deletes
+  7100000 / 10000000 user SQL deletes
+  7200000 / 10000000 user SQL deletes
+  7300000 / 10000000 user SQL deletes
+  7400000 / 10000000 user SQL deletes
+  7500000 / 10000000 user SQL deletes
+  7600000 / 10000000 user SQL deletes
+  7700000 / 10000000 user SQL deletes
+  7800000 / 10000000 user SQL deletes
+  7900000 / 10000000 user SQL deletes
+  8000000 / 10000000 user SQL deletes
+  8100000 / 10000000 user SQL deletes
+  8200000 / 10000000 user SQL deletes
+  8300000 / 10000000 user SQL deletes
+  8400000 / 10000000 user SQL deletes
+  8500000 / 10000000 user SQL deletes
+  8600000 / 10000000 user SQL deletes
+  8700000 / 10000000 user SQL deletes
+  8800000 / 10000000 user SQL deletes
+  8900000 / 10000000 user SQL deletes
+  9000000 / 10000000 user SQL deletes
+  9100000 / 10000000 user SQL deletes
+  9200000 / 10000000 user SQL deletes
+  9300000 / 10000000 user SQL deletes
+  9400000 / 10000000 user SQL deletes
+  9500000 / 10000000 user SQL deletes
+  9600000 / 10000000 user SQL deletes
+  9700000 / 10000000 user SQL deletes
+  9800000 / 10000000 user SQL deletes
+  9900000 / 10000000 user SQL deletes
+  10000000 / 10000000 user SQL deletes
+
+--- user Mongo inserts ---
+  100000 / 10000000 user Mongo inserts
+  200000 / 10000000 user Mongo inserts
+  300000 / 10000000 user Mongo inserts
+  400000 / 10000000 user Mongo inserts
+  500000 / 10000000 user Mongo inserts
+  600000 / 10000000 user Mongo inserts
+  700000 / 10000000 user Mongo inserts
+  800000 / 10000000 user Mongo inserts
+  900000 / 10000000 user Mongo inserts
+  1000000 / 10000000 user Mongo inserts
+  1100000 / 10000000 user Mongo inserts
+  1200000 / 10000000 user Mongo inserts
+  1300000 / 10000000 user Mongo inserts
+  1400000 / 10000000 user Mongo inserts
+  1500000 / 10000000 user Mongo inserts
+  1600000 / 10000000 user Mongo inserts
+  1700000 / 10000000 user Mongo inserts
+  1800000 / 10000000 user Mongo inserts
+  1900000 / 10000000 user Mongo inserts
+  2000000 / 10000000 user Mongo inserts
+  2100000 / 10000000 user Mongo inserts
+  2200000 / 10000000 user Mongo inserts
+  2300000 / 10000000 user Mongo inserts
+  2400000 / 10000000 user Mongo inserts
+  2500000 / 10000000 user Mongo inserts
+  2600000 / 10000000 user Mongo inserts
+  2700000 / 10000000 user Mongo inserts
+  2800000 / 10000000 user Mongo inserts
+  2900000 / 10000000 user Mongo inserts
+  3000000 / 10000000 user Mongo inserts
+  3100000 / 10000000 user Mongo inserts
+  3200000 / 10000000 user Mongo inserts
+  3300000 / 10000000 user Mongo inserts
+  3400000 / 10000000 user Mongo inserts
+  3500000 / 10000000 user Mongo inserts
+  3600000 / 10000000 user Mongo inserts
+  3700000 / 10000000 user Mongo inserts
+  3800000 / 10000000 user Mongo inserts
+  3900000 / 10000000 user Mongo inserts
+  4000000 / 10000000 user Mongo inserts
+  4100000 / 10000000 user Mongo inserts
+  4200000 / 10000000 user Mongo inserts
+  4300000 / 10000000 user Mongo inserts
+  4400000 / 10000000 user Mongo inserts
+  4500000 / 10000000 user Mongo inserts
+  4600000 / 10000000 user Mongo inserts
+  4700000 / 10000000 user Mongo inserts
+  4800000 / 10000000 user Mongo inserts
+  4900000 / 10000000 user Mongo inserts
+  5000000 / 10000000 user Mongo inserts
+  5100000 / 10000000 user Mongo inserts
+  5200000 / 10000000 user Mongo inserts
+  5300000 / 10000000 user Mongo inserts
+  5400000 / 10000000 user Mongo inserts
+  5500000 / 10000000 user Mongo inserts
+  5600000 / 10000000 user Mongo inserts
+  5700000 / 10000000 user Mongo inserts
+  5800000 / 10000000 user Mongo inserts
+  5900000 / 10000000 user Mongo inserts
+  6000000 / 10000000 user Mongo inserts
+  6100000 / 10000000 user Mongo inserts
+  6200000 / 10000000 user Mongo inserts
+  6300000 / 10000000 user Mongo inserts
+  6400000 / 10000000 user Mongo inserts
+  6500000 / 10000000 user Mongo inserts
+  6600000 / 10000000 user Mongo inserts
+  6700000 / 10000000 user Mongo inserts
+  6800000 / 10000000 user Mongo inserts
+  6900000 / 10000000 user Mongo inserts
+  7000000 / 10000000 user Mongo inserts
+  7100000 / 10000000 user Mongo inserts
+  7200000 / 10000000 user Mongo inserts
+  7300000 / 10000000 user Mongo inserts
+  7400000 / 10000000 user Mongo inserts
+  7500000 / 10000000 user Mongo inserts
+  7600000 / 10000000 user Mongo inserts
+  7700000 / 10000000 user Mongo inserts
+  7800000 / 10000000 user Mongo inserts
+  7900000 / 10000000 user Mongo inserts
+  8000000 / 10000000 user Mongo inserts
+  8100000 / 10000000 user Mongo inserts
+  8200000 / 10000000 user Mongo inserts
+  8300000 / 10000000 user Mongo inserts
+  8400000 / 10000000 user Mongo inserts
+  8500000 / 10000000 user Mongo inserts
+  8600000 / 10000000 user Mongo inserts
+  8700000 / 10000000 user Mongo inserts
+  8800000 / 10000000 user Mongo inserts
+  8900000 / 10000000 user Mongo inserts
+  9000000 / 10000000 user Mongo inserts
+  9100000 / 10000000 user Mongo inserts
+  9200000 / 10000000 user Mongo inserts
+  9300000 / 10000000 user Mongo inserts
+  9400000 / 10000000 user Mongo inserts
+  9500000 / 10000000 user Mongo inserts
+  9600000 / 10000000 user Mongo inserts
+  9700000 / 10000000 user Mongo inserts
+  9800000 / 10000000 user Mongo inserts
+  9900000 / 10000000 user Mongo inserts
+  10000000 / 10000000 user Mongo inserts
+
+--- user Mongo finds ---
+  100000 / 10000000 user Mongo finds
+  200000 / 10000000 user Mongo finds
+  300000 / 10000000 user Mongo finds
+  400000 / 10000000 user Mongo finds
+  500000 / 10000000 user Mongo finds
+  600000 / 10000000 user Mongo finds
+  700000 / 10000000 user Mongo finds
+  800000 / 10000000 user Mongo finds
+  900000 / 10000000 user Mongo finds
+  1000000 / 10000000 user Mongo finds
+  1100000 / 10000000 user Mongo finds
+  1200000 / 10000000 user Mongo finds
+  1300000 / 10000000 user Mongo finds
+  1400000 / 10000000 user Mongo finds
+  1500000 / 10000000 user Mongo finds
+  1600000 / 10000000 user Mongo finds
+  1700000 / 10000000 user Mongo finds
+  1800000 / 10000000 user Mongo finds
+  1900000 / 10000000 user Mongo finds
+  2000000 / 10000000 user Mongo finds
+  2100000 / 10000000 user Mongo finds
+  2200000 / 10000000 user Mongo finds
+  2300000 / 10000000 user Mongo finds
+  2400000 / 10000000 user Mongo finds
+  2500000 / 10000000 user Mongo finds
+  2600000 / 10000000 user Mongo finds
+  2700000 / 10000000 user Mongo finds
+  2800000 / 10000000 user Mongo finds
+  2900000 / 10000000 user Mongo finds
+  3000000 / 10000000 user Mongo finds
+  3100000 / 10000000 user Mongo finds
+  3200000 / 10000000 user Mongo finds
+  3300000 / 10000000 user Mongo finds
+  3400000 / 10000000 user Mongo finds
+  3500000 / 10000000 user Mongo finds
+  3600000 / 10000000 user Mongo finds
+  3700000 / 10000000 user Mongo finds
+  3800000 / 10000000 user Mongo finds
+  3900000 / 10000000 user Mongo finds
+  4000000 / 10000000 user Mongo finds
+  4100000 / 10000000 user Mongo finds
+  4200000 / 10000000 user Mongo finds
+  4300000 / 10000000 user Mongo finds
+  4400000 / 10000000 user Mongo finds
+  4500000 / 10000000 user Mongo finds
+  4600000 / 10000000 user Mongo finds
+  4700000 / 10000000 user Mongo finds
+  4800000 / 10000000 user Mongo finds
+  4900000 / 10000000 user Mongo finds
+  5000000 / 10000000 user Mongo finds
+  5100000 / 10000000 user Mongo finds
+  5200000 / 10000000 user Mongo finds
+  5300000 / 10000000 user Mongo finds
+  5400000 / 10000000 user Mongo finds
+  5500000 / 10000000 user Mongo finds
+  5600000 / 10000000 user Mongo finds
+  5700000 / 10000000 user Mongo finds
+  5800000 / 10000000 user Mongo finds
+  5900000 / 10000000 user Mongo finds
+  6000000 / 10000000 user Mongo finds
+  6100000 / 10000000 user Mongo finds
+  6200000 / 10000000 user Mongo finds
+  6300000 / 10000000 user Mongo finds
+  6400000 / 10000000 user Mongo finds
+  6500000 / 10000000 user Mongo finds
+  6600000 / 10000000 user Mongo finds
+  6700000 / 10000000 user Mongo finds
+  6800000 / 10000000 user Mongo finds
+  6900000 / 10000000 user Mongo finds
+  7000000 / 10000000 user Mongo finds
+  7100000 / 10000000 user Mongo finds
+  7200000 / 10000000 user Mongo finds
+  7300000 / 10000000 user Mongo finds
+  7400000 / 10000000 user Mongo finds
+  7500000 / 10000000 user Mongo finds
+  7600000 / 10000000 user Mongo finds
+  7700000 / 10000000 user Mongo finds
+  7800000 / 10000000 user Mongo finds
+  7900000 / 10000000 user Mongo finds
+  8000000 / 10000000 user Mongo finds
+  8100000 / 10000000 user Mongo finds
+  8200000 / 10000000 user Mongo finds
+  8300000 / 10000000 user Mongo finds
+  8400000 / 10000000 user Mongo finds
+  8500000 / 10000000 user Mongo finds
+  8600000 / 10000000 user Mongo finds
+  8700000 / 10000000 user Mongo finds
+  8800000 / 10000000 user Mongo finds
+  8900000 / 10000000 user Mongo finds
+  9000000 / 10000000 user Mongo finds
+  9100000 / 10000000 user Mongo finds
+  9200000 / 10000000 user Mongo finds
+  9300000 / 10000000 user Mongo finds
+  9400000 / 10000000 user Mongo finds
+  9500000 / 10000000 user Mongo finds
+  9600000 / 10000000 user Mongo finds
+  9700000 / 10000000 user Mongo finds
+  9800000 / 10000000 user Mongo finds
+  9900000 / 10000000 user Mongo finds
+  10000000 / 10000000 user Mongo finds
+
+--- user Mongo updates ---
+  100000 / 10000000 user Mongo updates
+  200000 / 10000000 user Mongo updates
+  300000 / 10000000 user Mongo updates
+  400000 / 10000000 user Mongo updates
+  500000 / 10000000 user Mongo updates
+  600000 / 10000000 user Mongo updates
+  700000 / 10000000 user Mongo updates
+  800000 / 10000000 user Mongo updates
+  900000 / 10000000 user Mongo updates
+  1000000 / 10000000 user Mongo updates
+  1100000 / 10000000 user Mongo updates
+  1200000 / 10000000 user Mongo updates
+  1300000 / 10000000 user Mongo updates
+  1400000 / 10000000 user Mongo updates
+  1500000 / 10000000 user Mongo updates
+  1600000 / 10000000 user Mongo updates
+  1700000 / 10000000 user Mongo updates
+  1800000 / 10000000 user Mongo updates
+  1900000 / 10000000 user Mongo updates
+  2000000 / 10000000 user Mongo updates
+  2100000 / 10000000 user Mongo updates
+  2200000 / 10000000 user Mongo updates
+  2300000 / 10000000 user Mongo updates
+  2400000 / 10000000 user Mongo updates
+  2500000 / 10000000 user Mongo updates
+  2600000 / 10000000 user Mongo updates
+  2700000 / 10000000 user Mongo updates
+  2800000 / 10000000 user Mongo updates
+  2900000 / 10000000 user Mongo updates
+  3000000 / 10000000 user Mongo updates
+  3100000 / 10000000 user Mongo updates
+  3200000 / 10000000 user Mongo updates
+  3300000 / 10000000 user Mongo updates
+  3400000 / 10000000 user Mongo updates
+  3500000 / 10000000 user Mongo updates
+  3600000 / 10000000 user Mongo updates
+  3700000 / 10000000 user Mongo updates
+  3800000 / 10000000 user Mongo updates
+  3900000 / 10000000 user Mongo updates
+  4000000 / 10000000 user Mongo updates
+  4100000 / 10000000 user Mongo updates
+  4200000 / 10000000 user Mongo updates
+  4300000 / 10000000 user Mongo updates
+  4400000 / 10000000 user Mongo updates
+  4500000 / 10000000 user Mongo updates
+  4600000 / 10000000 user Mongo updates
+  4700000 / 10000000 user Mongo updates
+  4800000 / 10000000 user Mongo updates
+  4900000 / 10000000 user Mongo updates
+  5000000 / 10000000 user Mongo updates
+  5100000 / 10000000 user Mongo updates
+  5200000 / 10000000 user Mongo updates
+  5300000 / 10000000 user Mongo updates
+  5400000 / 10000000 user Mongo updates
+  5500000 / 10000000 user Mongo updates
+  5600000 / 10000000 user Mongo updates
+  5700000 / 10000000 user Mongo updates
+  5800000 / 10000000 user Mongo updates
+  5900000 / 10000000 user Mongo updates
+  6000000 / 10000000 user Mongo updates
+  6100000 / 10000000 user Mongo updates
+  6200000 / 10000000 user Mongo updates
+  6300000 / 10000000 user Mongo updates
+  6400000 / 10000000 user Mongo updates
+  6500000 / 10000000 user Mongo updates
+  6600000 / 10000000 user Mongo updates
+  6700000 / 10000000 user Mongo updates
+  6800000 / 10000000 user Mongo updates
+  6900000 / 10000000 user Mongo updates
+  7000000 / 10000000 user Mongo updates
+  7100000 / 10000000 user Mongo updates
+  7200000 / 10000000 user Mongo updates
+  7300000 / 10000000 user Mongo updates
+  7400000 / 10000000 user Mongo updates
+  7500000 / 10000000 user Mongo updates
+  7600000 / 10000000 user Mongo updates
+  7700000 / 10000000 user Mongo updates
+  7800000 / 10000000 user Mongo updates
+  7900000 / 10000000 user Mongo updates
+  8000000 / 10000000 user Mongo updates
+  8100000 / 10000000 user Mongo updates
+  8200000 / 10000000 user Mongo updates
+  8300000 / 10000000 user Mongo updates
+  8400000 / 10000000 user Mongo updates
+  8500000 / 10000000 user Mongo updates
+  8600000 / 10000000 user Mongo updates
+  8700000 / 10000000 user Mongo updates
+  8800000 / 10000000 user Mongo updates
+  8900000 / 10000000 user Mongo updates
+  9000000 / 10000000 user Mongo updates
+  9100000 / 10000000 user Mongo updates
+  9200000 / 10000000 user Mongo updates
+  9300000 / 10000000 user Mongo updates
+  9400000 / 10000000 user Mongo updates
+  9500000 / 10000000 user Mongo updates
+  9600000 / 10000000 user Mongo updates
+  9700000 / 10000000 user Mongo updates
+  9800000 / 10000000 user Mongo updates
+  9900000 / 10000000 user Mongo updates
+  10000000 / 10000000 user Mongo updates
+
+--- user Mongo deletes ---
+  100000 / 10000000 user Mongo deletes
+  200000 / 10000000 user Mongo deletes
+  300000 / 10000000 user Mongo deletes
+  400000 / 10000000 user Mongo deletes
+  500000 / 10000000 user Mongo deletes
+  600000 / 10000000 user Mongo deletes
+  700000 / 10000000 user Mongo deletes
+  800000 / 10000000 user Mongo deletes
+  900000 / 10000000 user Mongo deletes
+  1000000 / 10000000 user Mongo deletes
+  1100000 / 10000000 user Mongo deletes
+  1200000 / 10000000 user Mongo deletes
+  1300000 / 10000000 user Mongo deletes
+  1400000 / 10000000 user Mongo deletes
+  1500000 / 10000000 user Mongo deletes
+  1600000 / 10000000 user Mongo deletes
+  1700000 / 10000000 user Mongo deletes
+  1800000 / 10000000 user Mongo deletes
+  1900000 / 10000000 user Mongo deletes
+  2000000 / 10000000 user Mongo deletes
+  2100000 / 10000000 user Mongo deletes
+  2200000 / 10000000 user Mongo deletes
+  2300000 / 10000000 user Mongo deletes
+  2400000 / 10000000 user Mongo deletes
+  2500000 / 10000000 user Mongo deletes
+  2600000 / 10000000 user Mongo deletes
+  2700000 / 10000000 user Mongo deletes
+  2800000 / 10000000 user Mongo deletes
+  2900000 / 10000000 user Mongo deletes
+  3000000 / 10000000 user Mongo deletes
+  3100000 / 10000000 user Mongo deletes
+  3200000 / 10000000 user Mongo deletes
+  3300000 / 10000000 user Mongo deletes
+  3400000 / 10000000 user Mongo deletes
+  3500000 / 10000000 user Mongo deletes
+  3600000 / 10000000 user Mongo deletes
+  3700000 / 10000000 user Mongo deletes
+  3800000 / 10000000 user Mongo deletes
+  3900000 / 10000000 user Mongo deletes
+  4000000 / 10000000 user Mongo deletes
+  4100000 / 10000000 user Mongo deletes
+  4200000 / 10000000 user Mongo deletes
+  4300000 / 10000000 user Mongo deletes
+  4400000 / 10000000 user Mongo deletes
+  4500000 / 10000000 user Mongo deletes
+  4600000 / 10000000 user Mongo deletes
+  4700000 / 10000000 user Mongo deletes
+  4800000 / 10000000 user Mongo deletes
+  4900000 / 10000000 user Mongo deletes
+  5000000 / 10000000 user Mongo deletes
+  5100000 / 10000000 user Mongo deletes
+  5200000 / 10000000 user Mongo deletes
+  5300000 / 10000000 user Mongo deletes
+  5400000 / 10000000 user Mongo deletes
+  5500000 / 10000000 user Mongo deletes
+  5600000 / 10000000 user Mongo deletes
+  5700000 / 10000000 user Mongo deletes
+  5800000 / 10000000 user Mongo deletes
+  5900000 / 10000000 user Mongo deletes
+  6000000 / 10000000 user Mongo deletes
+  6100000 / 10000000 user Mongo deletes
+  6200000 / 10000000 user Mongo deletes
+  6300000 / 10000000 user Mongo deletes
+  6400000 / 10000000 user Mongo deletes
+  6500000 / 10000000 user Mongo deletes
+  6600000 / 10000000 user Mongo deletes
+  6700000 / 10000000 user Mongo deletes
+  6800000 / 10000000 user Mongo deletes
+  6900000 / 10000000 user Mongo deletes
+  7000000 / 10000000 user Mongo deletes
+  7100000 / 10000000 user Mongo deletes
+  7200000 / 10000000 user Mongo deletes
+  7300000 / 10000000 user Mongo deletes
+  7400000 / 10000000 user Mongo deletes
+  7500000 / 10000000 user Mongo deletes
+  7600000 / 10000000 user Mongo deletes
+  7700000 / 10000000 user Mongo deletes
+  7800000 / 10000000 user Mongo deletes
+  7900000 / 10000000 user Mongo deletes
+  8000000 / 10000000 user Mongo deletes
+  8100000 / 10000000 user Mongo deletes
+  8200000 / 10000000 user Mongo deletes
+  8300000 / 10000000 user Mongo deletes
+  8400000 / 10000000 user Mongo deletes
+  8500000 / 10000000 user Mongo deletes
+  8600000 / 10000000 user Mongo deletes
+  8700000 / 10000000 user Mongo deletes
+  8800000 / 10000000 user Mongo deletes
+  8900000 / 10000000 user Mongo deletes
+  9000000 / 10000000 user Mongo deletes
+  9100000 / 10000000 user Mongo deletes
+  9200000 / 10000000 user Mongo deletes
+  9300000 / 10000000 user Mongo deletes
+  9400000 / 10000000 user Mongo deletes
+  9500000 / 10000000 user Mongo deletes
+  9600000 / 10000000 user Mongo deletes
+  9700000 / 10000000 user Mongo deletes
+  9800000 / 10000000 user Mongo deletes
+  9900000 / 10000000 user Mongo deletes
+  10000000 / 10000000 user Mongo deletes
+
+--- user Redis sets ---
+  100000 / 10000000 user Redis sets
+  200000 / 10000000 user Redis sets
+  300000 / 10000000 user Redis sets
+  400000 / 10000000 user Redis sets
+  500000 / 10000000 user Redis sets
+  600000 / 10000000 user Redis sets
+  700000 / 10000000 user Redis sets
+  800000 / 10000000 user Redis sets
+  900000 / 10000000 user Redis sets
+  1000000 / 10000000 user Redis sets
+  1100000 / 10000000 user Redis sets
+  1200000 / 10000000 user Redis sets
+  1300000 / 10000000 user Redis sets
+  1400000 / 10000000 user Redis sets
+  1500000 / 10000000 user Redis sets
+  1600000 / 10000000 user Redis sets
+  1700000 / 10000000 user Redis sets
+  1800000 / 10000000 user Redis sets
+  1900000 / 10000000 user Redis sets
+  2000000 / 10000000 user Redis sets
+  2100000 / 10000000 user Redis sets
+  2200000 / 10000000 user Redis sets
+  2300000 / 10000000 user Redis sets
+  2400000 / 10000000 user Redis sets
+  2500000 / 10000000 user Redis sets
+  2600000 / 10000000 user Redis sets
+  2700000 / 10000000 user Redis sets
+  2800000 / 10000000 user Redis sets
+  2900000 / 10000000 user Redis sets
+  3000000 / 10000000 user Redis sets
+  3100000 / 10000000 user Redis sets
+  3200000 / 10000000 user Redis sets
+  3300000 / 10000000 user Redis sets
+  3400000 / 10000000 user Redis sets
+  3500000 / 10000000 user Redis sets
+  3600000 / 10000000 user Redis sets
+  3700000 / 10000000 user Redis sets
+  3800000 / 10000000 user Redis sets
+  3900000 / 10000000 user Redis sets
+  4000000 / 10000000 user Redis sets
+  4100000 / 10000000 user Redis sets
+  4200000 / 10000000 user Redis sets
+  4300000 / 10000000 user Redis sets
+  4400000 / 10000000 user Redis sets
+  4500000 / 10000000 user Redis sets
+  4600000 / 10000000 user Redis sets
+  4700000 / 10000000 user Redis sets
+  4800000 / 10000000 user Redis sets
+  4900000 / 10000000 user Redis sets
+  5000000 / 10000000 user Redis sets
+  5100000 / 10000000 user Redis sets
+  5200000 / 10000000 user Redis sets
+  5300000 / 10000000 user Redis sets
+  5400000 / 10000000 user Redis sets
+  5500000 / 10000000 user Redis sets
+  5600000 / 10000000 user Redis sets
+  5700000 / 10000000 user Redis sets
+  5800000 / 10000000 user Redis sets
+  5900000 / 10000000 user Redis sets
+  6000000 / 10000000 user Redis sets
+  6100000 / 10000000 user Redis sets
+  6200000 / 10000000 user Redis sets
+  6300000 / 10000000 user Redis sets
+  6400000 / 10000000 user Redis sets
+  6500000 / 10000000 user Redis sets
+  6600000 / 10000000 user Redis sets
+  6700000 / 10000000 user Redis sets
+  6800000 / 10000000 user Redis sets
+  6900000 / 10000000 user Redis sets
+  7000000 / 10000000 user Redis sets
+  7100000 / 10000000 user Redis sets
+  7200000 / 10000000 user Redis sets
+  7300000 / 10000000 user Redis sets
+  7400000 / 10000000 user Redis sets
+  7500000 / 10000000 user Redis sets
+  7600000 / 10000000 user Redis sets
+  7700000 / 10000000 user Redis sets
+  7800000 / 10000000 user Redis sets
+  7900000 / 10000000 user Redis sets
+  8000000 / 10000000 user Redis sets
+  8100000 / 10000000 user Redis sets
+  8200000 / 10000000 user Redis sets
+  8300000 / 10000000 user Redis sets
+  8400000 / 10000000 user Redis sets
+  8500000 / 10000000 user Redis sets
+  8600000 / 10000000 user Redis sets
+  8700000 / 10000000 user Redis sets
+  8800000 / 10000000 user Redis sets
+  8900000 / 10000000 user Redis sets
+  9000000 / 10000000 user Redis sets
+  9100000 / 10000000 user Redis sets
+  9200000 / 10000000 user Redis sets
+  9300000 / 10000000 user Redis sets
+  9400000 / 10000000 user Redis sets
+  9500000 / 10000000 user Redis sets
+  9600000 / 10000000 user Redis sets
+  9700000 / 10000000 user Redis sets
+  9800000 / 10000000 user Redis sets
+  9900000 / 10000000 user Redis sets
+  10000000 / 10000000 user Redis sets
+
+--- user Redis gets ---
+  100000 / 10000000 user Redis gets
+  200000 / 10000000 user Redis gets
+  300000 / 10000000 user Redis gets
+  400000 / 10000000 user Redis gets
+  500000 / 10000000 user Redis gets
+  600000 / 10000000 user Redis gets
+  700000 / 10000000 user Redis gets
+  800000 / 10000000 user Redis gets
+  900000 / 10000000 user Redis gets
+  1000000 / 10000000 user Redis gets
+  1100000 / 10000000 user Redis gets
+  1200000 / 10000000 user Redis gets
+  1300000 / 10000000 user Redis gets
+  1400000 / 10000000 user Redis gets
+  1500000 / 10000000 user Redis gets
+  1600000 / 10000000 user Redis gets
+  1700000 / 10000000 user Redis gets
+  1800000 / 10000000 user Redis gets
+  1900000 / 10000000 user Redis gets
+  2000000 / 10000000 user Redis gets
+  2100000 / 10000000 user Redis gets
+  2200000 / 10000000 user Redis gets
+  2300000 / 10000000 user Redis gets
+  2400000 / 10000000 user Redis gets
+  2500000 / 10000000 user Redis gets
+  2600000 / 10000000 user Redis gets
+  2700000 / 10000000 user Redis gets
+  2800000 / 10000000 user Redis gets
+  2900000 / 10000000 user Redis gets
+  3000000 / 10000000 user Redis gets
+  3100000 / 10000000 user Redis gets
+  3200000 / 10000000 user Redis gets
+  3300000 / 10000000 user Redis gets
+  3400000 / 10000000 user Redis gets
+  3500000 / 10000000 user Redis gets
+  3600000 / 10000000 user Redis gets
+  3700000 / 10000000 user Redis gets
+  3800000 / 10000000 user Redis gets
+  3900000 / 10000000 user Redis gets
+  4000000 / 10000000 user Redis gets
+  4100000 / 10000000 user Redis gets
+  4200000 / 10000000 user Redis gets
+  4300000 / 10000000 user Redis gets
+  4400000 / 10000000 user Redis gets
+  4500000 / 10000000 user Redis gets
+  4600000 / 10000000 user Redis gets
+  4700000 / 10000000 user Redis gets
+  4800000 / 10000000 user Redis gets
+  4900000 / 10000000 user Redis gets
+  5000000 / 10000000 user Redis gets
+  5100000 / 10000000 user Redis gets
+  5200000 / 10000000 user Redis gets
+  5300000 / 10000000 user Redis gets
+  5400000 / 10000000 user Redis gets
+  5500000 / 10000000 user Redis gets
+  5600000 / 10000000 user Redis gets
+  5700000 / 10000000 user Redis gets
+  5800000 / 10000000 user Redis gets
+  5900000 / 10000000 user Redis gets
+  6000000 / 10000000 user Redis gets
+  6100000 / 10000000 user Redis gets
+  6200000 / 10000000 user Redis gets
+  6300000 / 10000000 user Redis gets
+  6400000 / 10000000 user Redis gets
+  6500000 / 10000000 user Redis gets
+  6600000 / 10000000 user Redis gets
+  6700000 / 10000000 user Redis gets
+  6800000 / 10000000 user Redis gets
+  6900000 / 10000000 user Redis gets
+  7000000 / 10000000 user Redis gets
+  7100000 / 10000000 user Redis gets
+  7200000 / 10000000 user Redis gets
+  7300000 / 10000000 user Redis gets
+  7400000 / 10000000 user Redis gets
+  7500000 / 10000000 user Redis gets
+  7600000 / 10000000 user Redis gets
+  7700000 / 10000000 user Redis gets
+  7800000 / 10000000 user Redis gets
+  7900000 / 10000000 user Redis gets
+  8000000 / 10000000 user Redis gets
+  8100000 / 10000000 user Redis gets
+  8200000 / 10000000 user Redis gets
+  8300000 / 10000000 user Redis gets
+  8400000 / 10000000 user Redis gets
+  8500000 / 10000000 user Redis gets
+  8600000 / 10000000 user Redis gets
+  8700000 / 10000000 user Redis gets
+  8800000 / 10000000 user Redis gets
+  8900000 / 10000000 user Redis gets
+  9000000 / 10000000 user Redis gets
+  9100000 / 10000000 user Redis gets
+  9200000 / 10000000 user Redis gets
+  9300000 / 10000000 user Redis gets
+  9400000 / 10000000 user Redis gets
+  9500000 / 10000000 user Redis gets
+  9600000 / 10000000 user Redis gets
+  9700000 / 10000000 user Redis gets
+  9800000 / 10000000 user Redis gets
+  9900000 / 10000000 user Redis gets
+  10000000 / 10000000 user Redis gets
+
+--- user Redis updates ---
+  100000 / 10000000 user Redis updates
+  200000 / 10000000 user Redis updates
+  300000 / 10000000 user Redis updates
+  400000 / 10000000 user Redis updates
+  500000 / 10000000 user Redis updates
+  600000 / 10000000 user Redis updates
+  700000 / 10000000 user Redis updates
+  800000 / 10000000 user Redis updates
+  900000 / 10000000 user Redis updates
+  1000000 / 10000000 user Redis updates
+  1100000 / 10000000 user Redis updates
+  1200000 / 10000000 user Redis updates
+  1300000 / 10000000 user Redis updates
+  1400000 / 10000000 user Redis updates
+  1500000 / 10000000 user Redis updates
+  1600000 / 10000000 user Redis updates
+  1700000 / 10000000 user Redis updates
+  1800000 / 10000000 user Redis updates
+  1900000 / 10000000 user Redis updates
+  2000000 / 10000000 user Redis updates
+  2100000 / 10000000 user Redis updates
+  2200000 / 10000000 user Redis updates
+  2300000 / 10000000 user Redis updates
+  2400000 / 10000000 user Redis updates
+  2500000 / 10000000 user Redis updates
+  2600000 / 10000000 user Redis updates
+  2700000 / 10000000 user Redis updates
+  2800000 / 10000000 user Redis updates
+  2900000 / 10000000 user Redis updates
+  3000000 / 10000000 user Redis updates
+  3100000 / 10000000 user Redis updates
+  3200000 / 10000000 user Redis updates
+  3300000 / 10000000 user Redis updates
+  3400000 / 10000000 user Redis updates
+  3500000 / 10000000 user Redis updates
+  3600000 / 10000000 user Redis updates
+  3700000 / 10000000 user Redis updates
+  3800000 / 10000000 user Redis updates
+  3900000 / 10000000 user Redis updates
+  4000000 / 10000000 user Redis updates
+  4100000 / 10000000 user Redis updates
+  4200000 / 10000000 user Redis updates
+  4300000 / 10000000 user Redis updates
+  4400000 / 10000000 user Redis updates
+  4500000 / 10000000 user Redis updates
+  4600000 / 10000000 user Redis updates
+  4700000 / 10000000 user Redis updates
+  4800000 / 10000000 user Redis updates
+  4900000 / 10000000 user Redis updates
+  5000000 / 10000000 user Redis updates
+  5100000 / 10000000 user Redis updates
+  5200000 / 10000000 user Redis updates
+  5300000 / 10000000 user Redis updates
+  5400000 / 10000000 user Redis updates
+  5500000 / 10000000 user Redis updates
+  5600000 / 10000000 user Redis updates
+  5700000 / 10000000 user Redis updates
+  5800000 / 10000000 user Redis updates
+  5900000 / 10000000 user Redis updates
+  6000000 / 10000000 user Redis updates
+  6100000 / 10000000 user Redis updates
+  6200000 / 10000000 user Redis updates
+  6300000 / 10000000 user Redis updates
+  6400000 / 10000000 user Redis updates
+  6500000 / 10000000 user Redis updates
+  6600000 / 10000000 user Redis updates
+  6700000 / 10000000 user Redis updates
+  6800000 / 10000000 user Redis updates
+  6900000 / 10000000 user Redis updates
+  7000000 / 10000000 user Redis updates
+  7100000 / 10000000 user Redis updates
+  7200000 / 10000000 user Redis updates
+  7300000 / 10000000 user Redis updates
+  7400000 / 10000000 user Redis updates
+  7500000 / 10000000 user Redis updates
+  7600000 / 10000000 user Redis updates
+  7700000 / 10000000 user Redis updates
+  7800000 / 10000000 user Redis updates
+  7900000 / 10000000 user Redis updates
+  8000000 / 10000000 user Redis updates
+  8100000 / 10000000 user Redis updates
+  8200000 / 10000000 user Redis updates
+  8300000 / 10000000 user Redis updates
+  8400000 / 10000000 user Redis updates
+  8500000 / 10000000 user Redis updates
+  8600000 / 10000000 user Redis updates
+  8700000 / 10000000 user Redis updates
+  8800000 / 10000000 user Redis updates
+  8900000 / 10000000 user Redis updates
+  9000000 / 10000000 user Redis updates
+  9100000 / 10000000 user Redis updates
+  9200000 / 10000000 user Redis updates
+  9300000 / 10000000 user Redis updates
+  9400000 / 10000000 user Redis updates
+  9500000 / 10000000 user Redis updates
+  9600000 / 10000000 user Redis updates
+  9700000 / 10000000 user Redis updates
+  9800000 / 10000000 user Redis updates
+  9900000 / 10000000 user Redis updates
+  10000000 / 10000000 user Redis updates
+
+--- user Redis deletes ---
+  100000 / 10000000 user Redis deletes
+  200000 / 10000000 user Redis deletes
+  300000 / 10000000 user Redis deletes
+  400000 / 10000000 user Redis deletes
+  500000 / 10000000 user Redis deletes
+  600000 / 10000000 user Redis deletes
+  700000 / 10000000 user Redis deletes
+  800000 / 10000000 user Redis deletes
+  900000 / 10000000 user Redis deletes
+  1000000 / 10000000 user Redis deletes
+  1100000 / 10000000 user Redis deletes
+  1200000 / 10000000 user Redis deletes
+  1300000 / 10000000 user Redis deletes
+  1400000 / 10000000 user Redis deletes
+  1500000 / 10000000 user Redis deletes
+  1600000 / 10000000 user Redis deletes
+  1700000 / 10000000 user Redis deletes
+  1800000 / 10000000 user Redis deletes
+  1900000 / 10000000 user Redis deletes
+  2000000 / 10000000 user Redis deletes
+  2100000 / 10000000 user Redis deletes
+  2200000 / 10000000 user Redis deletes
+  2300000 / 10000000 user Redis deletes
+  2400000 / 10000000 user Redis deletes
+  2500000 / 10000000 user Redis deletes
+  2600000 / 10000000 user Redis deletes
+  2700000 / 10000000 user Redis deletes
+  2800000 / 10000000 user Redis deletes
+  2900000 / 10000000 user Redis deletes
+  3000000 / 10000000 user Redis deletes
+  3100000 / 10000000 user Redis deletes
+  3200000 / 10000000 user Redis deletes
+  3300000 / 10000000 user Redis deletes
+  3400000 / 10000000 user Redis deletes
+  3500000 / 10000000 user Redis deletes
+  3600000 / 10000000 user Redis deletes
+  3700000 / 10000000 user Redis deletes
+  3800000 / 10000000 user Redis deletes
+  3900000 / 10000000 user Redis deletes
+  4000000 / 10000000 user Redis deletes
+  4100000 / 10000000 user Redis deletes
+  4200000 / 10000000 user Redis deletes
+  4300000 / 10000000 user Redis deletes
+  4400000 / 10000000 user Redis deletes
+  4500000 / 10000000 user Redis deletes
+  4600000 / 10000000 user Redis deletes
+  4700000 / 10000000 user Redis deletes
+  4800000 / 10000000 user Redis deletes
+  4900000 / 10000000 user Redis deletes
+  5000000 / 10000000 user Redis deletes
+  5100000 / 10000000 user Redis deletes
+  5200000 / 10000000 user Redis deletes
+  5300000 / 10000000 user Redis deletes
+  5400000 / 10000000 user Redis deletes
+  5500000 / 10000000 user Redis deletes
+  5600000 / 10000000 user Redis deletes
+  5700000 / 10000000 user Redis deletes
+  5800000 / 10000000 user Redis deletes
+  5900000 / 10000000 user Redis deletes
+  6000000 / 10000000 user Redis deletes
+  6100000 / 10000000 user Redis deletes
+  6200000 / 10000000 user Redis deletes
+  6300000 / 10000000 user Redis deletes
+  6400000 / 10000000 user Redis deletes
+  6500000 / 10000000 user Redis deletes
+  6600000 / 10000000 user Redis deletes
+  6700000 / 10000000 user Redis deletes
+  6800000 / 10000000 user Redis deletes
+  6900000 / 10000000 user Redis deletes
+  7000000 / 10000000 user Redis deletes
+  7100000 / 10000000 user Redis deletes
+  7200000 / 10000000 user Redis deletes
+  7300000 / 10000000 user Redis deletes
+  7400000 / 10000000 user Redis deletes
+  7500000 / 10000000 user Redis deletes
+  7600000 / 10000000 user Redis deletes
+  7700000 / 10000000 user Redis deletes
+  7800000 / 10000000 user Redis deletes
+  7900000 / 10000000 user Redis deletes
+  8000000 / 10000000 user Redis deletes
+  8100000 / 10000000 user Redis deletes
+  8200000 / 10000000 user Redis deletes
+  8300000 / 10000000 user Redis deletes
+  8400000 / 10000000 user Redis deletes
+  8500000 / 10000000 user Redis deletes
+  8600000 / 10000000 user Redis deletes
+  8700000 / 10000000 user Redis deletes
+  8800000 / 10000000 user Redis deletes
+  8900000 / 10000000 user Redis deletes
+  9000000 / 10000000 user Redis deletes
+  9100000 / 10000000 user Redis deletes
+  9200000 / 10000000 user Redis deletes
+  9300000 / 10000000 user Redis deletes
+  9400000 / 10000000 user Redis deletes
+  9500000 / 10000000 user Redis deletes
+  9600000 / 10000000 user Redis deletes
+  9700000 / 10000000 user Redis deletes
+  9800000 / 10000000 user Redis deletes
+  9900000 / 10000000 user Redis deletes
+  10000000 / 10000000 user Redis deletes
+
+--- address SQL inserts ---
+  100000 / 10000000 address SQL inserts
+  200000 / 10000000 address SQL inserts
+  300000 / 10000000 address SQL inserts
+  400000 / 10000000 address SQL inserts
+  500000 / 10000000 address SQL inserts
+  600000 / 10000000 address SQL inserts
+  700000 / 10000000 address SQL inserts
+  800000 / 10000000 address SQL inserts
+  900000 / 10000000 address SQL inserts
+  1000000 / 10000000 address SQL inserts
+  1100000 / 10000000 address SQL inserts
+  1200000 / 10000000 address SQL inserts
+  1300000 / 10000000 address SQL inserts
+  1400000 / 10000000 address SQL inserts
+  1500000 / 10000000 address SQL inserts
+  1600000 / 10000000 address SQL inserts
+  1700000 / 10000000 address SQL inserts
+  1800000 / 10000000 address SQL inserts
+  1900000 / 10000000 address SQL inserts
+  2000000 / 10000000 address SQL inserts
+  2100000 / 10000000 address SQL inserts
+  2200000 / 10000000 address SQL inserts
+  2300000 / 10000000 address SQL inserts
+  2400000 / 10000000 address SQL inserts
+  2500000 / 10000000 address SQL inserts
+  2600000 / 10000000 address SQL inserts
+  2700000 / 10000000 address SQL inserts
+  2800000 / 10000000 address SQL inserts
+  2900000 / 10000000 address SQL inserts
+  3000000 / 10000000 address SQL inserts
+  3100000 / 10000000 address SQL inserts
+  3200000 / 10000000 address SQL inserts
+  3300000 / 10000000 address SQL inserts
+  3400000 / 10000000 address SQL inserts
+  3500000 / 10000000 address SQL inserts
+  3600000 / 10000000 address SQL inserts
+  3700000 / 10000000 address SQL inserts
+  3800000 / 10000000 address SQL inserts
+  3900000 / 10000000 address SQL inserts
+  4000000 / 10000000 address SQL inserts
+  4100000 / 10000000 address SQL inserts
+  4200000 / 10000000 address SQL inserts
+  4300000 / 10000000 address SQL inserts
+  4400000 / 10000000 address SQL inserts
+  4500000 / 10000000 address SQL inserts
+  4600000 / 10000000 address SQL inserts
+  4700000 / 10000000 address SQL inserts
+  4800000 / 10000000 address SQL inserts
+  4900000 / 10000000 address SQL inserts
+  5000000 / 10000000 address SQL inserts
+  5100000 / 10000000 address SQL inserts
+  5200000 / 10000000 address SQL inserts
+  5300000 / 10000000 address SQL inserts
+  5400000 / 10000000 address SQL inserts
+  5500000 / 10000000 address SQL inserts
+  5600000 / 10000000 address SQL inserts
+  5700000 / 10000000 address SQL inserts
+  5800000 / 10000000 address SQL inserts
+  5900000 / 10000000 address SQL inserts
+  6000000 / 10000000 address SQL inserts
+  6100000 / 10000000 address SQL inserts
+  6200000 / 10000000 address SQL inserts
+  6300000 / 10000000 address SQL inserts
+  6400000 / 10000000 address SQL inserts
+  6500000 / 10000000 address SQL inserts
+  6600000 / 10000000 address SQL inserts
+  6700000 / 10000000 address SQL inserts
+  6800000 / 10000000 address SQL inserts
+  6900000 / 10000000 address SQL inserts
+  7000000 / 10000000 address SQL inserts
+  7100000 / 10000000 address SQL inserts
+  7200000 / 10000000 address SQL inserts
+  7300000 / 10000000 address SQL inserts
+  7400000 / 10000000 address SQL inserts
+  7500000 / 10000000 address SQL inserts
+  7600000 / 10000000 address SQL inserts
+  7700000 / 10000000 address SQL inserts
+  7800000 / 10000000 address SQL inserts
+  7900000 / 10000000 address SQL inserts
+  8000000 / 10000000 address SQL inserts
+  8100000 / 10000000 address SQL inserts
+  8200000 / 10000000 address SQL inserts
+  8300000 / 10000000 address SQL inserts
+  8400000 / 10000000 address SQL inserts
+  8500000 / 10000000 address SQL inserts
+  8600000 / 10000000 address SQL inserts
+  8700000 / 10000000 address SQL inserts
+  8800000 / 10000000 address SQL inserts
+  8900000 / 10000000 address SQL inserts
+  9000000 / 10000000 address SQL inserts
+  9100000 / 10000000 address SQL inserts
+  9200000 / 10000000 address SQL inserts
+  9300000 / 10000000 address SQL inserts
+  9400000 / 10000000 address SQL inserts
+  9500000 / 10000000 address SQL inserts
+  9600000 / 10000000 address SQL inserts
+  9700000 / 10000000 address SQL inserts
+  9800000 / 10000000 address SQL inserts
+  9900000 / 10000000 address SQL inserts
+  10000000 / 10000000 address SQL inserts
+
+--- address SQL selects ---
+  100000 / 10000000 address SQL selects
+  200000 / 10000000 address SQL selects
+  300000 / 10000000 address SQL selects
+  400000 / 10000000 address SQL selects
+  500000 / 10000000 address SQL selects
+  600000 / 10000000 address SQL selects
+  700000 / 10000000 address SQL selects
+  800000 / 10000000 address SQL selects
+  900000 / 10000000 address SQL selects
+  1000000 / 10000000 address SQL selects
+  1100000 / 10000000 address SQL selects
+  1200000 / 10000000 address SQL selects
+  1300000 / 10000000 address SQL selects
+  1400000 / 10000000 address SQL selects
+  1500000 / 10000000 address SQL selects
+  1600000 / 10000000 address SQL selects
+  1700000 / 10000000 address SQL selects
+  1800000 / 10000000 address SQL selects
+  1900000 / 10000000 address SQL selects
+  2000000 / 10000000 address SQL selects
+  2100000 / 10000000 address SQL selects
+  2200000 / 10000000 address SQL selects
+  2300000 / 10000000 address SQL selects
+  2400000 / 10000000 address SQL selects
+  2500000 / 10000000 address SQL selects
+  2600000 / 10000000 address SQL selects
+  2700000 / 10000000 address SQL selects
+  2800000 / 10000000 address SQL selects
+  2900000 / 10000000 address SQL selects
+  3000000 / 10000000 address SQL selects
+  3100000 / 10000000 address SQL selects
+  3200000 / 10000000 address SQL selects
+  3300000 / 10000000 address SQL selects
+  3400000 / 10000000 address SQL selects
+  3500000 / 10000000 address SQL selects
+  3600000 / 10000000 address SQL selects
+  3700000 / 10000000 address SQL selects
+  3800000 / 10000000 address SQL selects
+  3900000 / 10000000 address SQL selects
+  4000000 / 10000000 address SQL selects
+  4100000 / 10000000 address SQL selects
+  4200000 / 10000000 address SQL selects
+  4300000 / 10000000 address SQL selects
+  4400000 / 10000000 address SQL selects
+  4500000 / 10000000 address SQL selects
+  4600000 / 10000000 address SQL selects
+  4700000 / 10000000 address SQL selects
+  4800000 / 10000000 address SQL selects
+  4900000 / 10000000 address SQL selects
+  5000000 / 10000000 address SQL selects
+  5100000 / 10000000 address SQL selects
+  5200000 / 10000000 address SQL selects
+  5300000 / 10000000 address SQL selects
+  5400000 / 10000000 address SQL selects
+  5500000 / 10000000 address SQL selects
+  5600000 / 10000000 address SQL selects
+  5700000 / 10000000 address SQL selects
+  5800000 / 10000000 address SQL selects
+  5900000 / 10000000 address SQL selects
+  6000000 / 10000000 address SQL selects
+  6100000 / 10000000 address SQL selects
+  6200000 / 10000000 address SQL selects
+  6300000 / 10000000 address SQL selects
+  6400000 / 10000000 address SQL selects
+  6500000 / 10000000 address SQL selects
+  6600000 / 10000000 address SQL selects
+  6700000 / 10000000 address SQL selects
+  6800000 / 10000000 address SQL selects
+  6900000 / 10000000 address SQL selects
+  7000000 / 10000000 address SQL selects
+  7100000 / 10000000 address SQL selects
+  7200000 / 10000000 address SQL selects
+  7300000 / 10000000 address SQL selects
+  7400000 / 10000000 address SQL selects
+  7500000 / 10000000 address SQL selects
+  7600000 / 10000000 address SQL selects
+  7700000 / 10000000 address SQL selects
+  7800000 / 10000000 address SQL selects
+  7900000 / 10000000 address SQL selects
+  8000000 / 10000000 address SQL selects
+  8100000 / 10000000 address SQL selects
+  8200000 / 10000000 address SQL selects
+  8300000 / 10000000 address SQL selects
+  8400000 / 10000000 address SQL selects
+  8500000 / 10000000 address SQL selects
+  8600000 / 10000000 address SQL selects
+  8700000 / 10000000 address SQL selects
+  8800000 / 10000000 address SQL selects
+  8900000 / 10000000 address SQL selects
+  9000000 / 10000000 address SQL selects
+  9100000 / 10000000 address SQL selects
+  9200000 / 10000000 address SQL selects
+  9300000 / 10000000 address SQL selects
+  9400000 / 10000000 address SQL selects
+  9500000 / 10000000 address SQL selects
+  9600000 / 10000000 address SQL selects
+  9700000 / 10000000 address SQL selects
+  9800000 / 10000000 address SQL selects
+  9900000 / 10000000 address SQL selects
+  10000000 / 10000000 address SQL selects
+
+--- address SQL updates ---
+  100000 / 10000000 address SQL updates
+  200000 / 10000000 address SQL updates
+  300000 / 10000000 address SQL updates
+  400000 / 10000000 address SQL updates
+  500000 / 10000000 address SQL updates
+  600000 / 10000000 address SQL updates
+  700000 / 10000000 address SQL updates
+  800000 / 10000000 address SQL updates
+  900000 / 10000000 address SQL updates
+  1000000 / 10000000 address SQL updates
+  1100000 / 10000000 address SQL updates
+  1200000 / 10000000 address SQL updates
+  1300000 / 10000000 address SQL updates
+  1400000 / 10000000 address SQL updates
+  1500000 / 10000000 address SQL updates
+  1600000 / 10000000 address SQL updates
+  1700000 / 10000000 address SQL updates
+  1800000 / 10000000 address SQL updates
+  1900000 / 10000000 address SQL updates
+  2000000 / 10000000 address SQL updates
+  2100000 / 10000000 address SQL updates
+  2200000 / 10000000 address SQL updates
+  2300000 / 10000000 address SQL updates
+  2400000 / 10000000 address SQL updates
+  2500000 / 10000000 address SQL updates
+  2600000 / 10000000 address SQL updates
+  2700000 / 10000000 address SQL updates
+  2800000 / 10000000 address SQL updates
+  2900000 / 10000000 address SQL updates
+  3000000 / 10000000 address SQL updates
+  3100000 / 10000000 address SQL updates
+  3200000 / 10000000 address SQL updates
+  3300000 / 10000000 address SQL updates
+  3400000 / 10000000 address SQL updates
+  3500000 / 10000000 address SQL updates
+  3600000 / 10000000 address SQL updates
+  3700000 / 10000000 address SQL updates
+  3800000 / 10000000 address SQL updates
+  3900000 / 10000000 address SQL updates
+  4000000 / 10000000 address SQL updates
+  4100000 / 10000000 address SQL updates
+  4200000 / 10000000 address SQL updates
+  4300000 / 10000000 address SQL updates
+  4400000 / 10000000 address SQL updates
+  4500000 / 10000000 address SQL updates
+  4600000 / 10000000 address SQL updates
+  4700000 / 10000000 address SQL updates
+  4800000 / 10000000 address SQL updates
+  4900000 / 10000000 address SQL updates
+  5000000 / 10000000 address SQL updates
+  5100000 / 10000000 address SQL updates
+  5200000 / 10000000 address SQL updates
+  5300000 / 10000000 address SQL updates
+  5400000 / 10000000 address SQL updates
+  5500000 / 10000000 address SQL updates
+  5600000 / 10000000 address SQL updates
+  5700000 / 10000000 address SQL updates
+  5800000 / 10000000 address SQL updates
+  5900000 / 10000000 address SQL updates
+  6000000 / 10000000 address SQL updates
+  6100000 / 10000000 address SQL updates
+  6200000 / 10000000 address SQL updates
+  6300000 / 10000000 address SQL updates
+  6400000 / 10000000 address SQL updates
+  6500000 / 10000000 address SQL updates
+  6600000 / 10000000 address SQL updates
+  6700000 / 10000000 address SQL updates
+  6800000 / 10000000 address SQL updates
+  6900000 / 10000000 address SQL updates
+  7000000 / 10000000 address SQL updates
+  7100000 / 10000000 address SQL updates
+  7200000 / 10000000 address SQL updates
+  7300000 / 10000000 address SQL updates
+  7400000 / 10000000 address SQL updates
+  7500000 / 10000000 address SQL updates
+  7600000 / 10000000 address SQL updates
+  7700000 / 10000000 address SQL updates
+  7800000 / 10000000 address SQL updates
+  7900000 / 10000000 address SQL updates
+  8000000 / 10000000 address SQL updates
+  8100000 / 10000000 address SQL updates
+  8200000 / 10000000 address SQL updates
+  8300000 / 10000000 address SQL updates
+  8400000 / 10000000 address SQL updates
+  8500000 / 10000000 address SQL updates
+  8600000 / 10000000 address SQL updates
+  8700000 / 10000000 address SQL updates
+  8800000 / 10000000 address SQL updates
+  8900000 / 10000000 address SQL updates
+  9000000 / 10000000 address SQL updates
+  9100000 / 10000000 address SQL updates
+  9200000 / 10000000 address SQL updates
+  9300000 / 10000000 address SQL updates
+  9400000 / 10000000 address SQL updates
+  9500000 / 10000000 address SQL updates
+  9600000 / 10000000 address SQL updates
+  9700000 / 10000000 address SQL updates
+  9800000 / 10000000 address SQL updates
+  9900000 / 10000000 address SQL updates
+  10000000 / 10000000 address SQL updates
+
+--- address SQL deletes ---
+  100000 / 10000000 address SQL deletes
+  200000 / 10000000 address SQL deletes
+  300000 / 10000000 address SQL deletes
+  400000 / 10000000 address SQL deletes
+  500000 / 10000000 address SQL deletes
+  600000 / 10000000 address SQL deletes
+  700000 / 10000000 address SQL deletes
+  800000 / 10000000 address SQL deletes
+  900000 / 10000000 address SQL deletes
+  1000000 / 10000000 address SQL deletes
+  1100000 / 10000000 address SQL deletes
+  1200000 / 10000000 address SQL deletes
+  1300000 / 10000000 address SQL deletes
+  1400000 / 10000000 address SQL deletes
+  1500000 / 10000000 address SQL deletes
+  1600000 / 10000000 address SQL deletes
+  1700000 / 10000000 address SQL deletes
+  1800000 / 10000000 address SQL deletes
+  1900000 / 10000000 address SQL deletes
+  2000000 / 10000000 address SQL deletes
+  2100000 / 10000000 address SQL deletes
+  2200000 / 10000000 address SQL deletes
+  2300000 / 10000000 address SQL deletes
+  2400000 / 10000000 address SQL deletes
+  2500000 / 10000000 address SQL deletes
+  2600000 / 10000000 address SQL deletes
+  2700000 / 10000000 address SQL deletes
+  2800000 / 10000000 address SQL deletes
+  2900000 / 10000000 address SQL deletes
+  3000000 / 10000000 address SQL deletes
+  3100000 / 10000000 address SQL deletes
+  3200000 / 10000000 address SQL deletes
+  3300000 / 10000000 address SQL deletes
+  3400000 / 10000000 address SQL deletes
+  3500000 / 10000000 address SQL deletes
+  3600000 / 10000000 address SQL deletes
+  3700000 / 10000000 address SQL deletes
+  3800000 / 10000000 address SQL deletes
+  3900000 / 10000000 address SQL deletes
+  4000000 / 10000000 address SQL deletes
+  4100000 / 10000000 address SQL deletes
+  4200000 / 10000000 address SQL deletes
+  4300000 / 10000000 address SQL deletes
+  4400000 / 10000000 address SQL deletes
+  4500000 / 10000000 address SQL deletes
+  4600000 / 10000000 address SQL deletes
+  4700000 / 10000000 address SQL deletes
+  4800000 / 10000000 address SQL deletes
+  4900000 / 10000000 address SQL deletes
+  5000000 / 10000000 address SQL deletes
+  5100000 / 10000000 address SQL deletes
+  5200000 / 10000000 address SQL deletes
+  5300000 / 10000000 address SQL deletes
+  5400000 / 10000000 address SQL deletes
+  5500000 / 10000000 address SQL deletes
+  5600000 / 10000000 address SQL deletes
+  5700000 / 10000000 address SQL deletes
+  5800000 / 10000000 address SQL deletes
+  5900000 / 10000000 address SQL deletes
+  6000000 / 10000000 address SQL deletes
+  6100000 / 10000000 address SQL deletes
+  6200000 / 10000000 address SQL deletes
+  6300000 / 10000000 address SQL deletes
+  6400000 / 10000000 address SQL deletes
+  6500000 / 10000000 address SQL deletes
+  6600000 / 10000000 address SQL deletes
+  6700000 / 10000000 address SQL deletes
+  6800000 / 10000000 address SQL deletes
+  6900000 / 10000000 address SQL deletes
+  7000000 / 10000000 address SQL deletes
+  7100000 / 10000000 address SQL deletes
+  7200000 / 10000000 address SQL deletes
+  7300000 / 10000000 address SQL deletes
+  7400000 / 10000000 address SQL deletes
+  7500000 / 10000000 address SQL deletes
+  7600000 / 10000000 address SQL deletes
+  7700000 / 10000000 address SQL deletes
+  7800000 / 10000000 address SQL deletes
+  7900000 / 10000000 address SQL deletes
+  8000000 / 10000000 address SQL deletes
+  8100000 / 10000000 address SQL deletes
+  8200000 / 10000000 address SQL deletes
+  8300000 / 10000000 address SQL deletes
+  8400000 / 10000000 address SQL deletes
+  8500000 / 10000000 address SQL deletes
+  8600000 / 10000000 address SQL deletes
+  8700000 / 10000000 address SQL deletes
+  8800000 / 10000000 address SQL deletes
+  8900000 / 10000000 address SQL deletes
+  9000000 / 10000000 address SQL deletes
+  9100000 / 10000000 address SQL deletes
+  9200000 / 10000000 address SQL deletes
+  9300000 / 10000000 address SQL deletes
+  9400000 / 10000000 address SQL deletes
+  9500000 / 10000000 address SQL deletes
+  9600000 / 10000000 address SQL deletes
+  9700000 / 10000000 address SQL deletes
+  9800000 / 10000000 address SQL deletes
+  9900000 / 10000000 address SQL deletes
+  10000000 / 10000000 address SQL deletes
+
+--- address Mongo inserts ---
+  100000 / 10000000 address Mongo inserts
+  200000 / 10000000 address Mongo inserts
+  300000 / 10000000 address Mongo inserts
+  400000 / 10000000 address Mongo inserts
+  500000 / 10000000 address Mongo inserts
+  600000 / 10000000 address Mongo inserts
+  700000 / 10000000 address Mongo inserts
+  800000 / 10000000 address Mongo inserts
+  900000 / 10000000 address Mongo inserts
+  1000000 / 10000000 address Mongo inserts
+  1100000 / 10000000 address Mongo inserts
+  1200000 / 10000000 address Mongo inserts
+  1300000 / 10000000 address Mongo inserts
+  1400000 / 10000000 address Mongo inserts
+  1500000 / 10000000 address Mongo inserts
+  1600000 / 10000000 address Mongo inserts
+  1700000 / 10000000 address Mongo inserts
+  1800000 / 10000000 address Mongo inserts
+  1900000 / 10000000 address Mongo inserts
+  2000000 / 10000000 address Mongo inserts
+  2100000 / 10000000 address Mongo inserts
+  2200000 / 10000000 address Mongo inserts
+  2300000 / 10000000 address Mongo inserts
+  2400000 / 10000000 address Mongo inserts
+  2500000 / 10000000 address Mongo inserts
+  2600000 / 10000000 address Mongo inserts
+  2700000 / 10000000 address Mongo inserts
+  2800000 / 10000000 address Mongo inserts
+  2900000 / 10000000 address Mongo inserts
+  3000000 / 10000000 address Mongo inserts
+  3100000 / 10000000 address Mongo inserts
+  3200000 / 10000000 address Mongo inserts
+  3300000 / 10000000 address Mongo inserts
+  3400000 / 10000000 address Mongo inserts
+  3500000 / 10000000 address Mongo inserts
+  3600000 / 10000000 address Mongo inserts
+  3700000 / 10000000 address Mongo inserts
+  3800000 / 10000000 address Mongo inserts
+  3900000 / 10000000 address Mongo inserts
+  4000000 / 10000000 address Mongo inserts
+  4100000 / 10000000 address Mongo inserts
+  4200000 / 10000000 address Mongo inserts
+  4300000 / 10000000 address Mongo inserts
+  4400000 / 10000000 address Mongo inserts
+  4500000 / 10000000 address Mongo inserts
+  4600000 / 10000000 address Mongo inserts
+  4700000 / 10000000 address Mongo inserts
+  4800000 / 10000000 address Mongo inserts
+  4900000 / 10000000 address Mongo inserts
+  5000000 / 10000000 address Mongo inserts
+  5100000 / 10000000 address Mongo inserts
+  5200000 / 10000000 address Mongo inserts
+  5300000 / 10000000 address Mongo inserts
+  5400000 / 10000000 address Mongo inserts
+  5500000 / 10000000 address Mongo inserts
+  5600000 / 10000000 address Mongo inserts
+  5700000 / 10000000 address Mongo inserts
+  5800000 / 10000000 address Mongo inserts
+  5900000 / 10000000 address Mongo inserts
+  6000000 / 10000000 address Mongo inserts
+  6100000 / 10000000 address Mongo inserts
+  6200000 / 10000000 address Mongo inserts
+  6300000 / 10000000 address Mongo inserts
+  6400000 / 10000000 address Mongo inserts
+  6500000 / 10000000 address Mongo inserts
+  6600000 / 10000000 address Mongo inserts
+  6700000 / 10000000 address Mongo inserts
+  6800000 / 10000000 address Mongo inserts
+  6900000 / 10000000 address Mongo inserts
+  7000000 / 10000000 address Mongo inserts
+  7100000 / 10000000 address Mongo inserts
+  7200000 / 10000000 address Mongo inserts
+  7300000 / 10000000 address Mongo inserts
+  7400000 / 10000000 address Mongo inserts
+  7500000 / 10000000 address Mongo inserts
+  7600000 / 10000000 address Mongo inserts
+  7700000 / 10000000 address Mongo inserts
+  7800000 / 10000000 address Mongo inserts
+  7900000 / 10000000 address Mongo inserts
+  8000000 / 10000000 address Mongo inserts
+  8100000 / 10000000 address Mongo inserts
+  8200000 / 10000000 address Mongo inserts
+  8300000 / 10000000 address Mongo inserts
+  8400000 / 10000000 address Mongo inserts
+  8500000 / 10000000 address Mongo inserts
+  8600000 / 10000000 address Mongo inserts
+  8700000 / 10000000 address Mongo inserts
+  8800000 / 10000000 address Mongo inserts
+  8900000 / 10000000 address Mongo inserts
+  9000000 / 10000000 address Mongo inserts
+  9100000 / 10000000 address Mongo inserts
+  9200000 / 10000000 address Mongo inserts
+  9300000 / 10000000 address Mongo inserts
+  9400000 / 10000000 address Mongo inserts
+  9500000 / 10000000 address Mongo inserts
+  9600000 / 10000000 address Mongo inserts
+  9700000 / 10000000 address Mongo inserts
+  9800000 / 10000000 address Mongo inserts
+  9900000 / 10000000 address Mongo inserts
+  10000000 / 10000000 address Mongo inserts
+
+--- address Redis sets ---
+  100000 / 10000000 address Redis sets
+  200000 / 10000000 address Redis sets
+  300000 / 10000000 address Redis sets
+  400000 / 10000000 address Redis sets
+  500000 / 10000000 address Redis sets
+  600000 / 10000000 address Redis sets
+  700000 / 10000000 address Redis sets
+  800000 / 10000000 address Redis sets
+  900000 / 10000000 address Redis sets
+  1000000 / 10000000 address Redis sets
+  1100000 / 10000000 address Redis sets
+  1200000 / 10000000 address Redis sets
+  1300000 / 10000000 address Redis sets
+  1400000 / 10000000 address Redis sets
+  1500000 / 10000000 address Redis sets
+  1600000 / 10000000 address Redis sets
+  1700000 / 10000000 address Redis sets
+  1800000 / 10000000 address Redis sets
+  1900000 / 10000000 address Redis sets
+  2000000 / 10000000 address Redis sets
+  2100000 / 10000000 address Redis sets
+  2200000 / 10000000 address Redis sets
+  2300000 / 10000000 address Redis sets
+  2400000 / 10000000 address Redis sets
+  2500000 / 10000000 address Redis sets
+  2600000 / 10000000 address Redis sets
+  2700000 / 10000000 address Redis sets
+  2800000 / 10000000 address Redis sets
+  2900000 / 10000000 address Redis sets
+  3000000 / 10000000 address Redis sets
+  3100000 / 10000000 address Redis sets
+  3200000 / 10000000 address Redis sets
+  3300000 / 10000000 address Redis sets
+  3400000 / 10000000 address Redis sets
+  3500000 / 10000000 address Redis sets
+  3600000 / 10000000 address Redis sets
+  3700000 / 10000000 address Redis sets
+  3800000 / 10000000 address Redis sets
+  3900000 / 10000000 address Redis sets
+  4000000 / 10000000 address Redis sets
+  4100000 / 10000000 address Redis sets
+  4200000 / 10000000 address Redis sets
+  4300000 / 10000000 address Redis sets
+  4400000 / 10000000 address Redis sets
+  4500000 / 10000000 address Redis sets
+  4600000 / 10000000 address Redis sets
+  4700000 / 10000000 address Redis sets
+  4800000 / 10000000 address Redis sets
+  4900000 / 10000000 address Redis sets
+  5000000 / 10000000 address Redis sets
+  5100000 / 10000000 address Redis sets
+  5200000 / 10000000 address Redis sets
+  5300000 / 10000000 address Redis sets
+  5400000 / 10000000 address Redis sets
+  5500000 / 10000000 address Redis sets
+  5600000 / 10000000 address Redis sets
+  5700000 / 10000000 address Redis sets
+  5800000 / 10000000 address Redis sets
+  5900000 / 10000000 address Redis sets
+  6000000 / 10000000 address Redis sets
+  6100000 / 10000000 address Redis sets
+  6200000 / 10000000 address Redis sets
+  6300000 / 10000000 address Redis sets
+  6400000 / 10000000 address Redis sets
+  6500000 / 10000000 address Redis sets
+  6600000 / 10000000 address Redis sets
+  6700000 / 10000000 address Redis sets
+  6800000 / 10000000 address Redis sets
+  6900000 / 10000000 address Redis sets
+  7000000 / 10000000 address Redis sets
+  7100000 / 10000000 address Redis sets
+  7200000 / 10000000 address Redis sets
+  7300000 / 10000000 address Redis sets
+  7400000 / 10000000 address Redis sets
+  7500000 / 10000000 address Redis sets
+  7600000 / 10000000 address Redis sets
+  7700000 / 10000000 address Redis sets
+  7800000 / 10000000 address Redis sets
+  7900000 / 10000000 address Redis sets
+  8000000 / 10000000 address Redis sets
+  8100000 / 10000000 address Redis sets
+  8200000 / 10000000 address Redis sets
+  8300000 / 10000000 address Redis sets
+  8400000 / 10000000 address Redis sets
+  8500000 / 10000000 address Redis sets
+  8600000 / 10000000 address Redis sets
+  8700000 / 10000000 address Redis sets
+  8800000 / 10000000 address Redis sets
+  8900000 / 10000000 address Redis sets
+  9000000 / 10000000 address Redis sets
+  9100000 / 10000000 address Redis sets
+  9200000 / 10000000 address Redis sets
+  9300000 / 10000000 address Redis sets
+  9400000 / 10000000 address Redis sets
+  9500000 / 10000000 address Redis sets
+  9600000 / 10000000 address Redis sets
+  9700000 / 10000000 address Redis sets
+  9800000 / 10000000 address Redis sets
+  9900000 / 10000000 address Redis sets
+  10000000 / 10000000 address Redis sets
+
+--- product SQL inserts ---
+  100000 / 100000 product SQL inserts
+
+--- product SQL selects ---
+  100000 / 100000 product SQL selects
+
+--- product SQL updates ---
+  100000 / 100000 product SQL updates
+
+--- product SQL deletes ---
+  100000 / 100000 product SQL deletes
+
+--- product Mongo inserts ---
+  100000 / 100000 product Mongo inserts
+
+--- product Mongo finds ---
+  100000 / 100000 product Mongo finds
+
+--- product Mongo updates ---
+  100000 / 100000 product Mongo updates
+
+--- product Mongo deletes ---
+  100000 / 100000 product Mongo deletes
+
+--- product Redis sets ---
+  100000 / 100000 product Redis sets
+
+--- product Redis gets ---
+  100000 / 100000 product Redis gets
+
+--- product Redis updates ---
+  100000 / 100000 product Redis updates
+
+--- product Redis deletes ---
+  100000 / 100000 product Redis deletes
+
+--- product image SQL inserts ---
+  100000 / 100000 product image SQL inserts
+
+--- product image Mongo inserts ---
+  100000 / 100000 product image Mongo inserts
+
+--- order SQL inserts ---
+  100000 / 10000000 order SQL inserts
+  200000 / 10000000 order SQL inserts
+  300000 / 10000000 order SQL inserts
+  400000 / 10000000 order SQL inserts
+  500000 / 10000000 order SQL inserts
+  600000 / 10000000 order SQL inserts
+  700000 / 10000000 order SQL inserts
+  800000 / 10000000 order SQL inserts
+  900000 / 10000000 order SQL inserts
+  1000000 / 10000000 order SQL inserts
+  1100000 / 10000000 order SQL inserts
+  1200000 / 10000000 order SQL inserts
+  1300000 / 10000000 order SQL inserts
+  1400000 / 10000000 order SQL inserts
+  1500000 / 10000000 order SQL inserts
+  1600000 / 10000000 order SQL inserts
+  1700000 / 10000000 order SQL inserts
+  1800000 / 10000000 order SQL inserts
+  1900000 / 10000000 order SQL inserts
+  2000000 / 10000000 order SQL inserts
+  2100000 / 10000000 order SQL inserts
+  2200000 / 10000000 order SQL inserts
+  2300000 / 10000000 order SQL inserts
+  2400000 / 10000000 order SQL inserts
+  2500000 / 10000000 order SQL inserts
+  2600000 / 10000000 order SQL inserts
+  2700000 / 10000000 order SQL inserts
+  2800000 / 10000000 order SQL inserts
+  2900000 / 10000000 order SQL inserts
+  3000000 / 10000000 order SQL inserts
+  3100000 / 10000000 order SQL inserts
+  3200000 / 10000000 order SQL inserts
+  3300000 / 10000000 order SQL inserts
+  3400000 / 10000000 order SQL inserts
+  3500000 / 10000000 order SQL inserts
+  3600000 / 10000000 order SQL inserts
+  3700000 / 10000000 order SQL inserts
+  3800000 / 10000000 order SQL inserts
+  3900000 / 10000000 order SQL inserts
+  4000000 / 10000000 order SQL inserts
+  4100000 / 10000000 order SQL inserts
+  4200000 / 10000000 order SQL inserts
+  4300000 / 10000000 order SQL inserts
+  4400000 / 10000000 order SQL inserts
+  4500000 / 10000000 order SQL inserts
+  4600000 / 10000000 order SQL inserts
+  4700000 / 10000000 order SQL inserts
+  4800000 / 10000000 order SQL inserts
+  4900000 / 10000000 order SQL inserts
+  5000000 / 10000000 order SQL inserts
+  5100000 / 10000000 order SQL inserts
+  5200000 / 10000000 order SQL inserts
+  5300000 / 10000000 order SQL inserts
+  5400000 / 10000000 order SQL inserts
+  5500000 / 10000000 order SQL inserts
+  5600000 / 10000000 order SQL inserts
+  5700000 / 10000000 order SQL inserts
+  5800000 / 10000000 order SQL inserts
+  5900000 / 10000000 order SQL inserts
+  6000000 / 10000000 order SQL inserts
+  6100000 / 10000000 order SQL inserts
+  6200000 / 10000000 order SQL inserts
+  6300000 / 10000000 order SQL inserts
+  6400000 / 10000000 order SQL inserts
+  6500000 / 10000000 order SQL inserts
+  6600000 / 10000000 order SQL inserts
+  6700000 / 10000000 order SQL inserts
+  6800000 / 10000000 order SQL inserts
+  6900000 / 10000000 order SQL inserts
+  7000000 / 10000000 order SQL inserts
+  7100000 / 10000000 order SQL inserts
+  7200000 / 10000000 order SQL inserts
+  7300000 / 10000000 order SQL inserts
+  7400000 / 10000000 order SQL inserts
+  7500000 / 10000000 order SQL inserts
+  7600000 / 10000000 order SQL inserts
+  7700000 / 10000000 order SQL inserts
+  7800000 / 10000000 order SQL inserts
+  7900000 / 10000000 order SQL inserts
+  8000000 / 10000000 order SQL inserts
+  8100000 / 10000000 order SQL inserts
+  8200000 / 10000000 order SQL inserts
+  8300000 / 10000000 order SQL inserts
+  8400000 / 10000000 order SQL inserts
+  8500000 / 10000000 order SQL inserts
+  8600000 / 10000000 order SQL inserts
+  8700000 / 10000000 order SQL inserts
+  8800000 / 10000000 order SQL inserts
+  8900000 / 10000000 order SQL inserts
+  9000000 / 10000000 order SQL inserts
+  9100000 / 10000000 order SQL inserts
+  9200000 / 10000000 order SQL inserts
+  9300000 / 10000000 order SQL inserts
+  9400000 / 10000000 order SQL inserts
+  9500000 / 10000000 order SQL inserts
+  9600000 / 10000000 order SQL inserts
+  9700000 / 10000000 order SQL inserts
+  9800000 / 10000000 order SQL inserts
+  9900000 / 10000000 order SQL inserts
+  10000000 / 10000000 order SQL inserts
+
+--- order SQL selects ---
+  100000 / 10000000 order SQL selects
+  200000 / 10000000 order SQL selects
+  300000 / 10000000 order SQL selects
+  400000 / 10000000 order SQL selects
+  500000 / 10000000 order SQL selects
+  600000 / 10000000 order SQL selects
+  700000 / 10000000 order SQL selects
+  800000 / 10000000 order SQL selects
+  900000 / 10000000 order SQL selects
+  1000000 / 10000000 order SQL selects
+  1100000 / 10000000 order SQL selects
+  1200000 / 10000000 order SQL selects
+  1300000 / 10000000 order SQL selects
+  1400000 / 10000000 order SQL selects
+  1500000 / 10000000 order SQL selects
+  1600000 / 10000000 order SQL selects
+  1700000 / 10000000 order SQL selects
+  1800000 / 10000000 order SQL selects
+  1900000 / 10000000 order SQL selects
+  2000000 / 10000000 order SQL selects
+  2100000 / 10000000 order SQL selects
+  2200000 / 10000000 order SQL selects
+  2300000 / 10000000 order SQL selects
+  2400000 / 10000000 order SQL selects
+  2500000 / 10000000 order SQL selects
+  2600000 / 10000000 order SQL selects
+  2700000 / 10000000 order SQL selects
+  2800000 / 10000000 order SQL selects
+  2900000 / 10000000 order SQL selects
+  3000000 / 10000000 order SQL selects
+  3100000 / 10000000 order SQL selects
+  3200000 / 10000000 order SQL selects
+  3300000 / 10000000 order SQL selects
+  3400000 / 10000000 order SQL selects
+  3500000 / 10000000 order SQL selects
+  3600000 / 10000000 order SQL selects
+  3700000 / 10000000 order SQL selects
+  3800000 / 10000000 order SQL selects
+  3900000 / 10000000 order SQL selects
+  4000000 / 10000000 order SQL selects
+  4100000 / 10000000 order SQL selects
+  4200000 / 10000000 order SQL selects
+  4300000 / 10000000 order SQL selects
+  4400000 / 10000000 order SQL selects
+  4500000 / 10000000 order SQL selects
+  4600000 / 10000000 order SQL selects
+  4700000 / 10000000 order SQL selects
+  4800000 / 10000000 order SQL selects
+  4900000 / 10000000 order SQL selects
+  5000000 / 10000000 order SQL selects
+  5100000 / 10000000 order SQL selects
+  5200000 / 10000000 order SQL selects
+  5300000 / 10000000 order SQL selects
+  5400000 / 10000000 order SQL selects
+  5500000 / 10000000 order SQL selects
+  5600000 / 10000000 order SQL selects
+  5700000 / 10000000 order SQL selects
+  5800000 / 10000000 order SQL selects
+  5900000 / 10000000 order SQL selects
+  6000000 / 10000000 order SQL selects
+  6100000 / 10000000 order SQL selects
+  6200000 / 10000000 order SQL selects
+  6300000 / 10000000 order SQL selects
+  6400000 / 10000000 order SQL selects
+  6500000 / 10000000 order SQL selects
+  6600000 / 10000000 order SQL selects
+  6700000 / 10000000 order SQL selects
+  6800000 / 10000000 order SQL selects
+  6900000 / 10000000 order SQL selects
+  7000000 / 10000000 order SQL selects
+  7100000 / 10000000 order SQL selects
+  7200000 / 10000000 order SQL selects
+  7300000 / 10000000 order SQL selects
+  7400000 / 10000000 order SQL selects
+  7500000 / 10000000 order SQL selects
+  7600000 / 10000000 order SQL selects
+  7700000 / 10000000 order SQL selects
+  7800000 / 10000000 order SQL selects
+  7900000 / 10000000 order SQL selects
+  8000000 / 10000000 order SQL selects
+  8100000 / 10000000 order SQL selects
+  8200000 / 10000000 order SQL selects
+  8300000 / 10000000 order SQL selects
+  8400000 / 10000000 order SQL selects
+  8500000 / 10000000 order SQL selects
+  8600000 / 10000000 order SQL selects
+  8700000 / 10000000 order SQL selects
+  8800000 / 10000000 order SQL selects
+  8900000 / 10000000 order SQL selects
+  9000000 / 10000000 order SQL selects
+  9100000 / 10000000 order SQL selects
+  9200000 / 10000000 order SQL selects
+  9300000 / 10000000 order SQL selects
+  9400000 / 10000000 order SQL selects
+  9500000 / 10000000 order SQL selects
+  9600000 / 10000000 order SQL selects
+  9700000 / 10000000 order SQL selects
+  9800000 / 10000000 order SQL selects
+  9900000 / 10000000 order SQL selects
+  10000000 / 10000000 order SQL selects
+
+--- order SQL updates ---
+  100000 / 10000000 order SQL updates
+  200000 / 10000000 order SQL updates
+  300000 / 10000000 order SQL updates
+  400000 / 10000000 order SQL updates
+  500000 / 10000000 order SQL updates
+  600000 / 10000000 order SQL updates
+  700000 / 10000000 order SQL updates
+  800000 / 10000000 order SQL updates
+  900000 / 10000000 order SQL updates
+  1000000 / 10000000 order SQL updates
+  1100000 / 10000000 order SQL updates
+  1200000 / 10000000 order SQL updates
+  1300000 / 10000000 order SQL updates
+  1400000 / 10000000 order SQL updates
+  1500000 / 10000000 order SQL updates
+  1600000 / 10000000 order SQL updates
+  1700000 / 10000000 order SQL updates
+  1800000 / 10000000 order SQL updates
+  1900000 / 10000000 order SQL updates
+  2000000 / 10000000 order SQL updates
+  2100000 / 10000000 order SQL updates
+  2200000 / 10000000 order SQL updates
+  2300000 / 10000000 order SQL updates
+  2400000 / 10000000 order SQL updates
+  2500000 / 10000000 order SQL updates
+  2600000 / 10000000 order SQL updates
+  2700000 / 10000000 order SQL updates
+  2800000 / 10000000 order SQL updates
+  2900000 / 10000000 order SQL updates
+  3000000 / 10000000 order SQL updates
+  3100000 / 10000000 order SQL updates
+  3200000 / 10000000 order SQL updates
+  3300000 / 10000000 order SQL updates
+  3400000 / 10000000 order SQL updates
+  3500000 / 10000000 order SQL updates
+  3600000 / 10000000 order SQL updates
+  3700000 / 10000000 order SQL updates
+  3800000 / 10000000 order SQL updates
+  3900000 / 10000000 order SQL updates
+  4000000 / 10000000 order SQL updates
+  4100000 / 10000000 order SQL updates
+  4200000 / 10000000 order SQL updates
+  4300000 / 10000000 order SQL updates
+  4400000 / 10000000 order SQL updates
+  4500000 / 10000000 order SQL updates
+  4600000 / 10000000 order SQL updates
+  4700000 / 10000000 order SQL updates
+  4800000 / 10000000 order SQL updates
+  4900000 / 10000000 order SQL updates
+  5000000 / 10000000 order SQL updates
+  5100000 / 10000000 order SQL updates
+  5200000 / 10000000 order SQL updates
+  5300000 / 10000000 order SQL updates
+  5400000 / 10000000 order SQL updates
+  5500000 / 10000000 order SQL updates
+  5600000 / 10000000 order SQL updates
+  5700000 / 10000000 order SQL updates
+  5800000 / 10000000 order SQL updates
+  5900000 / 10000000 order SQL updates
+  6000000 / 10000000 order SQL updates
+  6100000 / 10000000 order SQL updates
+  6200000 / 10000000 order SQL updates
+  6300000 / 10000000 order SQL updates
+  6400000 / 10000000 order SQL updates
+  6500000 / 10000000 order SQL updates
+  6600000 / 10000000 order SQL updates
+  6700000 / 10000000 order SQL updates
+  6800000 / 10000000 order SQL updates
+  6900000 / 10000000 order SQL updates
+  7000000 / 10000000 order SQL updates
+  7100000 / 10000000 order SQL updates
+  7200000 / 10000000 order SQL updates
+  7300000 / 10000000 order SQL updates
+  7400000 / 10000000 order SQL updates
+  7500000 / 10000000 order SQL updates
+  7600000 / 10000000 order SQL updates
+  7700000 / 10000000 order SQL updates
+  7800000 / 10000000 order SQL updates
+  7900000 / 10000000 order SQL updates
+  8000000 / 10000000 order SQL updates
+  8100000 / 10000000 order SQL updates
+  8200000 / 10000000 order SQL updates
+  8300000 / 10000000 order SQL updates
+  8400000 / 10000000 order SQL updates
+  8500000 / 10000000 order SQL updates
+  8600000 / 10000000 order SQL updates
+  8700000 / 10000000 order SQL updates
+  8800000 / 10000000 order SQL updates
+  8900000 / 10000000 order SQL updates
+  9000000 / 10000000 order SQL updates
+  9100000 / 10000000 order SQL updates
+  9200000 / 10000000 order SQL updates
+  9300000 / 10000000 order SQL updates
+  9400000 / 10000000 order SQL updates
+  9500000 / 10000000 order SQL updates
+  9600000 / 10000000 order SQL updates
+  9700000 / 10000000 order SQL updates
+  9800000 / 10000000 order SQL updates
+  9900000 / 10000000 order SQL updates
+  10000000 / 10000000 order SQL updates
+
+--- order SQL deletes ---
+  100000 / 10000000 order SQL deletes
+  200000 / 10000000 order SQL deletes
+  300000 / 10000000 order SQL deletes
+  400000 / 10000000 order SQL deletes
+  500000 / 10000000 order SQL deletes
+  600000 / 10000000 order SQL deletes
+  700000 / 10000000 order SQL deletes
+  800000 / 10000000 order SQL deletes
+  900000 / 10000000 order SQL deletes
+  1000000 / 10000000 order SQL deletes
+  1100000 / 10000000 order SQL deletes
+  1200000 / 10000000 order SQL deletes
+  1300000 / 10000000 order SQL deletes
+  1400000 / 10000000 order SQL deletes
+  1500000 / 10000000 order SQL deletes
+  1600000 / 10000000 order SQL deletes
+  1700000 / 10000000 order SQL deletes
+  1800000 / 10000000 order SQL deletes
+  1900000 / 10000000 order SQL deletes
+  2000000 / 10000000 order SQL deletes
+  2100000 / 10000000 order SQL deletes
+  2200000 / 10000000 order SQL deletes
+  2300000 / 10000000 order SQL deletes
+  2400000 / 10000000 order SQL deletes
+  2500000 / 10000000 order SQL deletes
+  2600000 / 10000000 order SQL deletes
+  2700000 / 10000000 order SQL deletes
+  2800000 / 10000000 order SQL deletes
+  2900000 / 10000000 order SQL deletes
+  3000000 / 10000000 order SQL deletes
+  3100000 / 10000000 order SQL deletes
+  3200000 / 10000000 order SQL deletes
+  3300000 / 10000000 order SQL deletes
+  3400000 / 10000000 order SQL deletes
+  3500000 / 10000000 order SQL deletes
+  3600000 / 10000000 order SQL deletes
+  3700000 / 10000000 order SQL deletes
+  3800000 / 10000000 order SQL deletes
+  3900000 / 10000000 order SQL deletes
+  4000000 / 10000000 order SQL deletes
+  4100000 / 10000000 order SQL deletes
+  4200000 / 10000000 order SQL deletes
+  4300000 / 10000000 order SQL deletes
+  4400000 / 10000000 order SQL deletes
+  4500000 / 10000000 order SQL deletes
+  4600000 / 10000000 order SQL deletes
+  4700000 / 10000000 order SQL deletes
+  4800000 / 10000000 order SQL deletes
+  4900000 / 10000000 order SQL deletes
+  5000000 / 10000000 order SQL deletes
+  5100000 / 10000000 order SQL deletes
+  5200000 / 10000000 order SQL deletes
+  5300000 / 10000000 order SQL deletes
+  5400000 / 10000000 order SQL deletes
+  5500000 / 10000000 order SQL deletes
+  5600000 / 10000000 order SQL deletes
+  5700000 / 10000000 order SQL deletes
+  5800000 / 10000000 order SQL deletes
+  5900000 / 10000000 order SQL deletes
+  6000000 / 10000000 order SQL deletes
+  6100000 / 10000000 order SQL deletes
+  6200000 / 10000000 order SQL deletes
+  6300000 / 10000000 order SQL deletes
+  6400000 / 10000000 order SQL deletes
+  6500000 / 10000000 order SQL deletes
+  6600000 / 10000000 order SQL deletes
+  6700000 / 10000000 order SQL deletes
+  6800000 / 10000000 order SQL deletes
+  6900000 / 10000000 order SQL deletes
+  7000000 / 10000000 order SQL deletes
+  7100000 / 10000000 order SQL deletes
+  7200000 / 10000000 order SQL deletes
+  7300000 / 10000000 order SQL deletes
+  7400000 / 10000000 order SQL deletes
+  7500000 / 10000000 order SQL deletes
+  7600000 / 10000000 order SQL deletes
+  7700000 / 10000000 order SQL deletes
+  7800000 / 10000000 order SQL deletes
+  7900000 / 10000000 order SQL deletes
+  8000000 / 10000000 order SQL deletes
+  8100000 / 10000000 order SQL deletes
+  8200000 / 10000000 order SQL deletes
+  8300000 / 10000000 order SQL deletes
+  8400000 / 10000000 order SQL deletes
+  8500000 / 10000000 order SQL deletes
+  8600000 / 10000000 order SQL deletes
+  8700000 / 10000000 order SQL deletes
+  8800000 / 10000000 order SQL deletes
+  8900000 / 10000000 order SQL deletes
+  9000000 / 10000000 order SQL deletes
+  9100000 / 10000000 order SQL deletes
+  9200000 / 10000000 order SQL deletes
+  9300000 / 10000000 order SQL deletes
+  9400000 / 10000000 order SQL deletes
+  9500000 / 10000000 order SQL deletes
+  9600000 / 10000000 order SQL deletes
+  9700000 / 10000000 order SQL deletes
+  9800000 / 10000000 order SQL deletes
+  9900000 / 10000000 order SQL deletes
+  10000000 / 10000000 order SQL deletes
+
+--- order Mongo inserts ---
+  100000 / 10000000 order Mongo inserts
+  200000 / 10000000 order Mongo inserts
+  300000 / 10000000 order Mongo inserts
+  400000 / 10000000 order Mongo inserts
+  500000 / 10000000 order Mongo inserts
+  600000 / 10000000 order Mongo inserts
+  700000 / 10000000 order Mongo inserts
+  800000 / 10000000 order Mongo inserts
+  900000 / 10000000 order Mongo inserts
+  1000000 / 10000000 order Mongo inserts
+  1100000 / 10000000 order Mongo inserts
+  1200000 / 10000000 order Mongo inserts
+  1300000 / 10000000 order Mongo inserts
+  1400000 / 10000000 order Mongo inserts
+  1500000 / 10000000 order Mongo inserts
+  1600000 / 10000000 order Mongo inserts
+  1700000 / 10000000 order Mongo inserts
+  1800000 / 10000000 order Mongo inserts
+  1900000 / 10000000 order Mongo inserts
+  2000000 / 10000000 order Mongo inserts
+  2100000 / 10000000 order Mongo inserts
+  2200000 / 10000000 order Mongo inserts
+  2300000 / 10000000 order Mongo inserts
+  2400000 / 10000000 order Mongo inserts
+  2500000 / 10000000 order Mongo inserts
+  2600000 / 10000000 order Mongo inserts
+  2700000 / 10000000 order Mongo inserts
+  2800000 / 10000000 order Mongo inserts
+  2900000 / 10000000 order Mongo inserts
+  3000000 / 10000000 order Mongo inserts
+  3100000 / 10000000 order Mongo inserts
+  3200000 / 10000000 order Mongo inserts
+  3300000 / 10000000 order Mongo inserts
+  3400000 / 10000000 order Mongo inserts
+  3500000 / 10000000 order Mongo inserts
+  3600000 / 10000000 order Mongo inserts
+  3700000 / 10000000 order Mongo inserts
+  3800000 / 10000000 order Mongo inserts
+  3900000 / 10000000 order Mongo inserts
+  4000000 / 10000000 order Mongo inserts
+  4100000 / 10000000 order Mongo inserts
+  4200000 / 10000000 order Mongo inserts
+  4300000 / 10000000 order Mongo inserts
+  4400000 / 10000000 order Mongo inserts
+  4500000 / 10000000 order Mongo inserts
+  4600000 / 10000000 order Mongo inserts
+  4700000 / 10000000 order Mongo inserts
+  4800000 / 10000000 order Mongo inserts
+  4900000 / 10000000 order Mongo inserts
+  5000000 / 10000000 order Mongo inserts
+  5100000 / 10000000 order Mongo inserts
+  5200000 / 10000000 order Mongo inserts
+  5300000 / 10000000 order Mongo inserts
+  5400000 / 10000000 order Mongo inserts
+  5500000 / 10000000 order Mongo inserts
+  5600000 / 10000000 order Mongo inserts
+  5700000 / 10000000 order Mongo inserts
+  5800000 / 10000000 order Mongo inserts
+  5900000 / 10000000 order Mongo inserts
+  6000000 / 10000000 order Mongo inserts
+  6100000 / 10000000 order Mongo inserts
+  6200000 / 10000000 order Mongo inserts
+  6300000 / 10000000 order Mongo inserts
+  6400000 / 10000000 order Mongo inserts
+  6500000 / 10000000 order Mongo inserts
+  6600000 / 10000000 order Mongo inserts
+  6700000 / 10000000 order Mongo inserts
+  6800000 / 10000000 order Mongo inserts
+  6900000 / 10000000 order Mongo inserts
+  7000000 / 10000000 order Mongo inserts
+  7100000 / 10000000 order Mongo inserts
+  7200000 / 10000000 order Mongo inserts
+  7300000 / 10000000 order Mongo inserts
+  7400000 / 10000000 order Mongo inserts
+  7500000 / 10000000 order Mongo inserts
+  7600000 / 10000000 order Mongo inserts
+  7700000 / 10000000 order Mongo inserts
+  7800000 / 10000000 order Mongo inserts
+  7900000 / 10000000 order Mongo inserts
+  8000000 / 10000000 order Mongo inserts
+  8100000 / 10000000 order Mongo inserts
+  8200000 / 10000000 order Mongo inserts
+  8300000 / 10000000 order Mongo inserts
+  8400000 / 10000000 order Mongo inserts
+  8500000 / 10000000 order Mongo inserts
+  8600000 / 10000000 order Mongo inserts
+  8700000 / 10000000 order Mongo inserts
+  8800000 / 10000000 order Mongo inserts
+  8900000 / 10000000 order Mongo inserts
+  9000000 / 10000000 order Mongo inserts
+  9100000 / 10000000 order Mongo inserts
+  9200000 / 10000000 order Mongo inserts
+  9300000 / 10000000 order Mongo inserts
+  9400000 / 10000000 order Mongo inserts
+  9500000 / 10000000 order Mongo inserts
+  9600000 / 10000000 order Mongo inserts
+  9700000 / 10000000 order Mongo inserts
+  9800000 / 10000000 order Mongo inserts
+  9900000 / 10000000 order Mongo inserts
+  10000000 / 10000000 order Mongo inserts
+
+--- order Mongo finds ---
+  100000 / 10000000 order Mongo finds
+  200000 / 10000000 order Mongo finds
+  300000 / 10000000 order Mongo finds
+  400000 / 10000000 order Mongo finds
+  500000 / 10000000 order Mongo finds
+  600000 / 10000000 order Mongo finds
+  700000 / 10000000 order Mongo finds
+  800000 / 10000000 order Mongo finds
+  900000 / 10000000 order Mongo finds
+  1000000 / 10000000 order Mongo finds
+  1100000 / 10000000 order Mongo finds
+  1200000 / 10000000 order Mongo finds
+  1300000 / 10000000 order Mongo finds
+  1400000 / 10000000 order Mongo finds
+  1500000 / 10000000 order Mongo finds
+  1600000 / 10000000 order Mongo finds
+  1700000 / 10000000 order Mongo finds
+  1800000 / 10000000 order Mongo finds
+  1900000 / 10000000 order Mongo finds
+  2000000 / 10000000 order Mongo finds
+  2100000 / 10000000 order Mongo finds
+  2200000 / 10000000 order Mongo finds
+  2300000 / 10000000 order Mongo finds
+  2400000 / 10000000 order Mongo finds
+  2500000 / 10000000 order Mongo finds
+  2600000 / 10000000 order Mongo finds
+  2700000 / 10000000 order Mongo finds
+  2800000 / 10000000 order Mongo finds
+  2900000 / 10000000 order Mongo finds
+  3000000 / 10000000 order Mongo finds
+  3100000 / 10000000 order Mongo finds
+  3200000 / 10000000 order Mongo finds
+  3300000 / 10000000 order Mongo finds
+  3400000 / 10000000 order Mongo finds
+  3500000 / 10000000 order Mongo finds
+  3600000 / 10000000 order Mongo finds
+  3700000 / 10000000 order Mongo finds
+  3800000 / 10000000 order Mongo finds
+  3900000 / 10000000 order Mongo finds
+  4000000 / 10000000 order Mongo finds
+  4100000 / 10000000 order Mongo finds
+  4200000 / 10000000 order Mongo finds
+  4300000 / 10000000 order Mongo finds
+  4400000 / 10000000 order Mongo finds
+  4500000 / 10000000 order Mongo finds
+  4600000 / 10000000 order Mongo finds
+  4700000 / 10000000 order Mongo finds
+  4800000 / 10000000 order Mongo finds
+  4900000 / 10000000 order Mongo finds
+  5000000 / 10000000 order Mongo finds
+  5100000 / 10000000 order Mongo finds
+  5200000 / 10000000 order Mongo finds
+  5300000 / 10000000 order Mongo finds
+  5400000 / 10000000 order Mongo finds
+  5500000 / 10000000 order Mongo finds
+  5600000 / 10000000 order Mongo finds
+  5700000 / 10000000 order Mongo finds
+  5800000 / 10000000 order Mongo finds
+  5900000 / 10000000 order Mongo finds
+  6000000 / 10000000 order Mongo finds
+  6100000 / 10000000 order Mongo finds
+  6200000 / 10000000 order Mongo finds
+  6300000 / 10000000 order Mongo finds
+  6400000 / 10000000 order Mongo finds
+  6500000 / 10000000 order Mongo finds
+  6600000 / 10000000 order Mongo finds
+  6700000 / 10000000 order Mongo finds
+  6800000 / 10000000 order Mongo finds
+  6900000 / 10000000 order Mongo finds
+  7000000 / 10000000 order Mongo finds
+  7100000 / 10000000 order Mongo finds
+  7200000 / 10000000 order Mongo finds
+  7300000 / 10000000 order Mongo finds
+  7400000 / 10000000 order Mongo finds
+  7500000 / 10000000 order Mongo finds
+  7600000 / 10000000 order Mongo finds
+  7700000 / 10000000 order Mongo finds
+  7800000 / 10000000 order Mongo finds
+  7900000 / 10000000 order Mongo finds
+  8000000 / 10000000 order Mongo finds
+  8100000 / 10000000 order Mongo finds
+  8200000 / 10000000 order Mongo finds
+  8300000 / 10000000 order Mongo finds
+  8400000 / 10000000 order Mongo finds
+  8500000 / 10000000 order Mongo finds
+  8600000 / 10000000 order Mongo finds
+  8700000 / 10000000 order Mongo finds
+  8800000 / 10000000 order Mongo finds
+  8900000 / 10000000 order Mongo finds
+  9000000 / 10000000 order Mongo finds
+  9100000 / 10000000 order Mongo finds
+  9200000 / 10000000 order Mongo finds
+  9300000 / 10000000 order Mongo finds
+  9400000 / 10000000 order Mongo finds
+  9500000 / 10000000 order Mongo finds
+  9600000 / 10000000 order Mongo finds
+  9700000 / 10000000 order Mongo finds
+  9800000 / 10000000 order Mongo finds
+  9900000 / 10000000 order Mongo finds
+  10000000 / 10000000 order Mongo finds
+
+--- order Redis sets ---
+  100000 / 10000000 order Redis sets
+  200000 / 10000000 order Redis sets
+  300000 / 10000000 order Redis sets
+  400000 / 10000000 order Redis sets
+  500000 / 10000000 order Redis sets
+  600000 / 10000000 order Redis sets
+  700000 / 10000000 order Redis sets
+  800000 / 10000000 order Redis sets
+  900000 / 10000000 order Redis sets
+  1000000 / 10000000 order Redis sets
+  1100000 / 10000000 order Redis sets
+  1200000 / 10000000 order Redis sets
+  1300000 / 10000000 order Redis sets
+  1400000 / 10000000 order Redis sets
+  1500000 / 10000000 order Redis sets
+  1600000 / 10000000 order Redis sets
+  1700000 / 10000000 order Redis sets
+  1800000 / 10000000 order Redis sets
+  1900000 / 10000000 order Redis sets
+  2000000 / 10000000 order Redis sets
+  2100000 / 10000000 order Redis sets
+  2200000 / 10000000 order Redis sets
+  2300000 / 10000000 order Redis sets
+  2400000 / 10000000 order Redis sets
+  2500000 / 10000000 order Redis sets
+  2600000 / 10000000 order Redis sets
+  2700000 / 10000000 order Redis sets
+  2800000 / 10000000 order Redis sets
+  2900000 / 10000000 order Redis sets
+  3000000 / 10000000 order Redis sets
+  3100000 / 10000000 order Redis sets
+  3200000 / 10000000 order Redis sets
+  3300000 / 10000000 order Redis sets
+  3400000 / 10000000 order Redis sets
+  3500000 / 10000000 order Redis sets
+  3600000 / 10000000 order Redis sets
+  3700000 / 10000000 order Redis sets
+  3800000 / 10000000 order Redis sets
+  3900000 / 10000000 order Redis sets
+  4000000 / 10000000 order Redis sets
+  4100000 / 10000000 order Redis sets
+  4200000 / 10000000 order Redis sets
+  4300000 / 10000000 order Redis sets
+  4400000 / 10000000 order Redis sets
+  4500000 / 10000000 order Redis sets
+  4600000 / 10000000 order Redis sets
+  4700000 / 10000000 order Redis sets
+  4800000 / 10000000 order Redis sets
+  4900000 / 10000000 order Redis sets
+  5000000 / 10000000 order Redis sets
+  5100000 / 10000000 order Redis sets
+  5200000 / 10000000 order Redis sets
+  5300000 / 10000000 order Redis sets
+  5400000 / 10000000 order Redis sets
+  5500000 / 10000000 order Redis sets
+  5600000 / 10000000 order Redis sets
+  5700000 / 10000000 order Redis sets
+  5800000 / 10000000 order Redis sets
+  5900000 / 10000000 order Redis sets
+  6000000 / 10000000 order Redis sets
+  6100000 / 10000000 order Redis sets
+  6200000 / 10000000 order Redis sets
+  6300000 / 10000000 order Redis sets
+  6400000 / 10000000 order Redis sets
+  6500000 / 10000000 order Redis sets
+  6600000 / 10000000 order Redis sets
+  6700000 / 10000000 order Redis sets
+  6800000 / 10000000 order Redis sets
+  6900000 / 10000000 order Redis sets
+  7000000 / 10000000 order Redis sets
+  7100000 / 10000000 order Redis sets
+  7200000 / 10000000 order Redis sets
+  7300000 / 10000000 order Redis sets
+  7400000 / 10000000 order Redis sets
+  7500000 / 10000000 order Redis sets
+  7600000 / 10000000 order Redis sets
+  7700000 / 10000000 order Redis sets
+  7800000 / 10000000 order Redis sets
+  7900000 / 10000000 order Redis sets
+  8000000 / 10000000 order Redis sets
+  8100000 / 10000000 order Redis sets
+  8200000 / 10000000 order Redis sets
+  8300000 / 10000000 order Redis sets
+  8400000 / 10000000 order Redis sets
+  8500000 / 10000000 order Redis sets
+  8600000 / 10000000 order Redis sets
+  8700000 / 10000000 order Redis sets
+  8800000 / 10000000 order Redis sets
+  8900000 / 10000000 order Redis sets
+  9000000 / 10000000 order Redis sets
+  9100000 / 10000000 order Redis sets
+  9200000 / 10000000 order Redis sets
+  9300000 / 10000000 order Redis sets
+  9400000 / 10000000 order Redis sets
+  9500000 / 10000000 order Redis sets
+  9600000 / 10000000 order Redis sets
+  9700000 / 10000000 order Redis sets
+  9800000 / 10000000 order Redis sets
+  9900000 / 10000000 order Redis sets
+  10000000 / 10000000 order Redis sets
+
+--- order Redis gets ---
+  100000 / 10000000 order Redis gets
+  200000 / 10000000 order Redis gets
+  300000 / 10000000 order Redis gets
+  400000 / 10000000 order Redis gets
+  500000 / 10000000 order Redis gets
+  600000 / 10000000 order Redis gets
+  700000 / 10000000 order Redis gets
+  800000 / 10000000 order Redis gets
+  900000 / 10000000 order Redis gets
+  1000000 / 10000000 order Redis gets
+  1100000 / 10000000 order Redis gets
+  1200000 / 10000000 order Redis gets
+  1300000 / 10000000 order Redis gets
+  1400000 / 10000000 order Redis gets
+  1500000 / 10000000 order Redis gets
+  1600000 / 10000000 order Redis gets
+  1700000 / 10000000 order Redis gets
+  1800000 / 10000000 order Redis gets
+  1900000 / 10000000 order Redis gets
+  2000000 / 10000000 order Redis gets
+  2100000 / 10000000 order Redis gets
+  2200000 / 10000000 order Redis gets
+  2300000 / 10000000 order Redis gets
+  2400000 / 10000000 order Redis gets
+  2500000 / 10000000 order Redis gets
+  2600000 / 10000000 order Redis gets
+  2700000 / 10000000 order Redis gets
+  2800000 / 10000000 order Redis gets
+  2900000 / 10000000 order Redis gets
+  3000000 / 10000000 order Redis gets
+  3100000 / 10000000 order Redis gets
+  3200000 / 10000000 order Redis gets
+  3300000 / 10000000 order Redis gets
+  3400000 / 10000000 order Redis gets
+  3500000 / 10000000 order Redis gets
+  3600000 / 10000000 order Redis gets
+  3700000 / 10000000 order Redis gets
+  3800000 / 10000000 order Redis gets
+  3900000 / 10000000 order Redis gets
+  4000000 / 10000000 order Redis gets
+  4100000 / 10000000 order Redis gets
+  4200000 / 10000000 order Redis gets
+  4300000 / 10000000 order Redis gets
+  4400000 / 10000000 order Redis gets
+  4500000 / 10000000 order Redis gets
+  4600000 / 10000000 order Redis gets
+  4700000 / 10000000 order Redis gets
+  4800000 / 10000000 order Redis gets
+  4900000 / 10000000 order Redis gets
+  5000000 / 10000000 order Redis gets
+  5100000 / 10000000 order Redis gets
+  5200000 / 10000000 order Redis gets
+  5300000 / 10000000 order Redis gets
+  5400000 / 10000000 order Redis gets
+  5500000 / 10000000 order Redis gets
+  5600000 / 10000000 order Redis gets
+  5700000 / 10000000 order Redis gets
+  5800000 / 10000000 order Redis gets
+  5900000 / 10000000 order Redis gets
+  6000000 / 10000000 order Redis gets
+  6100000 / 10000000 order Redis gets
+  6200000 / 10000000 order Redis gets
+  6300000 / 10000000 order Redis gets
+  6400000 / 10000000 order Redis gets
+  6500000 / 10000000 order Redis gets
+  6600000 / 10000000 order Redis gets
+  6700000 / 10000000 order Redis gets
+  6800000 / 10000000 order Redis gets
+  6900000 / 10000000 order Redis gets
+  7000000 / 10000000 order Redis gets
+  7100000 / 10000000 order Redis gets
+  7200000 / 10000000 order Redis gets
+  7300000 / 10000000 order Redis gets
+  7400000 / 10000000 order Redis gets
+  7500000 / 10000000 order Redis gets
+  7600000 / 10000000 order Redis gets
+  7700000 / 10000000 order Redis gets
+  7800000 / 10000000 order Redis gets
+  7900000 / 10000000 order Redis gets
+  8000000 / 10000000 order Redis gets
+  8100000 / 10000000 order Redis gets
+  8200000 / 10000000 order Redis gets
+  8300000 / 10000000 order Redis gets
+  8400000 / 10000000 order Redis gets
+  8500000 / 10000000 order Redis gets
+  8600000 / 10000000 order Redis gets
+  8700000 / 10000000 order Redis gets
+  8800000 / 10000000 order Redis gets
+  8900000 / 10000000 order Redis gets
+  9000000 / 10000000 order Redis gets
+  9100000 / 10000000 order Redis gets
+  9200000 / 10000000 order Redis gets
+  9300000 / 10000000 order Redis gets
+  9400000 / 10000000 order Redis gets
+  9500000 / 10000000 order Redis gets
+  9600000 / 10000000 order Redis gets
+  9700000 / 10000000 order Redis gets
+  9800000 / 10000000 order Redis gets
+  9900000 / 10000000 order Redis gets
+  10000000 / 10000000 order Redis gets
+
+--- order Redis updates ---
+  100000 / 10000000 order Redis updates
+  200000 / 10000000 order Redis updates
+  300000 / 10000000 order Redis updates
+  400000 / 10000000 order Redis updates
+  500000 / 10000000 order Redis updates
+  600000 / 10000000 order Redis updates
+  700000 / 10000000 order Redis updates
+  800000 / 10000000 order Redis updates
+  900000 / 10000000 order Redis updates
+  1000000 / 10000000 order Redis updates
+  1100000 / 10000000 order Redis updates
+  1200000 / 10000000 order Redis updates
+  1300000 / 10000000 order Redis updates
+  1400000 / 10000000 order Redis updates
+  1500000 / 10000000 order Redis updates
+  1600000 / 10000000 order Redis updates
+  1700000 / 10000000 order Redis updates
+  1800000 / 10000000 order Redis updates
+  1900000 / 10000000 order Redis updates
+  2000000 / 10000000 order Redis updates
+  2100000 / 10000000 order Redis updates
+  2200000 / 10000000 order Redis updates
+  2300000 / 10000000 order Redis updates
+  2400000 / 10000000 order Redis updates
+  2500000 / 10000000 order Redis updates
+  2600000 / 10000000 order Redis updates
+  2700000 / 10000000 order Redis updates
+  2800000 / 10000000 order Redis updates
+  2900000 / 10000000 order Redis updates
+  3000000 / 10000000 order Redis updates
+  3100000 / 10000000 order Redis updates
+  3200000 / 10000000 order Redis updates
+  3300000 / 10000000 order Redis updates
+  3400000 / 10000000 order Redis updates
+  3500000 / 10000000 order Redis updates
+  3600000 / 10000000 order Redis updates
+  3700000 / 10000000 order Redis updates
+  3800000 / 10000000 order Redis updates
+  3900000 / 10000000 order Redis updates
+  4000000 / 10000000 order Redis updates
+  4100000 / 10000000 order Redis updates
+  4200000 / 10000000 order Redis updates
+  4300000 / 10000000 order Redis updates
+  4400000 / 10000000 order Redis updates
+  4500000 / 10000000 order Redis updates
+  4600000 / 10000000 order Redis updates
+  4700000 / 10000000 order Redis updates
+  4800000 / 10000000 order Redis updates
+  4900000 / 10000000 order Redis updates
+  5000000 / 10000000 order Redis updates
+  5100000 / 10000000 order Redis updates
+  5200000 / 10000000 order Redis updates
+  5300000 / 10000000 order Redis updates
+  5400000 / 10000000 order Redis updates
+  5500000 / 10000000 order Redis updates
+  5600000 / 10000000 order Redis updates
+  5700000 / 10000000 order Redis updates
+  5800000 / 10000000 order Redis updates
+  5900000 / 10000000 order Redis updates
+  6000000 / 10000000 order Redis updates
+  6100000 / 10000000 order Redis updates
+  6200000 / 10000000 order Redis updates
+  6300000 / 10000000 order Redis updates
+  6400000 / 10000000 order Redis updates
+  6500000 / 10000000 order Redis updates
+  6600000 / 10000000 order Redis updates
+  6700000 / 10000000 order Redis updates
+  6800000 / 10000000 order Redis updates
+  6900000 / 10000000 order Redis updates
+  7000000 / 10000000 order Redis updates
+  7100000 / 10000000 order Redis updates
+  7200000 / 10000000 order Redis updates
+  7300000 / 10000000 order Redis updates
+  7400000 / 10000000 order Redis updates
+  7500000 / 10000000 order Redis updates
+  7600000 / 10000000 order Redis updates
+  7700000 / 10000000 order Redis updates
+  7800000 / 10000000 order Redis updates
+  7900000 / 10000000 order Redis updates
+  8000000 / 10000000 order Redis updates
+  8100000 / 10000000 order Redis updates
+  8200000 / 10000000 order Redis updates
+  8300000 / 10000000 order Redis updates
+  8400000 / 10000000 order Redis updates
+  8500000 / 10000000 order Redis updates
+  8600000 / 10000000 order Redis updates
+  8700000 / 10000000 order Redis updates
+  8800000 / 10000000 order Redis updates
+  8900000 / 10000000 order Redis updates
+  9000000 / 10000000 order Redis updates
+  9100000 / 10000000 order Redis updates
+  9200000 / 10000000 order Redis updates
+  9300000 / 10000000 order Redis updates
+  9400000 / 10000000 order Redis updates
+  9500000 / 10000000 order Redis updates
+  9600000 / 10000000 order Redis updates
+  9700000 / 10000000 order Redis updates
+  9800000 / 10000000 order Redis updates
+  9900000 / 10000000 order Redis updates
+  10000000 / 10000000 order Redis updates
+
+--- order Redis deletes ---
+  100000 / 10000000 order Redis deletes
+  200000 / 10000000 order Redis deletes
+  300000 / 10000000 order Redis deletes
+  400000 / 10000000 order Redis deletes
+  500000 / 10000000 order Redis deletes
+  600000 / 10000000 order Redis deletes
+  700000 / 10000000 order Redis deletes
+  800000 / 10000000 order Redis deletes
+  900000 / 10000000 order Redis deletes
+  1000000 / 10000000 order Redis deletes
+  1100000 / 10000000 order Redis deletes
+  1200000 / 10000000 order Redis deletes
+  1300000 / 10000000 order Redis deletes
+  1400000 / 10000000 order Redis deletes
+  1500000 / 10000000 order Redis deletes
+  1600000 / 10000000 order Redis deletes
+  1700000 / 10000000 order Redis deletes
+  1800000 / 10000000 order Redis deletes
+  1900000 / 10000000 order Redis deletes
+  2000000 / 10000000 order Redis deletes
+  2100000 / 10000000 order Redis deletes
+  2200000 / 10000000 order Redis deletes
+  2300000 / 10000000 order Redis deletes
+  2400000 / 10000000 order Redis deletes
+  2500000 / 10000000 order Redis deletes
+  2600000 / 10000000 order Redis deletes
+  2700000 / 10000000 order Redis deletes
+  2800000 / 10000000 order Redis deletes
+  2900000 / 10000000 order Redis deletes
+  3000000 / 10000000 order Redis deletes
+  3100000 / 10000000 order Redis deletes
+  3200000 / 10000000 order Redis deletes
+  3300000 / 10000000 order Redis deletes
+  3400000 / 10000000 order Redis deletes
+  3500000 / 10000000 order Redis deletes
+  3600000 / 10000000 order Redis deletes
+  3700000 / 10000000 order Redis deletes
+  3800000 / 10000000 order Redis deletes
+  3900000 / 10000000 order Redis deletes
+  4000000 / 10000000 order Redis deletes
+  4100000 / 10000000 order Redis deletes
+  4200000 / 10000000 order Redis deletes
+  4300000 / 10000000 order Redis deletes
+  4400000 / 10000000 order Redis deletes
+  4500000 / 10000000 order Redis deletes
+  4600000 / 10000000 order Redis deletes
+  4700000 / 10000000 order Redis deletes
+  4800000 / 10000000 order Redis deletes
+  4900000 / 10000000 order Redis deletes
+  5000000 / 10000000 order Redis deletes
+  5100000 / 10000000 order Redis deletes
+  5200000 / 10000000 order Redis deletes
+  5300000 / 10000000 order Redis deletes
+  5400000 / 10000000 order Redis deletes
+  5500000 / 10000000 order Redis deletes
+  5600000 / 10000000 order Redis deletes
+  5700000 / 10000000 order Redis deletes
+  5800000 / 10000000 order Redis deletes
+  5900000 / 10000000 order Redis deletes
+  6000000 / 10000000 order Redis deletes
+  6100000 / 10000000 order Redis deletes
+  6200000 / 10000000 order Redis deletes
+  6300000 / 10000000 order Redis deletes
+  6400000 / 10000000 order Redis deletes
+  6500000 / 10000000 order Redis deletes
+  6600000 / 10000000 order Redis deletes
+  6700000 / 10000000 order Redis deletes
+  6800000 / 10000000 order Redis deletes
+  6900000 / 10000000 order Redis deletes
+  7000000 / 10000000 order Redis deletes
+  7100000 / 10000000 order Redis deletes
+  7200000 / 10000000 order Redis deletes
+  7300000 / 10000000 order Redis deletes
+  7400000 / 10000000 order Redis deletes
+  7500000 / 10000000 order Redis deletes
+  7600000 / 10000000 order Redis deletes
+  7700000 / 10000000 order Redis deletes
+  7800000 / 10000000 order Redis deletes
+  7900000 / 10000000 order Redis deletes
+  8000000 / 10000000 order Redis deletes
+  8100000 / 10000000 order Redis deletes
+  8200000 / 10000000 order Redis deletes
+  8300000 / 10000000 order Redis deletes
+  8400000 / 10000000 order Redis deletes
+  8500000 / 10000000 order Redis deletes
+  8600000 / 10000000 order Redis deletes
+  8700000 / 10000000 order Redis deletes
+  8800000 / 10000000 order Redis deletes
+  8900000 / 10000000 order Redis deletes
+  9000000 / 10000000 order Redis deletes
+  9100000 / 10000000 order Redis deletes
+  9200000 / 10000000 order Redis deletes
+  9300000 / 10000000 order Redis deletes
+  9400000 / 10000000 order Redis deletes
+  9500000 / 10000000 order Redis deletes
+  9600000 / 10000000 order Redis deletes
+  9700000 / 10000000 order Redis deletes
+  9800000 / 10000000 order Redis deletes
+  9900000 / 10000000 order Redis deletes
+  10000000 / 10000000 order Redis deletes
+
+--- order item SQL inserts ---
+  100000 / 10000000 order item SQL inserts
+  200000 / 10000000 order item SQL inserts
+  300000 / 10000000 order item SQL inserts
+  400000 / 10000000 order item SQL inserts
+  500000 / 10000000 order item SQL inserts
+  600000 / 10000000 order item SQL inserts
+  700000 / 10000000 order item SQL inserts
+  800000 / 10000000 order item SQL inserts
+  900000 / 10000000 order item SQL inserts
+  1000000 / 10000000 order item SQL inserts
+  1100000 / 10000000 order item SQL inserts
+  1200000 / 10000000 order item SQL inserts
+  1300000 / 10000000 order item SQL inserts
+  1400000 / 10000000 order item SQL inserts
+  1500000 / 10000000 order item SQL inserts
+  1600000 / 10000000 order item SQL inserts
+  1700000 / 10000000 order item SQL inserts
+  1800000 / 10000000 order item SQL inserts
+  1900000 / 10000000 order item SQL inserts
+  2000000 / 10000000 order item SQL inserts
+  2100000 / 10000000 order item SQL inserts
+  2200000 / 10000000 order item SQL inserts
+  2300000 / 10000000 order item SQL inserts
+  2400000 / 10000000 order item SQL inserts
+  2500000 / 10000000 order item SQL inserts
+  2600000 / 10000000 order item SQL inserts
+  2700000 / 10000000 order item SQL inserts
+  2800000 / 10000000 order item SQL inserts
+  2900000 / 10000000 order item SQL inserts
+  3000000 / 10000000 order item SQL inserts
+  3100000 / 10000000 order item SQL inserts
+  3200000 / 10000000 order item SQL inserts
+  3300000 / 10000000 order item SQL inserts
+  3400000 / 10000000 order item SQL inserts
+  3500000 / 10000000 order item SQL inserts
+  3600000 / 10000000 order item SQL inserts
+  3700000 / 10000000 order item SQL inserts
+  3800000 / 10000000 order item SQL inserts
+  3900000 / 10000000 order item SQL inserts
+  4000000 / 10000000 order item SQL inserts
+  4100000 / 10000000 order item SQL inserts
+  4200000 / 10000000 order item SQL inserts
+  4300000 / 10000000 order item SQL inserts
+  4400000 / 10000000 order item SQL inserts
+  4500000 / 10000000 order item SQL inserts
+  4600000 / 10000000 order item SQL inserts
+  4700000 / 10000000 order item SQL inserts
+  4800000 / 10000000 order item SQL inserts
+  4900000 / 10000000 order item SQL inserts
+  5000000 / 10000000 order item SQL inserts
+  5100000 / 10000000 order item SQL inserts
+  5200000 / 10000000 order item SQL inserts
+  5300000 / 10000000 order item SQL inserts
+  5400000 / 10000000 order item SQL inserts
+  5500000 / 10000000 order item SQL inserts
+  5600000 / 10000000 order item SQL inserts
+  5700000 / 10000000 order item SQL inserts
+  5800000 / 10000000 order item SQL inserts
+  5900000 / 10000000 order item SQL inserts
+  6000000 / 10000000 order item SQL inserts
+  6100000 / 10000000 order item SQL inserts
+  6200000 / 10000000 order item SQL inserts
+  6300000 / 10000000 order item SQL inserts
+  6400000 / 10000000 order item SQL inserts
+  6500000 / 10000000 order item SQL inserts
+  6600000 / 10000000 order item SQL inserts
+  6700000 / 10000000 order item SQL inserts
+  6800000 / 10000000 order item SQL inserts
+  6900000 / 10000000 order item SQL inserts
+  7000000 / 10000000 order item SQL inserts
+  7100000 / 10000000 order item SQL inserts
+  7200000 / 10000000 order item SQL inserts
+  7300000 / 10000000 order item SQL inserts
+  7400000 / 10000000 order item SQL inserts
+  7500000 / 10000000 order item SQL inserts
+  7600000 / 10000000 order item SQL inserts
+  7700000 / 10000000 order item SQL inserts
+  7800000 / 10000000 order item SQL inserts
+  7900000 / 10000000 order item SQL inserts
+  8000000 / 10000000 order item SQL inserts
+  8100000 / 10000000 order item SQL inserts
+  8200000 / 10000000 order item SQL inserts
+  8300000 / 10000000 order item SQL inserts
+  8400000 / 10000000 order item SQL inserts
+  8500000 / 10000000 order item SQL inserts
+  8600000 / 10000000 order item SQL inserts
+  8700000 / 10000000 order item SQL inserts
+  8800000 / 10000000 order item SQL inserts
+  8900000 / 10000000 order item SQL inserts
+  9000000 / 10000000 order item SQL inserts
+  9100000 / 10000000 order item SQL inserts
+  9200000 / 10000000 order item SQL inserts
+  9300000 / 10000000 order item SQL inserts
+  9400000 / 10000000 order item SQL inserts
+  9500000 / 10000000 order item SQL inserts
+  9600000 / 10000000 order item SQL inserts
+  9700000 / 10000000 order item SQL inserts
+  9800000 / 10000000 order item SQL inserts
+  9900000 / 10000000 order item SQL inserts
+  10000000 / 10000000 order item SQL inserts
+
+--- order item Mongo inserts ---
+  100000 / 10000000 order item Mongo inserts
+  200000 / 10000000 order item Mongo inserts
+  300000 / 10000000 order item Mongo inserts
+  400000 / 10000000 order item Mongo inserts
+  500000 / 10000000 order item Mongo inserts
+  600000 / 10000000 order item Mongo inserts
+  700000 / 10000000 order item Mongo inserts
+  800000 / 10000000 order item Mongo inserts
+  900000 / 10000000 order item Mongo inserts
+  1000000 / 10000000 order item Mongo inserts
+  1100000 / 10000000 order item Mongo inserts
+  1200000 / 10000000 order item Mongo inserts
+  1300000 / 10000000 order item Mongo inserts
+  1400000 / 10000000 order item Mongo inserts
+  1500000 / 10000000 order item Mongo inserts
+  1600000 / 10000000 order item Mongo inserts
+  1700000 / 10000000 order item Mongo inserts
+  1800000 / 10000000 order item Mongo inserts
+  1900000 / 10000000 order item Mongo inserts
+  2000000 / 10000000 order item Mongo inserts
+  2100000 / 10000000 order item Mongo inserts
+  2200000 / 10000000 order item Mongo inserts
+  2300000 / 10000000 order item Mongo inserts
+  2400000 / 10000000 order item Mongo inserts
+  2500000 / 10000000 order item Mongo inserts
+  2600000 / 10000000 order item Mongo inserts
+  2700000 / 10000000 order item Mongo inserts
+  2800000 / 10000000 order item Mongo inserts
+  2900000 / 10000000 order item Mongo inserts
+  3000000 / 10000000 order item Mongo inserts
+  3100000 / 10000000 order item Mongo inserts
+  3200000 / 10000000 order item Mongo inserts
+  3300000 / 10000000 order item Mongo inserts
+  3400000 / 10000000 order item Mongo inserts
+  3500000 / 10000000 order item Mongo inserts
+  3600000 / 10000000 order item Mongo inserts
+  3700000 / 10000000 order item Mongo inserts
+  3800000 / 10000000 order item Mongo inserts
+  3900000 / 10000000 order item Mongo inserts
+  4000000 / 10000000 order item Mongo inserts
+  4100000 / 10000000 order item Mongo inserts
+  4200000 / 10000000 order item Mongo inserts
+  4300000 / 10000000 order item Mongo inserts
+  4400000 / 10000000 order item Mongo inserts
+  4500000 / 10000000 order item Mongo inserts
+  4600000 / 10000000 order item Mongo inserts
+  4700000 / 10000000 order item Mongo inserts
+  4800000 / 10000000 order item Mongo inserts
+  4900000 / 10000000 order item Mongo inserts
+  5000000 / 10000000 order item Mongo inserts
+  5100000 / 10000000 order item Mongo inserts
+  5200000 / 10000000 order item Mongo inserts
+  5300000 / 10000000 order item Mongo inserts
+  5400000 / 10000000 order item Mongo inserts
+  5500000 / 10000000 order item Mongo inserts
+  5600000 / 10000000 order item Mongo inserts
+  5700000 / 10000000 order item Mongo inserts
+  5800000 / 10000000 order item Mongo inserts
+  5900000 / 10000000 order item Mongo inserts
+  6000000 / 10000000 order item Mongo inserts
+  6100000 / 10000000 order item Mongo inserts
+  6200000 / 10000000 order item Mongo inserts
+  6300000 / 10000000 order item Mongo inserts
+  6400000 / 10000000 order item Mongo inserts
+  6500000 / 10000000 order item Mongo inserts
+  6600000 / 10000000 order item Mongo inserts
+  6700000 / 10000000 order item Mongo inserts
+  6800000 / 10000000 order item Mongo inserts
+  6900000 / 10000000 order item Mongo inserts
+  7000000 / 10000000 order item Mongo inserts
+  7100000 / 10000000 order item Mongo inserts
+  7200000 / 10000000 order item Mongo inserts
+  7300000 / 10000000 order item Mongo inserts
+  7400000 / 10000000 order item Mongo inserts
+  7500000 / 10000000 order item Mongo inserts
+  7600000 / 10000000 order item Mongo inserts
+  7700000 / 10000000 order item Mongo inserts
+  7800000 / 10000000 order item Mongo inserts
+  7900000 / 10000000 order item Mongo inserts
+  8000000 / 10000000 order item Mongo inserts
+  8100000 / 10000000 order item Mongo inserts
+  8200000 / 10000000 order item Mongo inserts
+  8300000 / 10000000 order item Mongo inserts
+  8400000 / 10000000 order item Mongo inserts
+  8500000 / 10000000 order item Mongo inserts
+  8600000 / 10000000 order item Mongo inserts
+  8700000 / 10000000 order item Mongo inserts
+  8800000 / 10000000 order item Mongo inserts
+  8900000 / 10000000 order item Mongo inserts
+  9000000 / 10000000 order item Mongo inserts
+  9100000 / 10000000 order item Mongo inserts
+  9200000 / 10000000 order item Mongo inserts
+  9300000 / 10000000 order item Mongo inserts
+  9400000 / 10000000 order item Mongo inserts
+  9500000 / 10000000 order item Mongo inserts
+  9600000 / 10000000 order item Mongo inserts
+  9700000 / 10000000 order item Mongo inserts
+  9800000 / 10000000 order item Mongo inserts
+  9900000 / 10000000 order item Mongo inserts
+  10000000 / 10000000 order item Mongo inserts
+
+--- payment SQL inserts ---
+  100000 / 10000000 payment SQL inserts
+  200000 / 10000000 payment SQL inserts
+  300000 / 10000000 payment SQL inserts
+  400000 / 10000000 payment SQL inserts
+  500000 / 10000000 payment SQL inserts
+  600000 / 10000000 payment SQL inserts
+  700000 / 10000000 payment SQL inserts
+  800000 / 10000000 payment SQL inserts
+  900000 / 10000000 payment SQL inserts
+  1000000 / 10000000 payment SQL inserts
+  1100000 / 10000000 payment SQL inserts
+  1200000 / 10000000 payment SQL inserts
+  1300000 / 10000000 payment SQL inserts
+  1400000 / 10000000 payment SQL inserts
+  1500000 / 10000000 payment SQL inserts
+  1600000 / 10000000 payment SQL inserts
+  1700000 / 10000000 payment SQL inserts
+  1800000 / 10000000 payment SQL inserts
+  1900000 / 10000000 payment SQL inserts
+  2000000 / 10000000 payment SQL inserts
+  2100000 / 10000000 payment SQL inserts
+  2200000 / 10000000 payment SQL inserts
+  2300000 / 10000000 payment SQL inserts
+  2400000 / 10000000 payment SQL inserts
+  2500000 / 10000000 payment SQL inserts
+  2600000 / 10000000 payment SQL inserts
+  2700000 / 10000000 payment SQL inserts
+  2800000 / 10000000 payment SQL inserts
+  2900000 / 10000000 payment SQL inserts
+  3000000 / 10000000 payment SQL inserts
+  3100000 / 10000000 payment SQL inserts
+  3200000 / 10000000 payment SQL inserts
+  3300000 / 10000000 payment SQL inserts
+  3400000 / 10000000 payment SQL inserts
+  3500000 / 10000000 payment SQL inserts
+  3600000 / 10000000 payment SQL inserts
+  3700000 / 10000000 payment SQL inserts
+  3800000 / 10000000 payment SQL inserts
+  3900000 / 10000000 payment SQL inserts
+  4000000 / 10000000 payment SQL inserts
+  4100000 / 10000000 payment SQL inserts
+  4200000 / 10000000 payment SQL inserts
+  4300000 / 10000000 payment SQL inserts
+  4400000 / 10000000 payment SQL inserts
+  4500000 / 10000000 payment SQL inserts
+  4600000 / 10000000 payment SQL inserts
+  4700000 / 10000000 payment SQL inserts
+  4800000 / 10000000 payment SQL inserts
+  4900000 / 10000000 payment SQL inserts
+  5000000 / 10000000 payment SQL inserts
+  5100000 / 10000000 payment SQL inserts
+  5200000 / 10000000 payment SQL inserts
+  5300000 / 10000000 payment SQL inserts
+  5400000 / 10000000 payment SQL inserts
+  5500000 / 10000000 payment SQL inserts
+  5600000 / 10000000 payment SQL inserts
+  5700000 / 10000000 payment SQL inserts
+  5800000 / 10000000 payment SQL inserts
+  5900000 / 10000000 payment SQL inserts
+  6000000 / 10000000 payment SQL inserts
+  6100000 / 10000000 payment SQL inserts
+  6200000 / 10000000 payment SQL inserts
+  6300000 / 10000000 payment SQL inserts
+  6400000 / 10000000 payment SQL inserts
+  6500000 / 10000000 payment SQL inserts
+  6600000 / 10000000 payment SQL inserts
+  6700000 / 10000000 payment SQL inserts
+  6800000 / 10000000 payment SQL inserts
+  6900000 / 10000000 payment SQL inserts
+  7000000 / 10000000 payment SQL inserts
+  7100000 / 10000000 payment SQL inserts
+  7200000 / 10000000 payment SQL inserts
+  7300000 / 10000000 payment SQL inserts
+  7400000 / 10000000 payment SQL inserts
+  7500000 / 10000000 payment SQL inserts
+  7600000 / 10000000 payment SQL inserts
+  7700000 / 10000000 payment SQL inserts
+  7800000 / 10000000 payment SQL inserts
+  7900000 / 10000000 payment SQL inserts
+  8000000 / 10000000 payment SQL inserts
+  8100000 / 10000000 payment SQL inserts
+  8200000 / 10000000 payment SQL inserts
+  8300000 / 10000000 payment SQL inserts
+  8400000 / 10000000 payment SQL inserts
+  8500000 / 10000000 payment SQL inserts
+  8600000 / 10000000 payment SQL inserts
+  8700000 / 10000000 payment SQL inserts
+  8800000 / 10000000 payment SQL inserts
+  8900000 / 10000000 payment SQL inserts
+  9000000 / 10000000 payment SQL inserts
+  9100000 / 10000000 payment SQL inserts
+  9200000 / 10000000 payment SQL inserts
+  9300000 / 10000000 payment SQL inserts
+  9400000 / 10000000 payment SQL inserts
+  9500000 / 10000000 payment SQL inserts
+  9600000 / 10000000 payment SQL inserts
+  9700000 / 10000000 payment SQL inserts
+  9800000 / 10000000 payment SQL inserts
+  9900000 / 10000000 payment SQL inserts
+  10000000 / 10000000 payment SQL inserts
+
+--- payment Mongo inserts ---
+  100000 / 10000000 payment Mongo inserts
+  200000 / 10000000 payment Mongo inserts
+  300000 / 10000000 payment Mongo inserts
+  400000 / 10000000 payment Mongo inserts
+  500000 / 10000000 payment Mongo inserts
+  600000 / 10000000 payment Mongo inserts
+  700000 / 10000000 payment Mongo inserts
+  800000 / 10000000 payment Mongo inserts
+  900000 / 10000000 payment Mongo inserts
+  1000000 / 10000000 payment Mongo inserts
+  1100000 / 10000000 payment Mongo inserts
+  1200000 / 10000000 payment Mongo inserts
+  1300000 / 10000000 payment Mongo inserts
+  1400000 / 10000000 payment Mongo inserts
+  1500000 / 10000000 payment Mongo inserts
+  1600000 / 10000000 payment Mongo inserts
+  1700000 / 10000000 payment Mongo inserts
+  1800000 / 10000000 payment Mongo inserts
+  1900000 / 10000000 payment Mongo inserts
+  2000000 / 10000000 payment Mongo inserts
+  2100000 / 10000000 payment Mongo inserts
+  2200000 / 10000000 payment Mongo inserts
+  2300000 / 10000000 payment Mongo inserts
+  2400000 / 10000000 payment Mongo inserts
+  2500000 / 10000000 payment Mongo inserts
+  2600000 / 10000000 payment Mongo inserts
+  2700000 / 10000000 payment Mongo inserts
+  2800000 / 10000000 payment Mongo inserts
+  2900000 / 10000000 payment Mongo inserts
+  3000000 / 10000000 payment Mongo inserts
+  3100000 / 10000000 payment Mongo inserts
+  3200000 / 10000000 payment Mongo inserts
+  3300000 / 10000000 payment Mongo inserts
+  3400000 / 10000000 payment Mongo inserts
+  3500000 / 10000000 payment Mongo inserts
+  3600000 / 10000000 payment Mongo inserts
+  3700000 / 10000000 payment Mongo inserts
+  3800000 / 10000000 payment Mongo inserts
+  3900000 / 10000000 payment Mongo inserts
+  4000000 / 10000000 payment Mongo inserts
+  4100000 / 10000000 payment Mongo inserts
+  4200000 / 10000000 payment Mongo inserts
+  4300000 / 10000000 payment Mongo inserts
+  4400000 / 10000000 payment Mongo inserts
+  4500000 / 10000000 payment Mongo inserts
+  4600000 / 10000000 payment Mongo inserts
+  4700000 / 10000000 payment Mongo inserts
+  4800000 / 10000000 payment Mongo inserts
+  4900000 / 10000000 payment Mongo inserts
+  5000000 / 10000000 payment Mongo inserts
+  5100000 / 10000000 payment Mongo inserts
+  5200000 / 10000000 payment Mongo inserts
+  5300000 / 10000000 payment Mongo inserts
+  5400000 / 10000000 payment Mongo inserts
+  5500000 / 10000000 payment Mongo inserts
+  5600000 / 10000000 payment Mongo inserts
+  5700000 / 10000000 payment Mongo inserts
+  5800000 / 10000000 payment Mongo inserts
+  5900000 / 10000000 payment Mongo inserts
+  6000000 / 10000000 payment Mongo inserts
+  6100000 / 10000000 payment Mongo inserts
+  6200000 / 10000000 payment Mongo inserts
+  6300000 / 10000000 payment Mongo inserts
+  6400000 / 10000000 payment Mongo inserts
+  6500000 / 10000000 payment Mongo inserts
+  6600000 / 10000000 payment Mongo inserts
+  6700000 / 10000000 payment Mongo inserts
+  6800000 / 10000000 payment Mongo inserts
+  6900000 / 10000000 payment Mongo inserts
+  7000000 / 10000000 payment Mongo inserts
+  7100000 / 10000000 payment Mongo inserts
+  7200000 / 10000000 payment Mongo inserts
+  7300000 / 10000000 payment Mongo inserts
+  7400000 / 10000000 payment Mongo inserts
+  7500000 / 10000000 payment Mongo inserts
+  7600000 / 10000000 payment Mongo inserts
+  7700000 / 10000000 payment Mongo inserts
+  7800000 / 10000000 payment Mongo inserts
+  7900000 / 10000000 payment Mongo inserts
+  8000000 / 10000000 payment Mongo inserts
+  8100000 / 10000000 payment Mongo inserts
+  8200000 / 10000000 payment Mongo inserts
+  8300000 / 10000000 payment Mongo inserts
+  8400000 / 10000000 payment Mongo inserts
+  8500000 / 10000000 payment Mongo inserts
+  8600000 / 10000000 payment Mongo inserts
+  8700000 / 10000000 payment Mongo inserts
+  8800000 / 10000000 payment Mongo inserts
+  8900000 / 10000000 payment Mongo inserts
+  9000000 / 10000000 payment Mongo inserts
+  9100000 / 10000000 payment Mongo inserts
+  9200000 / 10000000 payment Mongo inserts
+  9300000 / 10000000 payment Mongo inserts
+  9400000 / 10000000 payment Mongo inserts
+  9500000 / 10000000 payment Mongo inserts
+  9600000 / 10000000 payment Mongo inserts
+  9700000 / 10000000 payment Mongo inserts
+  9800000 / 10000000 payment Mongo inserts
+  9900000 / 10000000 payment Mongo inserts
+  10000000 / 10000000 payment Mongo inserts
+
+--- payment Redis sets ---
+  100000 / 10000000 payment Redis sets
+  200000 / 10000000 payment Redis sets
+  300000 / 10000000 payment Redis sets
+  400000 / 10000000 payment Redis sets
+  500000 / 10000000 payment Redis sets
+  600000 / 10000000 payment Redis sets
+  700000 / 10000000 payment Redis sets
+  800000 / 10000000 payment Redis sets
+  900000 / 10000000 payment Redis sets
+  1000000 / 10000000 payment Redis sets
+  1100000 / 10000000 payment Redis sets
+  1200000 / 10000000 payment Redis sets
+  1300000 / 10000000 payment Redis sets
+  1400000 / 10000000 payment Redis sets
+  1500000 / 10000000 payment Redis sets
+  1600000 / 10000000 payment Redis sets
+  1700000 / 10000000 payment Redis sets
+  1800000 / 10000000 payment Redis sets
+  1900000 / 10000000 payment Redis sets
+  2000000 / 10000000 payment Redis sets
+  2100000 / 10000000 payment Redis sets
+  2200000 / 10000000 payment Redis sets
+  2300000 / 10000000 payment Redis sets
+  2400000 / 10000000 payment Redis sets
+  2500000 / 10000000 payment Redis sets
+  2600000 / 10000000 payment Redis sets
+  2700000 / 10000000 payment Redis sets
+  2800000 / 10000000 payment Redis sets
+  2900000 / 10000000 payment Redis sets
+  3000000 / 10000000 payment Redis sets
+  3100000 / 10000000 payment Redis sets
+  3200000 / 10000000 payment Redis sets
+  3300000 / 10000000 payment Redis sets
+  3400000 / 10000000 payment Redis sets
+  3500000 / 10000000 payment Redis sets
+  3600000 / 10000000 payment Redis sets
+  3700000 / 10000000 payment Redis sets
+  3800000 / 10000000 payment Redis sets
+  3900000 / 10000000 payment Redis sets
+  4000000 / 10000000 payment Redis sets
+  4100000 / 10000000 payment Redis sets
+  4200000 / 10000000 payment Redis sets
+  4300000 / 10000000 payment Redis sets
+  4400000 / 10000000 payment Redis sets
+  4500000 / 10000000 payment Redis sets
+  4600000 / 10000000 payment Redis sets
+  4700000 / 10000000 payment Redis sets
+  4800000 / 10000000 payment Redis sets
+  4900000 / 10000000 payment Redis sets
+  5000000 / 10000000 payment Redis sets
+  5100000 / 10000000 payment Redis sets
+  5200000 / 10000000 payment Redis sets
+  5300000 / 10000000 payment Redis sets
+  5400000 / 10000000 payment Redis sets
+  5500000 / 10000000 payment Redis sets
+  5600000 / 10000000 payment Redis sets
+  5700000 / 10000000 payment Redis sets
+  5800000 / 10000000 payment Redis sets
+  5900000 / 10000000 payment Redis sets
+  6000000 / 10000000 payment Redis sets
+  6100000 / 10000000 payment Redis sets
+  6200000 / 10000000 payment Redis sets
+  6300000 / 10000000 payment Redis sets
+  6400000 / 10000000 payment Redis sets
+  6500000 / 10000000 payment Redis sets
+  6600000 / 10000000 payment Redis sets
+  6700000 / 10000000 payment Redis sets
+  6800000 / 10000000 payment Redis sets
+  6900000 / 10000000 payment Redis sets
+  7000000 / 10000000 payment Redis sets
+  7100000 / 10000000 payment Redis sets
+  7200000 / 10000000 payment Redis sets
+  7300000 / 10000000 payment Redis sets
+  7400000 / 10000000 payment Redis sets
+  7500000 / 10000000 payment Redis sets
+  7600000 / 10000000 payment Redis sets
+  7700000 / 10000000 payment Redis sets
+  7800000 / 10000000 payment Redis sets
+  7900000 / 10000000 payment Redis sets
+  8000000 / 10000000 payment Redis sets
+  8100000 / 10000000 payment Redis sets
+  8200000 / 10000000 payment Redis sets
+  8300000 / 10000000 payment Redis sets
+  8400000 / 10000000 payment Redis sets
+  8500000 / 10000000 payment Redis sets
+  8600000 / 10000000 payment Redis sets
+  8700000 / 10000000 payment Redis sets
+  8800000 / 10000000 payment Redis sets
+  8900000 / 10000000 payment Redis sets
+  9000000 / 10000000 payment Redis sets
+  9100000 / 10000000 payment Redis sets
+  9200000 / 10000000 payment Redis sets
+  9300000 / 10000000 payment Redis sets
+  9400000 / 10000000 payment Redis sets
+  9500000 / 10000000 payment Redis sets
+  9600000 / 10000000 payment Redis sets
+  9700000 / 10000000 payment Redis sets
+  9800000 / 10000000 payment Redis sets
+  9900000 / 10000000 payment Redis sets
+  10000000 / 10000000 payment Redis sets
+
+--- review SQL inserts ---
+  100000 / 2000000 review SQL inserts
+  200000 / 2000000 review SQL inserts
+  300000 / 2000000 review SQL inserts
+  400000 / 2000000 review SQL inserts
+  500000 / 2000000 review SQL inserts
+  600000 / 2000000 review SQL inserts
+  700000 / 2000000 review SQL inserts
+  800000 / 2000000 review SQL inserts
+  900000 / 2000000 review SQL inserts
+  1000000 / 2000000 review SQL inserts
+  1100000 / 2000000 review SQL inserts
+  1200000 / 2000000 review SQL inserts
+  1300000 / 2000000 review SQL inserts
+  1400000 / 2000000 review SQL inserts
+  1500000 / 2000000 review SQL inserts
+  1600000 / 2000000 review SQL inserts
+  1700000 / 2000000 review SQL inserts
+  1800000 / 2000000 review SQL inserts
+  1900000 / 2000000 review SQL inserts
+  2000000 / 2000000 review SQL inserts
+
+--- review Mongo inserts ---
+  100000 / 2000000 review Mongo inserts
+  200000 / 2000000 review Mongo inserts
+  300000 / 2000000 review Mongo inserts
+  400000 / 2000000 review Mongo inserts
+  500000 / 2000000 review Mongo inserts
+  600000 / 2000000 review Mongo inserts
+  700000 / 2000000 review Mongo inserts
+  800000 / 2000000 review Mongo inserts
+  900000 / 2000000 review Mongo inserts
+  1000000 / 2000000 review Mongo inserts
+  1100000 / 2000000 review Mongo inserts
+  1200000 / 2000000 review Mongo inserts
+  1300000 / 2000000 review Mongo inserts
+  1400000 / 2000000 review Mongo inserts
+  1500000 / 2000000 review Mongo inserts
+  1600000 / 2000000 review Mongo inserts
+  1700000 / 2000000 review Mongo inserts
+  1800000 / 2000000 review Mongo inserts
+  1900000 / 2000000 review Mongo inserts
+  2000000 / 2000000 review Mongo inserts
+
+--- inventory log SQL inserts ---
+  100000 / 100000 inventory log SQL inserts
+
+--- inventory log Mongo inserts ---
+  100000 / 100000 inventory log Mongo inserts
+
+Benchmark data generation complete!
+[0;32m✓ Query files regenerated.[0m
+ 42G	queries/
+
+[1m[1;33m▶ Step 4/6 — Build benchmark runner[0m
+
+[0;32m✓ bin/bench built.[0m
+
+[1m[1;33m▶ Step 5/6 — Run benchmark (this is the long phase)[0m
+
+╔════════════════════════════════════════════════════════════╗
+║        Database Performance Benchmark Suite               ║
+╚════════════════════════════════════════════════════════════╝
+
+Configuration:
+  Trials per test:       3
+  Batch (Phase B/fast):  10000
+  Batch (Phase A/scan):  1000
+  Target database:       all
+  Data scales:           [500000 1000000 10000000]
+  Phase A runs at:       500000 only (smallest scale)
+
+
+============================================================
+Starting MySQL Benchmarks
+============================================================
+✓ Connected to MySQL
+
+▶ MySQL @ scale=500000
+  Phase A: WITHOUT indexes
+✓ MySQL tables truncated
+  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
+  ✓ Loaded 500000 rows from queries/users_sql_insert.sql
+  ✓ Loaded 500000 rows from queries/addresses_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
+  ✓ Loaded 500000 rows from queries/orders_sql_insert.sql
+  Collecting EXPLAIN plans (with_index=false)...
+
+============================================================
+MySQL Benchmark: users - SELECT (batch: 1000)
+============================================================
+
+Trial 1/3:
+  Running 1000 queries...
+  ✓ Time: 284.33s (284.33 ms/query)
+  ✓ QPS: 3.52
+
+Trial 2/3:
+  Running 1000 queries...
+  ✓ Time: 283.72s (283.72 ms/query)
+  ✓ QPS: 3.52
+
+Trial 3/3:
+  Running 1000 queries...

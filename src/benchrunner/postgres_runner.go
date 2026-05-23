@@ -137,43 +137,66 @@ func (r *PostgresRunner) LoadInsertsFromFile(queryFile string, count int) error 
 	return nil
 }
 
-// CreateIndexes creates indexes on non-index test columns to measure index impact
-func (r *PostgresRunner) CreateIndexes() error {
-	indexes := []string{
-		"CREATE INDEX IF NOT EXISTS idx_users_country ON users(country)",
-		"CREATE INDEX IF NOT EXISTS idx_products_category_id ON products(category_id)",
-		"CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status)",
-		"CREATE INDEX IF NOT EXISTS idx_categories_display_order ON categories(display_order)",
-		"CREATE INDEX IF NOT EXISTS idx_addresses_postal_code ON addresses(postal_code)",
-	}
+// Same set of (name, table, column) tuples as MySQL — the goal is to keep
+// the two SQL benchmarks aligned for side-by-side comparison.
+var pgBenchIndexes = []struct {
+	name, table, column string
+}{
+	{"idx_users_country", "users", "country"},
+	{"idx_products_category_id", "products", "category_id"},
+	{"idx_orders_status", "orders", "status"},
+	{"idx_categories_display_order", "categories", "display_order"},
+	{"idx_addresses_postal_code", "addresses", "postal_code"},
+}
 
-	for _, idx := range indexes {
-		if _, err := r.db.Exec(idx); err != nil {
-			// Log but continue - index might already exist
-			fmt.Printf("  Index creation notice: %v\n", err)
+// CreateIndexes creates indexes on non-index test columns to measure index impact.
+// Postgres needs ANALYZE after a bulk load + index create for the planner to
+// actually use the new indexes; without it the optimizer picks Seq Scan on a
+// "cold" pg_class.reltuples and the benchmark looks identical to Phase A.
+func (r *PostgresRunner) CreateIndexes() error {
+	for _, idx := range pgBenchIndexes {
+		stmt := fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s(%s)", idx.name, idx.table, idx.column)
+		if _, err := r.db.Exec(stmt); err != nil {
+			return fmt.Errorf("create %s: %w", idx.name, err)
 		}
 	}
-	fmt.Println("✓ Indexes created")
+	if _, err := r.db.Exec("ANALYZE"); err != nil {
+		return fmt.Errorf("analyze after index create: %w", err)
+	}
+	if err := r.verifyIndexesExist(true); err != nil {
+		return err
+	}
+	fmt.Println("✓ Indexes created (and ANALYZE run)")
 	return nil
 }
 
 // DropIndexes drops all created indexes
 func (r *PostgresRunner) DropIndexes() error {
-	indexes := []string{
-		"DROP INDEX IF EXISTS idx_users_country",
-		"DROP INDEX IF EXISTS idx_products_category_id",
-		"DROP INDEX IF EXISTS idx_orders_status",
-		"DROP INDEX IF EXISTS idx_categories_display_order",
-		"DROP INDEX IF EXISTS idx_addresses_postal_code",
-	}
-
-	for _, idx := range indexes {
-		if _, err := r.db.Exec(idx); err != nil {
-			// Log but continue
-			fmt.Printf("  Index drop notice: %v\n", err)
+	for _, idx := range pgBenchIndexes {
+		stmt := fmt.Sprintf("DROP INDEX IF EXISTS %s", idx.name)
+		if _, err := r.db.Exec(stmt); err != nil {
+			return fmt.Errorf("drop %s: %w", idx.name, err)
 		}
 	}
 	fmt.Println("✓ Indexes dropped")
+	return nil
+}
+
+// verifyIndexesExist sanity-checks pg_indexes — defense against silent DDL drift.
+func (r *PostgresRunner) verifyIndexesExist(shouldExist bool) error {
+	for _, idx := range pgBenchIndexes {
+		var n int
+		err := r.db.QueryRow(
+			"SELECT COUNT(*) FROM pg_indexes WHERE schemaname = 'public' AND tablename = $1 AND indexname = $2",
+			idx.table, idx.name,
+		).Scan(&n)
+		if err != nil {
+			return fmt.Errorf("verify %s: %w", idx.name, err)
+		}
+		if shouldExist && n == 0 {
+			return fmt.Errorf("index %s missing on %s after CreateIndexes", idx.name, idx.table)
+		}
+	}
 	return nil
 }
 

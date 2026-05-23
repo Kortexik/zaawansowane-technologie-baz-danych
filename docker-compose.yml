@@ -10,6 +10,9 @@ services:
       MYSQL_DATABASE: benchmark
       MYSQL_USER: bench
       MYSQL_PASSWORD: bench
+    command:
+      - --innodb-buffer-pool-size=4G
+      - --innodb-log-buffer-size=64M
     ports:
       - "3306:3306"
     volumes:
@@ -24,6 +27,16 @@ services:
       POSTGRES_DB: benchmark
       POSTGRES_USER: bench
       POSTGRES_PASSWORD: bench
+    command:
+      - postgres
+      - -c
+      - shared_buffers=4GB
+      - -c
+      - effective_cache_size=4GB
+      - -c
+      - work_mem=64MB
+      - -c
+      - maintenance_work_mem=512MB
     ports:
       - "5432:5432"
     volumes:
