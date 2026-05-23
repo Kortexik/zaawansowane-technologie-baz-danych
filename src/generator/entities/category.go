@@ -20,6 +20,13 @@ func NewCategoryGenerator(id int) *CategoryGenerator {
 	}
 }
 
+// SQLSelect overrides Base.SQLSelect to filter on display_order, the column
+// we explicitly index in CreateIndexes(). Filtering on PK would always hit
+// the implicit primary key index and hide the effect.
+func (g *CategoryGenerator) SQLSelect(id int) string {
+	return fmt.Sprintf("SELECT * FROM categories WHERE display_order = %d;", g.category.DisplayOrder)
+}
+
 func (g *CategoryGenerator) SQLInsert() string {
 	c := g.category
 	return fmt.Sprintf(

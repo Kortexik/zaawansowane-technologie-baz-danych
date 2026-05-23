@@ -89,6 +89,16 @@ func (b *Base) RedisGet(id int) string {
 	return fmt.Sprintf("GET %s:%d\n", b.keyPrefix, id)
 }
 
+// RedisUpdate emits a partial field update via HSET on a parallel hash
+// namespace (<prefix>_h:<id>). This benchmarks the closest k-v equivalent
+// of `UPDATE table SET field=value WHERE id=...` — a single-field write
+// rather than a full-document overwrite.
+// Note: value must be a single whitespace-free token; the runner splits
+// commands on Fields and doesn't unquote.
+func (b *Base) RedisUpdate(id int, field string, value any) string {
+	return fmt.Sprintf("HSET %s_h:%d %s %v\n", b.keyPrefix, id, field, value)
+}
+
 func (b *Base) RedisDelete(id int) string {
 	return fmt.Sprintf("DEL %s:%d\n", b.keyPrefix, id)
 }

@@ -13,5 +13,6 @@ type QueryGenerator interface {
 
 	RedisSet() string
 	RedisGet(id int) string
+	RedisUpdate(id int, field string, value any) string
 	RedisDelete(id int) string
 }

@@ -1,0 +1,69 @@
+╔═══════════════════════════════════════════════════════════════╗
+║          Full Benchmark Experiment — 20260522_225842             ║
+╚═══════════════════════════════════════════════════════════════╝
+  Trials:           3
+  Batch size:       10000
+  Database target:  all
+  Skip generation:  1
+  Skip reset:       1
+  Skip notebook:    0
+  Log file:         logs/run_20260522_225842.log
+
+Data scales: 500_000, 1_000_000, 10_000_000  (per src/cmd/run_benchmarks/main.go)
+Each scale runs in TWO phases (without indexes, then with indexes), so the
+database is reset + reloaded twice per scale to keep tests independent.
+Expected runtime at full scale: roughly 6–10 hours on a laptop.
+
+
+[1m[1;33m▶ Step 1/6 — Skipped reset; ensuring containers are up[0m
+
+time="2026-05-22T22:58:42+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container bench-mongo  Running
+ Container bench-mysql  Running
+ Container bench-postgres  Running
+ Container bench-redis  Running
+
+[1m[1;33m▶ Step 2/6 — Waiting for databases to become ready[0m
+
+[0;32m✓ All four databases reachable.[0m
+
+[1m[1;33m▶ Step 3/6 — Skipped (--skip-gen)[0m
+
+
+[1m[1;33m▶ Step 4/6 — Build benchmark runner[0m
+
+[0;32m✓ bin/bench built.[0m
+
+[1m[1;33m▶ Step 5/6 — Run benchmark (this is the long phase)[0m
+
+╔════════════════════════════════════════════════════════════╗
+║        Database Performance Benchmark Suite               ║
+╚════════════════════════════════════════════════════════════╝
+
+Configuration:
+  Trials per test: 3
+  Batch size: 10000
+  Target database: all
+  Data scales: [500000 1000000 10000000]
+
+
+============================================================
+Starting MySQL Benchmarks
+============================================================
+✓ Connected to MySQL
+
+▶ MySQL @ scale=500000
+  Phase A: WITHOUT indexes
+✓ MySQL tables truncated
+  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
+  ✓ Loaded 500000 rows from queries/users_sql_insert.sql
+  ✓ Loaded 500000 rows from queries/addresses_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
+  ✓ Loaded 500000 rows from queries/orders_sql_insert.sql
+
+============================================================
+MySQL Benchmark: users - SELECT (batch: 10000)
+============================================================
+
+Trial 1/3:
+  Running 10000 queries...

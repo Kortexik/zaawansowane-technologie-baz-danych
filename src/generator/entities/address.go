@@ -20,6 +20,13 @@ func NewAddressGenerator(id, userID int) *AddressGenerator {
 	}
 }
 
+// SQLSelect overrides Base.SQLSelect to filter on a non-PK column (postal_code).
+// This is what makes the with-index vs. without-index comparison meaningful —
+// the PK is always indexed, so filtering on it would hide the effect.
+func (g *AddressGenerator) SQLSelect(id int) string {
+	return fmt.Sprintf("SELECT * FROM addresses WHERE postal_code = '%s';", g.address.PostalCode)
+}
+
 func (g *AddressGenerator) SQLInsert() string {
 	a := g.address
 	return fmt.Sprintf(

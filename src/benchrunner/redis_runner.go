@@ -3,7 +3,6 @@ package benchrunner
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -49,29 +48,62 @@ func (r *RedisRunner) Close() error {
 	return nil
 }
 
-// RunQueryFile executes queries from a file and measures time
-func (r *RedisRunner) RunQueryFile(queryFile string, limit int) (*Result, error) {
-	// Read entire file
-	content, err := os.ReadFile(queryFile)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
+// FlushAll wipes the entire Redis dataset so a fresh load can begin.
+func (r *RedisRunner) FlushAll() error {
+	ctx := context.Background()
+	if err := r.client.FlushAll(ctx).Err(); err != nil {
+		return fmt.Errorf("flushall: %w", err)
 	}
+	fmt.Println("✓ Redis dataset flushed")
+	return nil
+}
 
-	// Parse Redis commands - expects format like:
-	// SET key:1 value1
-	// GET key:1
-	// DEL key:1
-	// etc.
-	rawQueries := []string{}
-	lines := strings.Split(string(content), "\n")
-
-	for _, line := range lines {
-		line := strings.TrimSpace(line)
-		if line != "" && !strings.HasPrefix(line, "--") && !strings.HasPrefix(line, "#") {
-			rawQueries = append(rawQueries, line)
+// LoadSetsFromFile streams the first `count` SET commands and executes them
+// in 5k-command pipelines. Streaming keeps memory flat for 2 GB+ Redis files.
+func (r *RedisRunner) LoadSetsFromFile(queryFile string, count int) error {
+	ctx := context.Background()
+	const batch = 5000
+	pipe := r.client.Pipeline()
+	inPipe := 0
+	loaded := 0
+	_, err := streamQueries(queryFile, count, func(line string) error {
+		// Everything after "SET key " is the value (JSON may contain spaces).
+		parts := strings.SplitN(line, " ", 3)
+		if len(parts) < 3 || strings.ToUpper(parts[0]) != "SET" {
+			return nil
 		}
+		pipe.Set(ctx, parts[1], parts[2], 0)
+		loaded++
+		inPipe++
+		if inPipe >= batch {
+			if _, err := pipe.Exec(ctx); err != nil {
+				fmt.Printf("  Load warning: %v\n", err)
+			}
+			pipe = r.client.Pipeline()
+			inPipe = 0
+		}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
+	if _, err := pipe.Exec(ctx); err != nil {
+		fmt.Printf("  Load warning: %v\n", err)
+	}
+	fmt.Printf("  ✓ Loaded %d keys from %s\n", loaded, queryFile)
+	return nil
+}
 
+// RunQueryFile streams up to `limit` commands, then cycles them to fill
+// exactly `limit` executions for timing.
+func (r *RedisRunner) RunQueryFile(queryFile string, limit int) (*Result, error) {
+	rawQueries := make([]string, 0, limit)
+	if _, err := streamQueries(queryFile, limit, func(line string) error {
+		rawQueries = append(rawQueries, line)
+		return nil
+	}); err != nil {
+		return nil, err
+	}
 	if len(rawQueries) == 0 {
 		return nil, fmt.Errorf("no queries found in file: %s", queryFile)
 	}

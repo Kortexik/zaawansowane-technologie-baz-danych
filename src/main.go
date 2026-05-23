@@ -11,7 +11,9 @@ import (
 const (
 	batchSize = 100_000
 
-	numUsers      = 1_000_000
+	// numUsers sets the max population for users/addresses/orders.
+	// 10M generates ~25 GB of query files; if disk-constrained, scale down.
+	numUsers      = 10_000_000
 	numCategories = 200
 	numProducts   = 100_000
 
@@ -45,6 +47,33 @@ func main() {
 		{"categories_redis_set.txt", "category Redis sets", numCategories, func(i int) string {
 			return entities.NewCategoryGenerator(i).RedisSet()
 		}},
+		{"categories_sql_select.sql", "category SQL selects", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).SQLSelect(i)
+		}},
+		{"categories_sql_update.sql", "category SQL updates", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).SQLUpdate(i, "name", fmt.Sprintf("Updated Category %d", i))
+		}},
+		{"categories_sql_delete.sql", "category SQL deletes", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).SQLDelete(i)
+		}},
+		{"categories_mongo_find.js", "category Mongo finds", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).MongoFind(i)
+		}},
+		{"categories_mongo_update.js", "category Mongo updates", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).MongoUpdate(i, "name", fmt.Sprintf("Updated Category %d", i))
+		}},
+		{"categories_mongo_delete.js", "category Mongo deletes", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).MongoDelete(i)
+		}},
+		{"categories_redis_update.txt", "category Redis updates", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).RedisUpdate(i, "slug", fmt.Sprintf("updated-slug-%d", i))
+		}},
+		{"categories_redis_delete.txt", "category Redis deletes", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).RedisDelete(i)
+		}},
+		{"categories_redis_get.txt", "category Redis gets", numCategories, func(i int) string {
+			return entities.NewCategoryGenerator(i).RedisGet(i)
+		}},
 
 		// ── Users ────────────────────────────────────────────────────────────────
 		{"users_sql_insert.sql", "user SQL inserts", numUsers, func(i int) string {
@@ -77,6 +106,9 @@ func main() {
 		{"users_redis_get.txt", "user Redis gets", numUsers, func(i int) string {
 			return entities.NewUserGenerator(i).RedisGet(i)
 		}},
+		{"users_redis_update.txt", "user Redis updates", numUsers, func(i int) string {
+			return entities.NewUserGenerator(i).RedisUpdate(i, "email", "updated@example.com")
+		}},
 		{"users_redis_delete.txt", "user Redis deletes", numUsers, func(i int) string {
 			return entities.NewUserGenerator(i).RedisDelete(i)
 		}},
@@ -84,6 +116,15 @@ func main() {
 		// ── Addresses ────────────────────────────────────────────────────────────
 		{"addresses_sql_insert.sql", "address SQL inserts", numAddresses, func(i int) string {
 			return entities.NewAddressGenerator(i, i).SQLInsert()
+		}},
+		{"addresses_sql_select.sql", "address SQL selects", numAddresses, func(i int) string {
+			return entities.NewAddressGenerator(i, i).SQLSelect(i)
+		}},
+		{"addresses_sql_update.sql", "address SQL updates", numAddresses, func(i int) string {
+			return entities.NewAddressGenerator(i, i).SQLUpdate(i, "city", fmt.Sprintf("Updated City %d", i))
+		}},
+		{"addresses_sql_delete.sql", "address SQL deletes", numAddresses, func(i int) string {
+			return entities.NewAddressGenerator(i, i).SQLDelete(i)
 		}},
 		{"addresses_mongo_insert.js", "address Mongo inserts", numAddresses, func(i int) string {
 			return entities.NewAddressGenerator(i, i).MongoInsert()
@@ -123,6 +164,9 @@ func main() {
 		{"products_redis_get.txt", "product Redis gets", numProducts, func(i int) string {
 			return entities.NewProductGenerator(i).RedisGet(i)
 		}},
+		{"products_redis_update.txt", "product Redis updates", numProducts, func(i int) string {
+			return entities.NewProductGenerator(i).RedisUpdate(i, "price", "99.99")
+		}},
 		{"products_redis_delete.txt", "product Redis deletes", numProducts, func(i int) string {
 			return entities.NewProductGenerator(i).RedisDelete(i)
 		}},
@@ -156,6 +200,15 @@ func main() {
 		}},
 		{"orders_redis_set.txt", "order Redis sets", numOrders, func(i int) string {
 			return entities.NewOrderGenerator(i, numUsers, numAddresses).RedisSet()
+		}},
+		{"orders_redis_get.txt", "order Redis gets", numOrders, func(i int) string {
+			return entities.NewOrderGenerator(i, numUsers, numAddresses).RedisGet(i)
+		}},
+		{"orders_redis_update.txt", "order Redis updates", numOrders, func(i int) string {
+			return entities.NewOrderGenerator(i, numUsers, numAddresses).RedisUpdate(i, "status", "shipped")
+		}},
+		{"orders_redis_delete.txt", "order Redis deletes", numOrders, func(i int) string {
+			return entities.NewOrderGenerator(i, numUsers, numAddresses).RedisDelete(i)
 		}},
 
 		// ── Order Items ──────────────────────────────────────────────────────────

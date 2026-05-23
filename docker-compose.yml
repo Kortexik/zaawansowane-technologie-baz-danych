@@ -10,11 +10,14 @@ services:
       MYSQL_DATABASE: benchmark
       MYSQL_USER: bench
       MYSQL_PASSWORD: bench
+    command:
+      - --innodb-buffer-pool-size=4G
+      - --innodb-log-buffer-size=64M
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init/sql:/docker-entrypoint-initdb.d
+      - ./init/sql/mysql:/docker-entrypoint-initdb.d
 
   postgres:
     image: postgres:16
@@ -24,11 +27,21 @@ services:
       POSTGRES_DB: benchmark
       POSTGRES_USER: bench
       POSTGRES_PASSWORD: bench
+    command:
+      - postgres
+      - -c
+      - shared_buffers=4GB
+      - -c
+      - effective_cache_size=4GB
+      - -c
+      - work_mem=64MB
+      - -c
+      - maintenance_work_mem=512MB
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init/sql:/docker-entrypoint-initdb.d
+      - ./init/sql/postgres:/docker-entrypoint-initdb.d
 
   mongodb:
     image: mongo:7

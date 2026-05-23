@@ -3,7 +3,6 @@ package benchrunner
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -68,26 +67,62 @@ func (r *MongoDBRunner) Close() error {
 	return nil
 }
 
-// RunQueryFile executes queries from a file and measures time
-// entity is used to determine which collection to operate on
-func (r *MongoDBRunner) RunQueryFile(queryFile, entity string, limit int) (*Result, error) {
-	// Read entire file
-	content, err := os.ReadFile(queryFile)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
-	}
-
-	// Split by semicolons and clean up
-	rawQueries := []string{}
-	parts := strings.Split(string(content), ";")
-
-	for _, part := range parts {
-		query := strings.TrimSpace(part)
-		if query != "" && !strings.HasPrefix(query, "--") && !strings.HasPrefix(query, "//") {
-			rawQueries = append(rawQueries, query)
+// Reset drops all benchmark collections so a fresh data load can begin.
+func (r *MongoDBRunner) Reset() error {
+	collections := []string{"users", "products", "categories", "orders",
+		"addresses", "order_items", "payments", "reviews",
+		"inventory_logs", "product_images"}
+	ctx := context.Background()
+	for _, c := range collections {
+		if err := r.db.Collection(c).Drop(ctx); err != nil {
+			fmt.Printf("  Drop notice (%s): %v\n", c, err)
 		}
 	}
+	fmt.Println("✓ MongoDB collections dropped")
+	return nil
+}
 
+// PopulateCollection inserts `count` stub documents into the named collection.
+// The runner uses heuristic matching (find/insertOne/etc) so realistic schema
+// isn't required for benchmark semantics, only document count.
+func (r *MongoDBRunner) PopulateCollection(entity string, count int) error {
+	ctx := context.Background()
+	coll := r.db.Collection(entity)
+	const batch = 5000
+	docs := make([]interface{}, 0, batch)
+	for i := 1; i <= count; i++ {
+		docs = append(docs, map[string]interface{}{
+			"_id":       i,
+			"name":      fmt.Sprintf("%s_%d", entity, i),
+			"value":     i,
+			"is_active": i%2 == 0,
+		})
+		if len(docs) == batch {
+			if _, err := coll.InsertMany(ctx, docs); err != nil {
+				fmt.Printf("  Insert warning: %v\n", err)
+			}
+			docs = docs[:0]
+		}
+	}
+	if len(docs) > 0 {
+		if _, err := coll.InsertMany(ctx, docs); err != nil {
+			fmt.Printf("  Insert warning: %v\n", err)
+		}
+	}
+	fmt.Printf("  ✓ Populated %s with %d docs\n", entity, count)
+	return nil
+}
+
+// RunQueryFile streams up to `limit` queries, then cycles them to fill
+// exactly `limit` executions for timing.
+func (r *MongoDBRunner) RunQueryFile(queryFile, entity string, limit int) (*Result, error) {
+	rawQueries := make([]string, 0, limit)
+	if _, err := streamQueries(queryFile, limit, func(query string) error {
+		rawQueries = append(rawQueries, query)
+		return nil
+	}); err != nil {
+		return nil, err
+	}
 	if len(rawQueries) == 0 {
 		return nil, fmt.Errorf("no queries found in file: %s", queryFile)
 	}
