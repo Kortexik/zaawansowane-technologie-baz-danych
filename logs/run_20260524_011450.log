@@ -1,0 +1,2157 @@
+╔═══════════════════════════════════════════════════════════════╗
+║          Full Benchmark Experiment — 20260524_011450             ║
+╚═══════════════════════════════════════════════════════════════╝
+  Trials:                  2
+  Batch (Phase B/fast):    2000
+  Batch (Phase A/no-idx):  500
+  Scales override:         100000
+  Database target:         all
+  Skip generation:         1
+  Skip reset:              0
+  Skip notebook:           1
+  Log file:                logs/run_20260524_011450.log
+
+Data scales: 500_000, 1_000_000, 10_000_000  (per src/cmd/run_benchmarks/main.go)
+Phase A (no indexes) runs only at the smallest scale. Phase B (with
+indexes) runs at every scale. With tuned MySQL/Postgres buffers, expected
+runtime is ~3–5 hours.
+
+
+[1m[1;33m▶ Step 1/6 — Reset Docker containers (volumes wiped)[0m
+
+time="2026-05-24T01:14:50+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container bench-mongo  Stopping
+ Container bench-redis  Stopping
+ Container bench-mysql  Stopping
+ Container bench-postgres  Stopping
+ Container bench-redis  Stopped
+ Container bench-mysql  Stopped
+ Container bench-mysql  Removing
+ Container bench-redis  Removing
+ Container bench-postgres  Stopped
+ Container bench-postgres  Removing
+ Container bench-mongo  Stopped
+ Container bench-mongo  Removing
+ Container bench-mysql  Removed
+ Container bench-redis  Removed
+ Container bench-postgres  Removed
+ Container bench-mongo  Removed
+ Volume zaawansowane-technologie-baz-danych_redis_data  Removing
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Removing
+ Network zaawansowane-technologie-baz-danych_default  Removing
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Removing
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Removing
+ Volume zaawansowane-technologie-baz-danych_redis_data  Removed
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Removed
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Removed
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Removed
+ Network zaawansowane-technologie-baz-danych_default  Removed
+time="2026-05-24T01:14:50+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Network zaawansowane-technologie-baz-danych_default  Creating
+ Network zaawansowane-technologie-baz-danych_default  Created
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Creating
+ Volume zaawansowane-technologie-baz-danych_postgres_data  Created
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Creating
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Created
+ Volume zaawansowane-technologie-baz-danych_redis_data  Creating
+ Volume zaawansowane-technologie-baz-danych_redis_data  Created
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Creating
+ Volume zaawansowane-technologie-baz-danych_mysql_data  Created
+ Container bench-mongo  Creating
+ Container bench-redis  Creating
+ Container bench-mysql  Creating
+ Container bench-postgres  Creating
+ Container bench-mongo  Created
+ Container bench-mysql  Created
+ Container bench-redis  Created
+ Container bench-postgres  Created
+ Container bench-mongo  Starting
+ Container bench-redis  Starting
+ Container bench-mysql  Starting
+ Container bench-postgres  Starting
+ Container bench-mysql  Started
+ Container bench-redis  Started
+ Container bench-mongo  Started
+ Container bench-postgres  Started
+
+[1m[1;33m▶ Step 2/6 — Waiting for databases to become ready[0m
+
+  waiting (1/60): mysql=0 pg=0 mongo=1 redis=1
+  waiting (2/60): mysql=0 pg=1 mongo=1 redis=1
+  waiting (3/60): mysql=0 pg=1 mongo=1 redis=1
+[0;32m✓ All four databases reachable.[0m
+
+[1m[1;33m▶ Step 3/6 — Skipped (--skip-gen)[0m
+
+
+[1m[1;33m▶ Step 4/6 — Build benchmark runner[0m
+
+[0;32m✓ bin/bench built.[0m
+
+[1m[1;33m▶ Step 5/6 — Run benchmark (this is the long phase)[0m
+
+╔════════════════════════════════════════════════════════════╗
+║        Database Performance Benchmark Suite               ║
+╚════════════════════════════════════════════════════════════╝
+
+Configuration:
+  Trials per test:       2
+  Batch (Phase B/fast):  2000
+  Batch (Phase A/scan):  500
+  Target database:       all
+  Data scales:           [100000]
+  Phase A runs at:       100000 only (smallest scale)
+
+
+============================================================
+Starting MySQL Benchmarks
+============================================================
+✓ Connected to MySQL
+
+▶ MySQL @ scale=100000
+  Phase A: WITHOUT indexes
+✓ MySQL tables truncated
+  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/users_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/addresses_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/orders_sql_insert.sql
+  Collecting EXPLAIN plans (with_index=false)...
+
+============================================================
+MySQL Benchmark: users - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.65s (1.29 ms/query)
+  ✓ QPS: 771.70
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.66s (1.32 ms/query)
+  ✓ QPS: 759.32
+
+📊 Average Results:
+  Time: 0.65s
+  QPS: 765.51
+
+============================================================
+MySQL Benchmark: categories - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.10s (0.20 ms/query)
+  ✓ QPS: 4989.18
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.09s (0.18 ms/query)
+  ✓ QPS: 5423.78
+
+📊 Average Results:
+  Time: 0.10s
+  QPS: 5206.48
+
+============================================================
+MySQL Benchmark: products - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 2.62s (5.24 ms/query)
+  ✓ QPS: 190.92
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 2.64s (5.29 ms/query)
+  ✓ QPS: 189.17
+
+📊 Average Results:
+  Time: 2.63s
+  QPS: 190.05
+
+============================================================
+MySQL Benchmark: addresses - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 10.07s (20.14 ms/query)
+  ✓ QPS: 49.65
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 9.93s (19.86 ms/query)
+  ✓ QPS: 50.34
+
+📊 Average Results:
+  Time: 10.00s
+  QPS: 50.00
+
+============================================================
+MySQL Benchmark: orders - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 2.10s (4.19 ms/query)
+  ✓ QPS: 238.46
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 2.08s (4.15 ms/query)
+  ✓ QPS: 240.64
+
+📊 Average Results:
+  Time: 2.09s
+  QPS: 239.55
+
+============================================================
+MySQL Benchmark: users - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.16 ms/query)
+  ✓ QPS: 6332.11
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7668.51
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 7000.31
+
+============================================================
+MySQL Benchmark: categories - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.13 ms/query)
+  ✓ QPS: 7807.03
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7673.49
+
+📊 Average Results:
+  Time: 0.06s
+  QPS: 7740.26
+
+============================================================
+MySQL Benchmark: products - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.13 ms/query)
+  ✓ QPS: 7719.99
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.13 ms/query)
+  ✓ QPS: 7791.68
+
+📊 Average Results:
+  Time: 0.06s
+  QPS: 7755.83
+
+============================================================
+MySQL Benchmark: addresses - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.12 ms/query)
+  ✓ QPS: 8190.51
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7452.21
+
+📊 Average Results:
+  Time: 0.06s
+  QPS: 7821.36
+
+============================================================
+MySQL Benchmark: orders - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7162.58
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.15 ms/query)
+  ✓ QPS: 6565.38
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6863.98
+
+============================================================
+MySQL Benchmark: users - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.40s (0.80 ms/query)
+  ✓ QPS: 1255.81
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7460.04
+
+📊 Average Results:
+  Time: 0.23s
+  QPS: 4357.92
+
+============================================================
+MySQL Benchmark: categories - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.20s (0.40 ms/query)
+  ✓ QPS: 2520.65
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7662.79
+
+📊 Average Results:
+  Time: 0.13s
+  QPS: 5091.72
+
+============================================================
+MySQL Benchmark: products - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.40s (0.79 ms/query)
+  ✓ QPS: 1263.48
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7380.97
+
+📊 Average Results:
+  Time: 0.23s
+  QPS: 4322.22
+
+============================================================
+MySQL Benchmark: addresses - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.41s (0.83 ms/query)
+  ✓ QPS: 1209.01
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7286.78
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 4247.89
+
+============================================================
+MySQL Benchmark: orders - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.39s (0.78 ms/query)
+  ✓ QPS: 1283.95
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7331.53
+
+📊 Average Results:
+  Time: 0.23s
+  QPS: 4307.74
+
+============================================================
+MySQL Benchmark: users - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.44s (0.87 ms/query)
+  ✓ QPS: 1142.53
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7537.75
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 4340.14
+
+============================================================
+MySQL Benchmark: categories - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.19s (0.39 ms/query)
+  ✓ QPS: 2581.42
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.12 ms/query)
+  ✓ QPS: 8346.97
+
+📊 Average Results:
+  Time: 0.13s
+  QPS: 5464.19
+
+============================================================
+MySQL Benchmark: products - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.37s (0.75 ms/query)
+  ✓ QPS: 1335.92
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7125.05
+
+📊 Average Results:
+  Time: 0.22s
+  QPS: 4230.48
+
+============================================================
+MySQL Benchmark: addresses - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.37s (0.74 ms/query)
+  ✓ QPS: 1355.23
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.13 ms/query)
+  ✓ QPS: 7864.78
+
+📊 Average Results:
+  Time: 0.22s
+  QPS: 4610.01
+
+============================================================
+MySQL Benchmark: orders - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.36s (0.72 ms/query)
+  ✓ QPS: 1386.02
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7674.75
+
+📊 Average Results:
+  Time: 0.21s
+  QPS: 4530.39
+  Phase B: WITH indexes
+✓ MySQL tables truncated
+  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/users_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/addresses_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/orders_sql_insert.sql
+✓ Indexes created (and ANALYZE run)
+  Collecting EXPLAIN plans (with_index=true)...
+
+============================================================
+MySQL Benchmark: users - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.59s (0.29 ms/query)
+  ✓ QPS: 3390.32
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.57s (0.29 ms/query)
+  ✓ QPS: 3487.22
+
+📊 Average Results:
+  Time: 0.58s
+  QPS: 3438.77
+
+============================================================
+MySQL Benchmark: categories - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 6971.04
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 6883.35
+
+📊 Average Results:
+  Time: 0.29s
+  QPS: 6927.20
+
+============================================================
+MySQL Benchmark: products - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.54s (0.27 ms/query)
+  ✓ QPS: 3688.00
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.58s (0.29 ms/query)
+  ✓ QPS: 3475.71
+
+📊 Average Results:
+  Time: 0.56s
+  QPS: 3581.85
+
+============================================================
+MySQL Benchmark: addresses - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.15 ms/query)
+  ✓ QPS: 6849.48
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 6907.01
+
+📊 Average Results:
+  Time: 0.29s
+  QPS: 6878.25
+
+============================================================
+MySQL Benchmark: orders - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.57s (0.29 ms/query)
+  ✓ QPS: 3489.17
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.69s (0.34 ms/query)
+  ✓ QPS: 2915.54
+
+📊 Average Results:
+  Time: 0.63s
+  QPS: 3202.35
+
+============================================================
+MySQL Benchmark: users - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7324.40
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.32s (0.16 ms/query)
+  ✓ QPS: 6347.14
+
+📊 Average Results:
+  Time: 0.29s
+  QPS: 6835.77
+
+============================================================
+MySQL Benchmark: categories - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.30s (0.15 ms/query)
+  ✓ QPS: 6604.06
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 6926.33
+
+📊 Average Results:
+  Time: 0.29s
+  QPS: 6765.20
+
+============================================================
+MySQL Benchmark: products - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7072.83
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7034.56
+
+📊 Average Results:
+  Time: 0.28s
+  QPS: 7053.70
+
+============================================================
+MySQL Benchmark: addresses - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.26s (0.13 ms/query)
+  ✓ QPS: 7698.18
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8232.57
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 7965.38
+
+============================================================
+MySQL Benchmark: orders - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.26s (0.13 ms/query)
+  ✓ QPS: 7751.27
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7396.62
+
+📊 Average Results:
+  Time: 0.26s
+  QPS: 7573.95
+
+============================================================
+MySQL Benchmark: users - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.51s (0.76 ms/query)
+  ✓ QPS: 1322.08
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.13 ms/query)
+  ✓ QPS: 7950.82
+
+📊 Average Results:
+  Time: 0.88s
+  QPS: 4636.45
+
+============================================================
+MySQL Benchmark: categories - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.17 ms/query)
+  ✓ QPS: 5748.94
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.23s (0.11 ms/query)
+  ✓ QPS: 8713.36
+
+📊 Average Results:
+  Time: 0.29s
+  QPS: 7231.15
+
+============================================================
+MySQL Benchmark: products - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.45s (0.73 ms/query)
+  ✓ QPS: 1374.61
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8019.60
+
+📊 Average Results:
+  Time: 0.85s
+  QPS: 4697.11
+
+============================================================
+MySQL Benchmark: addresses - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.44s (0.72 ms/query)
+  ✓ QPS: 1385.09
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.13 ms/query)
+  ✓ QPS: 7932.50
+
+📊 Average Results:
+  Time: 0.85s
+  QPS: 4658.80
+
+============================================================
+MySQL Benchmark: orders - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.42s (0.71 ms/query)
+  ✓ QPS: 1404.67
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.13 ms/query)
+  ✓ QPS: 7967.62
+
+📊 Average Results:
+  Time: 0.84s
+  QPS: 4686.15
+
+============================================================
+MySQL Benchmark: users - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.58s (0.79 ms/query)
+  ✓ QPS: 1267.22
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 7972.91
+
+📊 Average Results:
+  Time: 0.91s
+  QPS: 4620.06
+
+============================================================
+MySQL Benchmark: categories - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.34s (0.17 ms/query)
+  ✓ QPS: 5817.27
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7395.06
+
+📊 Average Results:
+  Time: 0.31s
+  QPS: 6606.17
+
+============================================================
+MySQL Benchmark: products - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.69s (0.85 ms/query)
+  ✓ QPS: 1181.60
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7345.57
+
+📊 Average Results:
+  Time: 0.98s
+  QPS: 4263.58
+
+============================================================
+MySQL Benchmark: addresses - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.59s (0.79 ms/query)
+  ✓ QPS: 1258.54
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7122.56
+
+📊 Average Results:
+  Time: 0.93s
+  QPS: 4190.55
+
+============================================================
+MySQL Benchmark: orders - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 1.57s (0.79 ms/query)
+  ✓ QPS: 1271.27
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7372.97
+
+📊 Average Results:
+  Time: 0.92s
+  QPS: 4322.12
+✓ Indexes dropped
+
+============================================================
+Starting PostgreSQL Benchmarks
+============================================================
+✓ Connected to PostgreSQL
+
+▶ PostgreSQL @ scale=100000
+  Phase A: WITHOUT indexes
+✓ PostgreSQL tables truncated
+  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/users_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/addresses_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/orders_sql_insert.sql
+  Collecting EXPLAIN plans (with_index=false)...
+
+============================================================
+PostgreSQL Benchmark: users - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.20s (0.40 ms/query)
+  ✓ QPS: 2480.79
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.21s (0.41 ms/query)
+  ✓ QPS: 2436.77
+
+📊 Average Results:
+  Time: 0.20s
+  QPS: 2458.78
+
+============================================================
+PostgreSQL Benchmark: categories - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.15 ms/query)
+  ✓ QPS: 6672.15
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.15 ms/query)
+  ✓ QPS: 6770.13
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6721.14
+
+============================================================
+PostgreSQL Benchmark: products - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.35s (0.70 ms/query)
+  ✓ QPS: 1418.91
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.37s (0.73 ms/query)
+  ✓ QPS: 1364.67
+
+📊 Average Results:
+  Time: 0.36s
+  QPS: 1391.79
+
+============================================================
+PostgreSQL Benchmark: addresses - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 1.71s (3.42 ms/query)
+  ✓ QPS: 292.59
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 1.70s (3.40 ms/query)
+  ✓ QPS: 293.84
+
+📊 Average Results:
+  Time: 1.70s
+  QPS: 293.22
+
+============================================================
+PostgreSQL Benchmark: orders - SELECT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.40s (0.80 ms/query)
+  ✓ QPS: 1253.06
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.39s (0.79 ms/query)
+  ✓ QPS: 1271.27
+
+📊 Average Results:
+  Time: 0.40s
+  QPS: 1262.16
+
+============================================================
+PostgreSQL Benchmark: users - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.15 ms/query)
+  ✓ QPS: 6514.14
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7020.09
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6767.12
+
+============================================================
+PostgreSQL Benchmark: categories - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7336.91
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7314.01
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 7325.46
+
+============================================================
+PostgreSQL Benchmark: products - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.15 ms/query)
+  ✓ QPS: 6705.94
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.15 ms/query)
+  ✓ QPS: 6751.81
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6728.88
+
+============================================================
+PostgreSQL Benchmark: addresses - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 6895.10
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 6905.33
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6900.21
+
+============================================================
+PostgreSQL Benchmark: orders - INSERT (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7670.30
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.13 ms/query)
+  ✓ QPS: 7827.72
+
+📊 Average Results:
+  Time: 0.06s
+  QPS: 7749.01
+
+============================================================
+PostgreSQL Benchmark: users - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  Warning: Query 2 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  Warning: Query 3 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  ✓ Time: 0.08s (0.17 ms/query)
+  ✓ QPS: 6007.98
+
+Trial 2/2:
+  Running 500 queries...
+  Warning: Query 2 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  Warning: Query 3 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  ✓ Time: 0.08s (0.17 ms/query)
+  ✓ QPS: 5911.84
+
+📊 Average Results:
+  Time: 0.08s
+  QPS: 5959.91
+
+============================================================
+PostgreSQL Benchmark: categories - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.16 ms/query)
+  ✓ QPS: 6277.80
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.16 ms/query)
+  ✓ QPS: 6115.34
+
+📊 Average Results:
+  Time: 0.08s
+  QPS: 6196.57
+
+============================================================
+PostgreSQL Benchmark: products - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.17 ms/query)
+  ✓ QPS: 6003.41
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.09s (0.19 ms/query)
+  ✓ QPS: 5304.84
+
+📊 Average Results:
+  Time: 0.09s
+  QPS: 5654.13
+
+============================================================
+PostgreSQL Benchmark: addresses - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.10s (0.20 ms/query)
+  ✓ QPS: 4960.72
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.15 ms/query)
+  ✓ QPS: 6591.29
+
+📊 Average Results:
+  Time: 0.09s
+  QPS: 5776.01
+
+============================================================
+PostgreSQL Benchmark: orders - UPDATE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.15 ms/query)
+  ✓ QPS: 6604.91
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.08s (0.15 ms/query)
+  ✓ QPS: 6610.55
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6607.73
+
+============================================================
+PostgreSQL Benchmark: users - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.09s (0.17 ms/query)
+  ✓ QPS: 5859.83
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.12 ms/query)
+  ✓ QPS: 8371.61
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 7115.72
+
+============================================================
+PostgreSQL Benchmark: categories - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 6915.60
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.13 ms/query)
+  ✓ QPS: 7463.00
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 7189.30
+
+============================================================
+PostgreSQL Benchmark: products - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.09s (0.17 ms/query)
+  ✓ QPS: 5693.84
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.12 ms/query)
+  ✓ QPS: 8043.19
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6868.51
+
+============================================================
+PostgreSQL Benchmark: addresses - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.09s (0.18 ms/query)
+  ✓ QPS: 5622.31
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.07s (0.14 ms/query)
+  ✓ QPS: 7118.14
+
+📊 Average Results:
+  Time: 0.08s
+  QPS: 6370.23
+
+============================================================
+PostgreSQL Benchmark: orders - DELETE (batch: 500)
+============================================================
+
+Trial 1/2:
+  Running 500 queries...
+  ✓ Time: 0.09s (0.17 ms/query)
+  ✓ QPS: 5690.05
+
+Trial 2/2:
+  Running 500 queries...
+  ✓ Time: 0.06s (0.12 ms/query)
+  ✓ QPS: 8232.32
+
+📊 Average Results:
+  Time: 0.07s
+  QPS: 6961.18
+  Phase B: WITH indexes
+✓ PostgreSQL tables truncated
+  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/users_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/addresses_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
+  ✓ Loaded 100000 rows from queries/orders_sql_insert.sql
+✓ Indexes created (and ANALYZE run)
+  Collecting EXPLAIN plans (with_index=true)...
+
+============================================================
+PostgreSQL Benchmark: users - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.77s (0.39 ms/query)
+  ✓ QPS: 2586.64
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.75s (0.37 ms/query)
+  ✓ QPS: 2674.68
+
+📊 Average Results:
+  Time: 0.76s
+  QPS: 2630.66
+
+============================================================
+PostgreSQL Benchmark: categories - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7159.37
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 6921.29
+
+📊 Average Results:
+  Time: 0.28s
+  QPS: 7040.33
+
+============================================================
+PostgreSQL Benchmark: products - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.53s (0.26 ms/query)
+  ✓ QPS: 3787.06
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.54s (0.27 ms/query)
+  ✓ QPS: 3673.24
+
+📊 Average Results:
+  Time: 0.54s
+  QPS: 3730.15
+
+============================================================
+PostgreSQL Benchmark: addresses - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.15 ms/query)
+  ✓ QPS: 6816.55
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 7007.56
+
+📊 Average Results:
+  Time: 0.29s
+  QPS: 6912.05
+
+============================================================
+PostgreSQL Benchmark: orders - SELECT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.55s (0.27 ms/query)
+  ✓ QPS: 3643.54
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.56s (0.28 ms/query)
+  ✓ QPS: 3602.31
+
+📊 Average Results:
+  Time: 0.55s
+  QPS: 3622.92
+
+============================================================
+PostgreSQL Benchmark: users - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.34s (0.17 ms/query)
+  ✓ QPS: 5805.25
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.13 ms/query)
+  ✓ QPS: 7443.60
+
+📊 Average Results:
+  Time: 0.31s
+  QPS: 6624.42
+
+============================================================
+PostgreSQL Benchmark: categories - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.29s (0.14 ms/query)
+  ✓ QPS: 6917.63
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7335.36
+
+📊 Average Results:
+  Time: 0.28s
+  QPS: 7126.49
+
+============================================================
+PostgreSQL Benchmark: products - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7167.83
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.26s (0.13 ms/query)
+  ✓ QPS: 7685.83
+
+📊 Average Results:
+  Time: 0.27s
+  QPS: 7426.83
+
+============================================================
+PostgreSQL Benchmark: addresses - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.26s (0.13 ms/query)
+  ✓ QPS: 7749.88
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.13 ms/query)
+  ✓ QPS: 7526.92
+
+📊 Average Results:
+  Time: 0.26s
+  QPS: 7638.40
+
+============================================================
+PostgreSQL Benchmark: orders - INSERT (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7259.45
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.28s (0.14 ms/query)
+  ✓ QPS: 7026.71
+
+📊 Average Results:
+  Time: 0.28s
+  QPS: 7143.08
+
+============================================================
+PostgreSQL Benchmark: users - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  Warning: Query 2 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  Warning: Query 3 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  ✓ Time: 0.37s (0.18 ms/query)
+  ✓ QPS: 5452.54
+
+Trial 2/2:
+  Running 2000 queries...
+  Warning: Query 2 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  Warning: Query 3 failed: pq: duplicate key value violates unique constraint "users_email_key"
+  ✓ Time: 0.35s (0.18 ms/query)
+  ✓ QPS: 5645.89
+
+📊 Average Results:
+  Time: 0.36s
+  QPS: 5549.21
+
+============================================================
+PostgreSQL Benchmark: categories - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.38s (0.19 ms/query)
+  ✓ QPS: 5263.26
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.37s (0.18 ms/query)
+  ✓ QPS: 5453.68
+
+📊 Average Results:
+  Time: 0.37s
+  QPS: 5358.47
+
+============================================================
+PostgreSQL Benchmark: products - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.39s (0.19 ms/query)
+  ✓ QPS: 5131.00
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.36s (0.18 ms/query)
+  ✓ QPS: 5566.15
+
+📊 Average Results:
+  Time: 0.37s
+  QPS: 5348.58
+
+============================================================
+PostgreSQL Benchmark: addresses - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.36s (0.18 ms/query)
+  ✓ QPS: 5580.29
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.43s (0.22 ms/query)
+  ✓ QPS: 4601.79
+
+📊 Average Results:
+  Time: 0.40s
+  QPS: 5091.04
+
+============================================================
+PostgreSQL Benchmark: orders - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.50s (0.25 ms/query)
+  ✓ QPS: 4035.61
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.48s (0.24 ms/query)
+  ✓ QPS: 4168.22
+
+📊 Average Results:
+  Time: 0.49s
+  QPS: 4101.91
+
+============================================================
+PostgreSQL Benchmark: users - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.52s (0.26 ms/query)
+  ✓ QPS: 3870.55
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.13 ms/query)
+  ✓ QPS: 7408.46
+
+📊 Average Results:
+  Time: 0.39s
+  QPS: 5639.50
+
+============================================================
+PostgreSQL Benchmark: categories - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7314.73
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.14 ms/query)
+  ✓ QPS: 7363.48
+
+📊 Average Results:
+  Time: 0.27s
+  QPS: 7339.11
+
+============================================================
+PostgreSQL Benchmark: products - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.37s (0.18 ms/query)
+  ✓ QPS: 5443.63
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.13 ms/query)
+  ✓ QPS: 7526.49
+
+📊 Average Results:
+  Time: 0.32s
+  QPS: 6485.06
+
+============================================================
+PostgreSQL Benchmark: addresses - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.18 ms/query)
+  ✓ QPS: 5643.03
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.13 ms/query)
+  ✓ QPS: 7525.98
+
+📊 Average Results:
+  Time: 0.31s
+  QPS: 6584.51
+
+============================================================
+PostgreSQL Benchmark: orders - DELETE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.38s (0.19 ms/query)
+  ✓ QPS: 5296.12
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.27s (0.13 ms/query)
+  ✓ QPS: 7417.82
+
+📊 Average Results:
+  Time: 0.32s
+  QPS: 6356.97
+✓ Indexes dropped
+
+============================================================
+Starting MongoDB Benchmarks
+============================================================
+✓ Connected to MongoDB
+
+▶ MongoDB @ scale=100000
+✓ MongoDB collections dropped
+  ✓ Populated users with 100000 docs
+  ✓ Populated products with 100000 docs
+  ✓ Populated categories with 200 docs
+  ✓ Populated orders with 100000 docs
+✓ MongoDB indexes created (incl. sparse _bench)
+
+============================================================
+MongoDB Benchmark: users - FIND (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.65s (0.33 ms/query)
+  ✓ QPS: 3073.70
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.58s (0.29 ms/query)
+  ✓ QPS: 3444.20
+
+📊 Average Results:
+  Time: 0.61s
+  QPS: 3258.95
+
+============================================================
+MongoDB Benchmark: categories - FIND (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.17 ms/query)
+  ✓ QPS: 5721.33
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.17 ms/query)
+  ✓ QPS: 5755.97
+
+📊 Average Results:
+  Time: 0.35s
+  QPS: 5738.65
+
+============================================================
+MongoDB Benchmark: products - FIND (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.56s (0.28 ms/query)
+  ✓ QPS: 3567.23
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.53s (0.27 ms/query)
+  ✓ QPS: 3754.15
+
+📊 Average Results:
+  Time: 0.55s
+  QPS: 3660.69
+
+============================================================
+MongoDB Benchmark: users - INSERTONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.34s (0.17 ms/query)
+  ✓ QPS: 5951.26
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.32s (0.16 ms/query)
+  ✓ QPS: 6311.03
+
+📊 Average Results:
+  Time: 0.33s
+  QPS: 6131.15
+
+============================================================
+MongoDB Benchmark: categories - INSERTONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.31s (0.16 ms/query)
+  ✓ QPS: 6413.70
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.32s (0.16 ms/query)
+  ✓ QPS: 6166.81
+
+📊 Average Results:
+  Time: 0.32s
+  QPS: 6290.26
+
+============================================================
+MongoDB Benchmark: products - INSERTONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.33s (0.16 ms/query)
+  ✓ QPS: 6073.35
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.31s (0.16 ms/query)
+  ✓ QPS: 6408.46
+
+📊 Average Results:
+  Time: 0.32s
+  QPS: 6240.90
+
+============================================================
+MongoDB Benchmark: users - UPDATEONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.17 ms/query)
+  ✓ QPS: 5787.70
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.33s (0.16 ms/query)
+  ✓ QPS: 6060.71
+
+📊 Average Results:
+  Time: 0.34s
+  QPS: 5924.20
+
+============================================================
+MongoDB Benchmark: categories - UPDATEONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.18 ms/query)
+  ✓ QPS: 5654.01
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.35s (0.17 ms/query)
+  ✓ QPS: 5760.43
+
+📊 Average Results:
+  Time: 0.35s
+  QPS: 5707.22
+
+============================================================
+MongoDB Benchmark: products - UPDATEONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.34s (0.17 ms/query)
+  ✓ QPS: 5810.08
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.34s (0.17 ms/query)
+  ✓ QPS: 5898.54
+
+📊 Average Results:
+  Time: 0.34s
+  QPS: 5854.31
+
+============================================================
+MongoDB Benchmark: users - DELETEONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.37s (0.19 ms/query)
+  ✓ QPS: 5378.70
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.37s (0.19 ms/query)
+  ✓ QPS: 5346.09
+
+📊 Average Results:
+  Time: 0.37s
+  QPS: 5362.39
+
+============================================================
+MongoDB Benchmark: categories - DELETEONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.37s (0.18 ms/query)
+  ✓ QPS: 5428.67
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.37s (0.19 ms/query)
+  ✓ QPS: 5355.95
+
+📊 Average Results:
+  Time: 0.37s
+  QPS: 5392.31
+
+============================================================
+MongoDB Benchmark: products - DELETEONE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.39s (0.19 ms/query)
+  ✓ QPS: 5183.48
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.39s (0.20 ms/query)
+  ✓ QPS: 5064.81
+
+📊 Average Results:
+  Time: 0.39s
+  QPS: 5124.14
+
+============================================================
+Starting Redis Benchmarks
+============================================================
+✓ Connected to Redis
+
+▶ Redis @ scale=100000
+✓ Redis dataset flushed
+  ✓ Loaded 200 keys from queries/categories_redis_set.txt
+  ✓ Loaded 100000 keys from queries/users_redis_set.txt
+  ✓ Loaded 100000 keys from queries/products_redis_set.txt
+  ✓ Loaded 100000 keys from queries/orders_redis_set.txt
+
+============================================================
+Redis Benchmark: users - GET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.23s (0.12 ms/query)
+  ✓ QPS: 8590.30
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8450.59
+
+📊 Average Results:
+  Time: 0.23s
+  QPS: 8520.45
+
+============================================================
+Redis Benchmark: categories - GET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8128.61
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8229.60
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8179.11
+
+============================================================
+Redis Benchmark: products - GET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8190.47
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8501.86
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8346.17
+
+============================================================
+Redis Benchmark: orders - GET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8211.08
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8181.27
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8196.17
+
+============================================================
+Redis Benchmark: users - SET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8057.47
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 7968.52
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 8013.00
+
+============================================================
+Redis Benchmark: categories - SET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8067.74
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8167.26
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 8117.50
+
+============================================================
+Redis Benchmark: products - SET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8357.70
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.13 ms/query)
+  ✓ QPS: 7896.65
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 8127.17
+
+============================================================
+Redis Benchmark: orders - SET (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8001.17
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 7970.98
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 7986.08
+
+============================================================
+Redis Benchmark: users - DEL (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8155.00
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8159.51
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8157.26
+
+============================================================
+Redis Benchmark: categories - DEL (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.22s (0.11 ms/query)
+  ✓ QPS: 9135.03
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.21s (0.11 ms/query)
+  ✓ QPS: 9350.95
+
+📊 Average Results:
+  Time: 0.22s
+  QPS: 9242.99
+
+============================================================
+Redis Benchmark: products - DEL (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.23s (0.12 ms/query)
+  ✓ QPS: 8680.15
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8091.49
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8385.82
+
+============================================================
+Redis Benchmark: orders - DEL (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8202.85
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.25s (0.12 ms/query)
+  ✓ QPS: 8048.16
+
+📊 Average Results:
+  Time: 0.25s
+  QPS: 8125.50
+
+============================================================
+Redis Benchmark: users - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.23s (0.12 ms/query)
+  ✓ QPS: 8567.49
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.22s (0.11 ms/query)
+  ✓ QPS: 9114.17
+
+📊 Average Results:
+  Time: 0.23s
+  QPS: 8840.83
+
+============================================================
+Redis Benchmark: categories - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8369.75
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8193.22
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8281.49
+
+============================================================
+Redis Benchmark: products - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8210.18
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8305.27
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8257.72
+
+============================================================
+Redis Benchmark: orders - UPDATE (batch: 2000)
+============================================================
+
+Trial 1/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8233.61
+
+Trial 2/2:
+  Running 2000 queries...
+  ✓ Time: 0.24s (0.12 ms/query)
+  ✓ QPS: 8247.68
+
+📊 Average Results:
+  Time: 0.24s
+  QPS: 8240.64
+
+============================================================
+Saving results...
+============================================================
+✓ Results saved to results/benchmark_results_20260524_012016.json
+✓ Results saved to results/benchmark_results_20260524_012016.csv
+✓ Explain plans saved to analysis/explain_plans.md
+✓ Explain plans saved to analysis/explain_plans.json
+
+✓ Benchmark completed in 5m14.84327475s
+✓ Total tests run: 216
+✓ Explain plans collected: 20
+[0;32m✓ Benchmark complete: results/benchmark_results_20260524_012016.csv[0m
+
+[1m[1;33m▶ Step 6/6 — Skipped (--skip-notebook)[0m
+
+
+╔═══════════════════════════════════════════════════════════════╗
+║                       Experiment Complete                     ║
+╚═══════════════════════════════════════════════════════════════╝
+Total runtime: 0h 5m 26s
+Results CSV:   results/benchmark_results_20260524_012016.csv
+Results JSON:  results/benchmark_results_20260524_012016.json
+Charts:        analysis/chart_*.png
+Notebook:      analysis/benchmark_analysis.ipynb
+Log:           logs/run_20260524_011450.log

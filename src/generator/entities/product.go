@@ -21,7 +21,11 @@ func NewProductGenerator(id int) *ProductGenerator {
 }
 
 func (g *ProductGenerator) SQLSelect(id int) string {
-	return fmt.Sprintf("SELECT * FROM products WHERE category_id = %d;", g.product.CategoryID)
+	return fmt.Sprintf("SELECT * FROM products WHERE category_id = %d LIMIT 100;", g.product.CategoryID)
+}
+
+func (g *ProductGenerator) MongoFind(id int) string {
+	return fmt.Sprintf("db.products.find({categoryId: %d}).limit(100);\n", g.product.CategoryID)
 }
 
 func (g *ProductGenerator) SQLInsert() string {

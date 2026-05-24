@@ -21,7 +21,13 @@ func NewUserGenerator(id int) *UserGenerator {
 }
 
 func (g *UserGenerator) SQLSelect(id int) string {
-	return fmt.Sprintf("SELECT * FROM users WHERE country = '%s';", g.user.Country)
+	return fmt.Sprintf("SELECT * FROM users WHERE country = '%s' LIMIT 100;", g.user.Country)
+}
+
+// MongoFind overrides the PK-based base so the Mongo benchmark hits the same
+// indexed column as the SQL benchmark — apples-to-apples comparison.
+func (g *UserGenerator) MongoFind(id int) string {
+	return fmt.Sprintf("db.users.find({country: '%s'}).limit(100);\n", g.user.Country)
 }
 
 func (g *UserGenerator) SQLInsert() string {

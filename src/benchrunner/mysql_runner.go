@@ -190,7 +190,10 @@ var mysqlBenchIndexes = []struct {
 	{"idx_addresses_postal_code", "addresses", "postal_code"},
 }
 
-// CreateIndexes creates indexes on non-index test columns to measure index impact
+// CreateIndexes creates indexes on non-index test columns to measure index impact.
+// Runs ANALYZE TABLE afterwards so InnoDB's cardinality estimate reflects the
+// fresh data — without this the planner can pick seq scan even when the new
+// index is more selective, masking the index effect.
 func (r *MySQLRunner) CreateIndexes() error {
 	for _, idx := range mysqlBenchIndexes {
 		stmt := fmt.Sprintf("CREATE INDEX %s ON %s(%s)", idx.name, idx.table, idx.column)
@@ -204,7 +207,17 @@ func (r *MySQLRunner) CreateIndexes() error {
 	if err := r.verifyIndexesExist(true); err != nil {
 		return err
 	}
-	fmt.Println("✓ Indexes created")
+	seen := map[string]bool{}
+	for _, idx := range mysqlBenchIndexes {
+		if seen[idx.table] {
+			continue
+		}
+		seen[idx.table] = true
+		if _, err := r.db.Exec("ANALYZE TABLE " + idx.table); err != nil {
+			return fmt.Errorf("analyze %s: %w", idx.table, err)
+		}
+	}
+	fmt.Println("✓ Indexes created (and ANALYZE run)")
 	return nil
 }
 

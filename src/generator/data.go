@@ -7,14 +7,74 @@ import (
 	"time"
 )
 
+// Lists used by GenerateXxx — wider lists for indexed columns so Phase B
+// SELECT-with-index queries get realistic per-match row counts (~hundreds,
+// not the entire table). Without this the index on a low-cardinality column
+// degenerates to a full scan because every row matches the predicate.
 var (
 	categoriesList = []string{"electronics", "accessories", "office", "gaming"}
 	paymentsList   = []string{"credit_card", "paypal", "bank_transfer", "apple_pay"}
 	productsList   = []string{"Laptop", "Phone", "Headphones", "Keyboard", "Mouse", "Monitor", "Camera", "Tablet", "Smartwatch", "Speaker"}
-	statusList     = []string{"pending", "paid", "shipped", "delivered", "returned"}
 	currencies     = []string{"USD", "EUR", "PLN"}
-	rng            = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	// 50 country names for users.country and addresses.country.
+	countriesList = []string{
+		"Poland", "Germany", "France", "Spain", "Italy", "United Kingdom", "Netherlands", "Belgium",
+		"Austria", "Switzerland", "Sweden", "Norway", "Finland", "Denmark", "Czech Republic", "Slovakia",
+		"Hungary", "Romania", "Bulgaria", "Greece", "Portugal", "Ireland", "Croatia", "Slovenia",
+		"Estonia", "Latvia", "Lithuania", "USA", "Canada", "Mexico", "Brazil", "Argentina",
+		"Chile", "Colombia", "Australia", "New Zealand", "Japan", "South Korea", "China", "India",
+		"Indonesia", "Thailand", "Vietnam", "Philippines", "Turkey", "Israel", "Egypt", "Morocco",
+		"South Africa", "Kenya",
+	}
+
+	// 100 city names for users.city and addresses.city.
+	citiesList = []string{
+		"Warsaw", "Krakow", "Berlin", "Munich", "Hamburg", "Paris", "Lyon", "Marseille",
+		"Madrid", "Barcelona", "Rome", "Milan", "Naples", "London", "Manchester", "Liverpool",
+		"Amsterdam", "Rotterdam", "Brussels", "Vienna", "Zurich", "Geneva", "Stockholm", "Oslo",
+		"Helsinki", "Copenhagen", "Prague", "Bratislava", "Budapest", "Bucharest", "Sofia", "Athens",
+		"Lisbon", "Porto", "Dublin", "Zagreb", "Ljubljana", "Tallinn", "Riga", "Vilnius",
+		"New York", "Los Angeles", "Chicago", "Houston", "San Francisco", "Boston", "Seattle", "Miami",
+		"Toronto", "Vancouver", "Montreal", "Mexico City", "Sao Paulo", "Rio de Janeiro", "Buenos Aires",
+		"Santiago", "Bogota", "Lima", "Sydney", "Melbourne", "Auckland", "Wellington", "Tokyo",
+		"Osaka", "Seoul", "Busan", "Shanghai", "Beijing", "Shenzhen", "Mumbai", "Delhi",
+		"Bangalore", "Chennai", "Jakarta", "Bangkok", "Hanoi", "Ho Chi Minh City", "Manila", "Istanbul",
+		"Ankara", "Tel Aviv", "Jerusalem", "Cairo", "Casablanca", "Cape Town", "Johannesburg", "Nairobi",
+		"Lagos", "Riyadh", "Dubai", "Doha", "Kuwait City", "Muscat", "Beirut", "Amman",
+		"Tehran", "Karachi", "Lahore", "Dhaka", "Colombo", "Kuala Lumpur",
+	}
+
+	// 200 order status values — extended past the standard 5 (pending/paid/shipped/delivered/returned)
+	// so the orders.status index has selectivity comparable to other indexed columns
+	// even at 10M rows (10M / 200 = 50k rows per match → ~0.5% selectivity, planner will use index).
+	statusList = generateStatusList()
+
+	// Fixed seed for reproducibility — every run produces the same data shape,
+	// so comparisons across runs are meaningful. Was time.Now().UnixNano().
+	rng = rand.New(rand.NewSource(42))
 )
+
+func generateStatusList() []string {
+	bases := []string{
+		"pending", "processing", "verified", "preparing", "packed",
+		"ready", "shipped", "in_transit", "out_for_delivery", "delivered",
+		"cancelled", "refunded", "returned", "disputed", "on_hold",
+	}
+	stages := []string{"step1", "step2", "step3", "step4", "step5",
+		"step6", "step7", "step8", "step9", "step10",
+		"step11", "step12", "step13", "step14"}
+	out := make([]string, 0, len(bases)*len(stages))
+	for _, b := range bases {
+		for _, s := range stages {
+			out = append(out, b+"_"+s)
+		}
+	}
+	if len(out) > 200 {
+		out = out[:200]
+	}
+	return out
+}
 
 func GenerateUser(id int) *types.User {
 	return &types.User{
@@ -25,8 +85,8 @@ func GenerateUser(id int) *types.User {
 		LastName:     fmt.Sprintf("Surname%d", id),
 		Phone:        fmt.Sprintf("+100000%04d", id%10000),
 		CreatedAt:    time.Now(),
-		Country:      "Poland",
-		City:         "Warsaw",
+		Country:      countriesList[rng.Intn(len(countriesList))],
+		City:         citiesList[rng.Intn(len(citiesList))],
 		IsActive:     rng.Intn(2) == 0,
 	}
 }
@@ -52,9 +112,9 @@ func GenerateAddress(id, userID int) types.Address {
 		ID:         id,
 		UserID:     userID,
 		Street:     fmt.Sprintf("%d Main St", rng.Intn(9999)+1),
-		City:       "Warsaw",
+		City:       citiesList[rng.Intn(len(citiesList))],
 		PostalCode: fmt.Sprintf("%05d", rng.Intn(100000)),
-		Country:    "Poland",
+		Country:    countriesList[rng.Intn(len(countriesList))],
 		CreatedAt:  time.Now(),
 		IsDefault:  rng.Intn(2) == 0,
 		Latitude:   52.2297 + (rng.Float64()-0.5)*0.1,

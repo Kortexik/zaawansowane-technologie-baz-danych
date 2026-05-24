@@ -21,7 +21,11 @@ func NewOrderGenerator(id, usersTotal, addressesTotal int) *OrderGenerator {
 }
 
 func (g *OrderGenerator) SQLSelect(id int) string {
-	return fmt.Sprintf("SELECT * FROM orders WHERE status = '%s';", g.order.Status)
+	return fmt.Sprintf("SELECT * FROM orders WHERE status = '%s' LIMIT 100;", g.order.Status)
+}
+
+func (g *OrderGenerator) MongoFind(id int) string {
+	return fmt.Sprintf("db.orders.find({status: '%s'}).limit(100);\n", g.order.Status)
 }
 
 func (g *OrderGenerator) SQLInsert() string {

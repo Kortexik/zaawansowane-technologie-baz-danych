@@ -83,7 +83,10 @@ func main() {
 			return entities.NewUserGenerator(i).SQLSelect(i)
 		}},
 		{"users_sql_update.sql", "user SQL updates", numUsers, func(i int) string {
-			return entities.NewUserGenerator(i).SQLUpdate(i, "email", "updated@example.com")
+			// Email is UNIQUE — must be unique per row, otherwise the 2nd…Nth
+			// update collide with the 1st and the runner logs duplicate-key
+			// warnings (silent in MySQL UPDATE, loud in PG without ON CONFLICT).
+			return entities.NewUserGenerator(i).SQLUpdate(i, "email", fmt.Sprintf("updated%d@example.com", i))
 		}},
 		{"users_sql_delete.sql", "user SQL deletes", numUsers, func(i int) string {
 			return entities.NewUserGenerator(i).SQLDelete(i)

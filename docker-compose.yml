@@ -61,7 +61,17 @@ services:
     image: redis:7
     container_name: bench-redis
     restart: unless-stopped
-    command: redis-server --appendonly yes
+    # maxmemory + allkeys-lru caps Redis so 10M-scale loads can't OOM-kill
+    # the container. Persistence (AOF + RDB) is disabled because AOF rewrite
+    # forks the process — at 10M keys the fork's copy-on-write blow-up
+    # ate >4 GB and Docker killed the container even though the steady
+    # state stayed under the cap. We don't need durability for a benchmark.
+    command: >
+      redis-server
+      --appendonly no
+      --save ""
+      --maxmemory 4gb
+      --maxmemory-policy allkeys-lru
     ports:
       - "6379:6379"
     volumes:

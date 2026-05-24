@@ -1,14 +1,15 @@
 ╔═══════════════════════════════════════════════════════════════╗
-║          Full Benchmark Experiment — 20260523_125848             ║
+║          Full Benchmark Experiment — 20260524_012816             ║
 ╚═══════════════════════════════════════════════════════════════╝
   Trials:                  3
   Batch (Phase B/fast):    10000
   Batch (Phase A/no-idx):  1000
+  Scales override:         (default 500k/1M/10M)
   Database target:         all
   Skip generation:         0
   Skip reset:              0
   Skip notebook:           0
-  Log file:                logs/run_20260523_125848.log
+  Log file:                logs/run_20260524_012816.log
 
 Data scales: 500_000, 1_000_000, 10_000_000  (per src/cmd/run_benchmarks/main.go)
 Phase A (no indexes) runs only at the smallest scale. Phase B (with
@@ -18,34 +19,34 @@ runtime is ~3–5 hours.
 
 [1m[1;33m▶ Step 1/6 — Reset Docker containers (volumes wiped)[0m
 
-time="2026-05-23T12:58:48+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
- Container bench-postgres  Stopping
+time="2026-05-24T01:28:16+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
  Container bench-mongo  Stopping
- Container bench-redis  Stopping
+ Container bench-postgres  Stopping
  Container bench-mysql  Stopping
- Container bench-mysql  Stopped
- Container bench-mysql  Removing
+ Container bench-redis  Stopping
+ Container bench-redis  Stopped
+ Container bench-redis  Removing
  Container bench-mongo  Stopped
  Container bench-mongo  Removing
  Container bench-postgres  Stopped
  Container bench-postgres  Removing
- Container bench-redis  Stopped
- Container bench-redis  Removing
- Container bench-mysql  Removed
- Container bench-postgres  Removed
- Container bench-redis  Removed
+ Container bench-mysql  Stopped
+ Container bench-mysql  Removing
  Container bench-mongo  Removed
- Volume zaawansowane-technologie-baz-danych_redis_data  Removing
+ Container bench-postgres  Removed
+ Container bench-mysql  Removed
+ Container bench-redis  Removed
  Volume zaawansowane-technologie-baz-danych_mysql_data  Removing
- Network zaawansowane-technologie-baz-danych_default  Removing
  Volume zaawansowane-technologie-baz-danych_mongo_data  Removing
  Volume zaawansowane-technologie-baz-danych_postgres_data  Removing
+ Network zaawansowane-technologie-baz-danych_default  Removing
+ Volume zaawansowane-technologie-baz-danych_redis_data  Removing
  Volume zaawansowane-technologie-baz-danych_mysql_data  Removed
- Volume zaawansowane-technologie-baz-danych_redis_data  Removed
- Volume zaawansowane-technologie-baz-danych_mongo_data  Removed
  Volume zaawansowane-technologie-baz-danych_postgres_data  Removed
+ Volume zaawansowane-technologie-baz-danych_mongo_data  Removed
+ Volume zaawansowane-technologie-baz-danych_redis_data  Removed
  Network zaawansowane-technologie-baz-danych_default  Removed
-time="2026-05-23T12:58:48+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-05-24T01:28:16+02:00" level=warning msg="/Users/kacperko/University/zaawansowane-technologie-baz-danych/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
  Network zaawansowane-technologie-baz-danych_default  Creating
  Network zaawansowane-technologie-baz-danych_default  Created
  Volume zaawansowane-technologie-baz-danych_redis_data  Creating
@@ -56,28 +57,27 @@ time="2026-05-23T12:58:48+02:00" level=warning msg="/Users/kacperko/University/z
  Volume zaawansowane-technologie-baz-danych_postgres_data  Created
  Volume zaawansowane-technologie-baz-danych_mongo_data  Creating
  Volume zaawansowane-technologie-baz-danych_mongo_data  Created
+ Container bench-redis  Creating
+ Container bench-postgres  Creating
  Container bench-mongo  Creating
  Container bench-mysql  Creating
- Container bench-postgres  Creating
- Container bench-redis  Creating
+ Container bench-mysql  Created
  Container bench-mongo  Created
  Container bench-redis  Created
- Container bench-mysql  Created
  Container bench-postgres  Created
- Container bench-mongo  Starting
- Container bench-postgres  Starting
- Container bench-redis  Starting
  Container bench-mysql  Starting
- Container bench-redis  Started
- Container bench-mysql  Started
- Container bench-mongo  Started
+ Container bench-mongo  Starting
+ Container bench-redis  Starting
+ Container bench-postgres  Starting
  Container bench-postgres  Started
+ Container bench-redis  Started
+ Container bench-mongo  Started
+ Container bench-mysql  Started
 
 [1m[1;33m▶ Step 2/6 — Waiting for databases to become ready[0m
 
   waiting (1/60): mysql=0 pg=0 mongo=1 redis=1
   waiting (2/60): mysql=0 pg=1 mongo=1 redis=1
-  waiting (3/60): mysql=0 pg=1 mongo=1 redis=1
 [0;32m✓ All four databases reachable.[0m
 
 [1m[1;33m▶ Step 3/6 — Regenerate query files (this is slow at 10M scale)[0m
@@ -3568,7 +3568,7 @@ Starting benchmark data generation...
 
 Benchmark data generation complete!
 [0;32m✓ Query files regenerated.[0m
- 42G	queries/
+ 43G	queries/
 
 [1m[1;33m▶ Step 4/6 — Build benchmark runner[0m
 
@@ -3598,493 +3598,3 @@ Starting MySQL Benchmarks
   Phase A: WITHOUT indexes
 ✓ MySQL tables truncated
   ✓ Loaded 200 rows from queries/categories_sql_insert.sql
-  ✓ Loaded 500000 rows from queries/users_sql_insert.sql
-  ✓ Loaded 500000 rows from queries/addresses_sql_insert.sql
-  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
-  ✓ Loaded 500000 rows from queries/orders_sql_insert.sql
-  Collecting EXPLAIN plans (with_index=false)...
-
-============================================================
-MySQL Benchmark: users - SELECT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 284.33s (284.33 ms/query)
-  ✓ QPS: 3.52
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 283.72s (283.72 ms/query)
-  ✓ QPS: 3.52
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 277.29s (277.29 ms/query)
-  ✓ QPS: 3.61
-
-📊 Average Results:
-  Time: 281.78s
-  QPS: 3.55
-
-============================================================
-MySQL Benchmark: categories - SELECT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.19s (0.19 ms/query)
-  ✓ QPS: 5167.76
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.18s (0.18 ms/query)
-  ✓ QPS: 5519.35
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.19s (0.19 ms/query)
-  ✓ QPS: 5135.42
-
-📊 Average Results:
-  Time: 0.19s
-  QPS: 5274.18
-
-============================================================
-MySQL Benchmark: products - SELECT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 24.84s (24.84 ms/query)
-  ✓ QPS: 40.27
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 24.88s (24.88 ms/query)
-  ✓ QPS: 40.20
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 24.87s (24.87 ms/query)
-  ✓ QPS: 40.21
-
-📊 Average Results:
-  Time: 24.86s
-  QPS: 40.23
-
-============================================================
-MySQL Benchmark: addresses - SELECT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 100.42s (100.42 ms/query)
-  ✓ QPS: 9.96
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 101.73s (101.73 ms/query)
-  ✓ QPS: 9.83
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 100.05s (100.05 ms/query)
-  ✓ QPS: 9.99
-
-📊 Average Results:
-  Time: 100.73s
-  QPS: 9.93
-
-============================================================
-MySQL Benchmark: orders - SELECT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 156.44s (156.44 ms/query)
-  ✓ QPS: 6.39
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 152.98s (152.98 ms/query)
-  ✓ QPS: 6.54
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 152.62s (152.62 ms/query)
-  ✓ QPS: 6.55
-
-📊 Average Results:
-  Time: 154.01s
-  QPS: 6.49
-
-============================================================
-MySQL Benchmark: users - INSERT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.14s (0.14 ms/query)
-  ✓ QPS: 7075.97
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7854.64
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7597.02
-
-📊 Average Results:
-  Time: 0.13s
-  QPS: 7509.21
-
-============================================================
-MySQL Benchmark: categories - INSERT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8279.26
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8148.20
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8172.71
-
-📊 Average Results:
-  Time: 0.12s
-  QPS: 8200.06
-
-============================================================
-MySQL Benchmark: products - INSERT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8284.14
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8042.73
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.14s (0.14 ms/query)
-  ✓ QPS: 7366.01
-
-📊 Average Results:
-  Time: 0.13s
-  QPS: 7897.63
-
-============================================================
-MySQL Benchmark: addresses - INSERT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7458.73
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7412.60
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7474.56
-
-📊 Average Results:
-  Time: 0.13s
-  QPS: 7448.63
-
-============================================================
-MySQL Benchmark: orders - INSERT (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7623.24
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8081.52
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8357.30
-
-📊 Average Results:
-  Time: 0.12s
-  QPS: 8020.69
-
-============================================================
-MySQL Benchmark: users - UPDATE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.69s (0.69 ms/query)
-  ✓ QPS: 1449.06
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.14s (0.14 ms/query)
-  ✓ QPS: 7299.37
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7617.70
-
-📊 Average Results:
-  Time: 0.32s
-  QPS: 5455.38
-
-============================================================
-MySQL Benchmark: categories - UPDATE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.24s (0.24 ms/query)
-  ✓ QPS: 4200.57
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7912.53
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8181.12
-
-📊 Average Results:
-  Time: 0.16s
-  QPS: 6764.74
-
-============================================================
-MySQL Benchmark: products - UPDATE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.67s (0.67 ms/query)
-  ✓ QPS: 1496.82
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8121.79
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7933.20
-
-📊 Average Results:
-  Time: 0.31s
-  QPS: 5850.60
-
-============================================================
-MySQL Benchmark: addresses - UPDATE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.68s (0.68 ms/query)
-  ✓ QPS: 1478.60
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7841.06
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8123.68
-
-📊 Average Results:
-  Time: 0.31s
-  QPS: 5814.45
-
-============================================================
-MySQL Benchmark: orders - UPDATE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.56s (0.56 ms/query)
-  ✓ QPS: 1798.70
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8101.60
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8084.86
-
-📊 Average Results:
-  Time: 0.27s
-  QPS: 5995.05
-
-============================================================
-MySQL Benchmark: users - DELETE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.66s (0.66 ms/query)
-  ✓ QPS: 1519.37
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.12 ms/query)
-  ✓ QPS: 7963.61
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7528.98
-
-📊 Average Results:
-  Time: 0.30s
-  QPS: 5670.65
-
-============================================================
-MySQL Benchmark: categories - DELETE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.22s (0.22 ms/query)
-  ✓ QPS: 4587.93
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8322.09
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8175.83
-
-📊 Average Results:
-  Time: 0.15s
-  QPS: 7028.62
-
-============================================================
-MySQL Benchmark: products - DELETE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.69s (0.69 ms/query)
-  ✓ QPS: 1455.70
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8205.84
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7895.98
-
-📊 Average Results:
-  Time: 0.31s
-  QPS: 5852.51
-
-============================================================
-MySQL Benchmark: addresses - DELETE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.66s (0.66 ms/query)
-  ✓ QPS: 1522.47
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.13s (0.13 ms/query)
-  ✓ QPS: 7874.07
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.14s (0.14 ms/query)
-  ✓ QPS: 7371.52
-
-📊 Average Results:
-  Time: 0.31s
-  QPS: 5589.35
-
-============================================================
-MySQL Benchmark: orders - DELETE (batch: 1000)
-============================================================
-
-Trial 1/3:
-  Running 1000 queries...
-  ✓ Time: 0.74s (0.74 ms/query)
-  ✓ QPS: 1345.36
-
-Trial 2/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8248.64
-
-Trial 3/3:
-  Running 1000 queries...
-  ✓ Time: 0.12s (0.12 ms/query)
-  ✓ QPS: 8686.63
-
-📊 Average Results:
-  Time: 0.33s
-  QPS: 6093.54
-  Phase B: WITH indexes
-✓ MySQL tables truncated
-  ✓ Loaded 200 rows from queries/categories_sql_insert.sql
-  ✓ Loaded 500000 rows from queries/users_sql_insert.sql
-  ✓ Loaded 500000 rows from queries/addresses_sql_insert.sql
-  ✓ Loaded 100000 rows from queries/products_sql_insert.sql
-  ✓ Loaded 500000 rows from queries/orders_sql_insert.sql
-✓ Indexes created
-
-============================================================
-MySQL Benchmark: users - SELECT (batch: 10000)
-============================================================
-
-Trial 1/3:
-  Running 10000 queries...
-  ✓ Time: 4404.27s (440.43 ms/query)
-  ✓ QPS: 2.27
-
-Trial 2/3:
-  Running 10000 queries...
-  ✓ Time: 4369.35s (436.93 ms/query)
-  ✓ QPS: 2.29
-
-Trial 3/3:
-  Running 10000 queries...

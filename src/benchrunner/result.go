@@ -47,11 +47,33 @@ type AggregatedResult struct {
 
 // ResultSet holds all benchmark results
 type ResultSet struct {
-	Results            []Result           `json:"results"`
-	AggregatedResults  []AggregatedResult `json:"aggregated_results"`
-	StartTime          time.Time          `json:"start_time"`
-	EndTime            time.Time          `json:"end_time"`
-	TotalDuration      time.Duration      `json:"total_duration_ns"`
+	Results           []Result           `json:"results"`
+	AggregatedResults []AggregatedResult `json:"aggregated_results"`
+	StartTime         time.Time          `json:"start_time"`
+	EndTime           time.Time          `json:"end_time"`
+	TotalDuration     time.Duration      `json:"total_duration_ns"`
+	// CheckpointBasePath: if non-empty, Checkpoint() rewrites
+	// "<base>.json" and "<base>.csv" with the current results so a crash
+	// mid-run still leaves the latest snapshot on disk. JSON tag is "-"
+	// to keep it out of the persisted output.
+	CheckpointBasePath string `json:"-"`
+}
+
+// Checkpoint writes the current ResultSet to its configured base path.
+// No-op when CheckpointBasePath is empty. Errors are returned but the
+// caller should treat them as warnings — a missed checkpoint is far less
+// bad than a panic that wipes the entire in-memory result set.
+func (rs *ResultSet) Checkpoint() error {
+	if rs.CheckpointBasePath == "" {
+		return nil
+	}
+	if err := rs.SaveJSON(rs.CheckpointBasePath + ".json"); err != nil {
+		return fmt.Errorf("checkpoint JSON: %w", err)
+	}
+	if err := rs.SaveCSV(rs.CheckpointBasePath + ".csv"); err != nil {
+		return fmt.Errorf("checkpoint CSV: %w", err)
+	}
+	return nil
 }
 
 // NewResult creates a new benchmark result

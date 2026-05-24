@@ -24,7 +24,11 @@ func NewAddressGenerator(id, userID int) *AddressGenerator {
 // This is what makes the with-index vs. without-index comparison meaningful —
 // the PK is always indexed, so filtering on it would hide the effect.
 func (g *AddressGenerator) SQLSelect(id int) string {
-	return fmt.Sprintf("SELECT * FROM addresses WHERE postal_code = '%s';", g.address.PostalCode)
+	return fmt.Sprintf("SELECT * FROM addresses WHERE postal_code = '%s' LIMIT 100;", g.address.PostalCode)
+}
+
+func (g *AddressGenerator) MongoFind(id int) string {
+	return fmt.Sprintf("db.addresses.find({postalCode: '%s'}).limit(100);\n", g.address.PostalCode)
 }
 
 func (g *AddressGenerator) SQLInsert() string {

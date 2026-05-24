@@ -1,0 +1,162 @@
+[
+  {
+    "database": "mysql",
+    "entity": "users",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM users WHERE country = 'Colombia' LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | users | NULL | ALL | NULL | NULL | NULL | NULL | 496097 | 10 | Using where\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "categories",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM categories WHERE display_order = 1 LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | categories | NULL | ALL | NULL | NULL | NULL | NULL | 200 | 10 | Using where\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "products",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM products WHERE category_id = 132 LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | products | NULL | ALL | NULL | NULL | NULL | NULL | 99699 | 10 | Using where\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "addresses",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM addresses WHERE postal_code = '63408' LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | addresses | NULL | ALL | NULL | NULL | NULL | NULL | 497160 | 10 | Using where\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "orders",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM orders WHERE status = 'ready_step2' LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | orders | NULL | ALL | NULL | NULL | NULL | NULL | 497344 | 10 | Using where\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "users",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM users WHERE country = 'Colombia' LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | users | NULL | ref | idx_users_country | idx_users_country | 403 | const | 399974 | 100 | NULL\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "categories",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM categories WHERE display_order = 1 LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | categories | NULL | ref | idx_categories_display_order | idx_categories_display_order | 5 | const | 1 | 100 | NULL\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "products",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM products WHERE category_id = 132 LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | products | NULL | ref | idx_products_category_id | idx_products_category_id | 9 | const | 487 | 100 | NULL\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "addresses",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM addresses WHERE postal_code = '63408' LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | addresses | NULL | ref | idx_addresses_postal_code | idx_addresses_postal_code | 83 | const | 104 | 100 | NULL\n"
+  },
+  {
+    "database": "mysql",
+    "entity": "orders",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM orders WHERE status = 'ready_step2' LIMIT 100",
+    "plan": "id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra\n------------------------------------------------------------------------------------------------------------\n1 | SIMPLE | orders | NULL | ref | idx_orders_status | idx_orders_status | 203 | const | 93440 | 100 | NULL\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "users",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM users WHERE country = 'Colombia' LIMIT 100",
+    "plan": "Limit  (cost=0.00..138.25 rows=100 width=100)\n  -\u003e  Seq Scan on users  (cost=0.00..14700.00 rows=10633 width=100)\n        Filter: ((country)::text = 'Colombia'::text)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "categories",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM categories WHERE display_order = 1 LIMIT 100",
+    "plan": "Limit  (cost=0.00..6.50 rows=1 width=95)\n  -\u003e  Seq Scan on categories  (cost=0.00..6.50 rows=1 width=95)\n        Filter: (display_order = 1)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "products",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM products WHERE category_id = 132 LIMIT 100",
+    "plan": "Limit  (cost=0.00..542.51 rows=100 width=74)\n  -\u003e  Seq Scan on products  (cost=0.00..2680.00 rows=494 width=74)\n        Filter: (category_id = 132)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "addresses",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM addresses WHERE postal_code = '63408' LIMIT 100",
+    "plan": "Limit  (cost=1000.00..10724.77 rows=6 width=75)\n  -\u003e  Gather  (cost=1000.00..10724.77 rows=6 width=75)\n        Workers Planned: 2\n        -\u003e  Parallel Seq Scan on addresses  (cost=0.00..9724.17 rows=2 width=75)\n              Filter: ((postal_code)::text = '63408'::text)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "orders",
+    "with_index": false,
+    "data_scale": 500000,
+    "query": "SELECT * FROM orders WHERE status = 'ready_step2' LIMIT 100",
+    "plan": "Limit  (cost=0.00..535.95 rows=100 width=79)\n  -\u003e  Seq Scan on orders  (cost=0.00..13313.03 rows=2484 width=79)\n        Filter: ((status)::text = 'ready_step2'::text)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "users",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM users WHERE country = 'Colombia' LIMIT 100",
+    "plan": "Limit  (cost=0.00..148.16 rows=100 width=103)\n  -\u003e  Seq Scan on users  (cost=0.00..302807.79 rows=204377 width=103)\n        Filter: ((country)::text = 'Colombia'::text)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "categories",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM categories WHERE display_order = 1 LIMIT 100",
+    "plan": "Limit  (cost=0.00..6.50 rows=1 width=95)\n  -\u003e  Seq Scan on categories  (cost=0.00..6.50 rows=1 width=95)\n        Filter: (display_order = 1)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "products",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM products WHERE category_id = 132 LIMIT 100",
+    "plan": "Limit  (cost=8.13..211.45 rows=100 width=72)\n  -\u003e  Bitmap Heap Scan on products  (cost=8.13..1014.58 rows=495 width=72)\n        Recheck Cond: (category_id = 132)\n        -\u003e  Bitmap Index Scan on idx_products_category_id  (cost=0.00..8.00 rows=495 width=0)\n              Index Cond: (category_id = 132)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "addresses",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM addresses WHERE postal_code = '63408' LIMIT 100",
+    "plan": "Limit  (cost=5.22..398.48 rows=100 width=75)\n  -\u003e  Bitmap Heap Scan on addresses  (cost=5.22..402.41 rows=101 width=75)\n        Recheck Cond: ((postal_code)::text = '63408'::text)\n        -\u003e  Bitmap Index Scan on idx_addresses_postal_code  (cost=0.00..5.19 rows=101 width=0)\n              Index Cond: ((postal_code)::text = '63408'::text)\n"
+  },
+  {
+    "database": "postgresql",
+    "entity": "orders",
+    "with_index": true,
+    "data_scale": 10000000,
+    "query": "SELECT * FROM orders WHERE status = 'ready_step2' LIMIT 100",
+    "plan": "Limit  (cost=0.43..342.61 rows=100 width=79)\n  -\u003e  Index Scan using idx_orders_status on orders  (cost=0.43..170699.15 rows=49886 width=79)\n        Index Cond: ((status)::text = 'ready_step2'::text)\n"
+  }
+]

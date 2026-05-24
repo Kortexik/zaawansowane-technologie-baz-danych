@@ -207,6 +207,11 @@ func (r *PostgresRunner) RunQueryFile(queryFile string, limit int) (*Result, err
 	if _, err := streamSQLStatements(queryFile, limit, func(query string) error {
 		if strings.HasPrefix(strings.ToUpper(query), "INSERT INTO") &&
 			!strings.Contains(strings.ToUpper(query), "ON CONFLICT") {
+			// Generated INSERTs end with `;`. Strip it before appending the
+			// conflict clause, otherwise the clause lands after the statement
+			// terminator and the DB ignores it (silent bug — INSERTs keep
+			// failing with duplicate-key errors).
+			query = strings.TrimRight(strings.TrimSpace(query), ";")
 			query = query + " ON CONFLICT DO NOTHING"
 		}
 		rawQueries = append(rawQueries, query)

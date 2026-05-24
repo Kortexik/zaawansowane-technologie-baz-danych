@@ -16,10 +16,14 @@
 #   --trials N         number of trials per scenario (default 3)
 #   --batch N          queries per benchmark for Phase B / fast paths (default 10000)
 #   --batch-noidx N    smaller batch for Phase A / no-index scans (default 1000)
+#   --scales N1,N2,N3  override data scales (default {500k, 1M, 10M})
 #   --db NAME          mysql|postgres|mongodb|redis|all (default all)
 #   --skip-gen         do not regenerate query files (use cached ones)
 #   --skip-notebook    do not execute the Jupyter notebook
 #   --skip-reset       do not docker compose down -v (keep existing data on disk)
+#   --smoke            smoke-test preset (~10 min): --scales 100000 --trials 2
+#                      --batch 2000 --batch-noidx 500 --skip-gen --skip-notebook
+#                      Exercises every code path on the smallest meaningful scale.
 #
 # Phase A (no indexes) runs only at the smallest scale; Phase B (with
 # indexes) runs at every scale. This is hardcoded in main.go.
@@ -29,6 +33,7 @@ set -euo pipefail
 TRIALS=${TRIALS:-3}
 BATCH=${BATCH:-10000}
 BATCH_NOIDX=${BATCH_NOIDX:-1000}
+SCALES=${SCALES:-}
 DATABASE=${DATABASE:-all}
 SKIP_GEN=${SKIP_GEN:-0}
 SKIP_NOTEBOOK=${SKIP_NOTEBOOK:-0}
@@ -39,10 +44,21 @@ while [[ $# -gt 0 ]]; do
         --trials) TRIALS="$2"; shift 2 ;;
         --batch) BATCH="$2"; shift 2 ;;
         --batch-noidx) BATCH_NOIDX="$2"; shift 2 ;;
+        --scales) SCALES="$2"; shift 2 ;;
         --db) DATABASE="$2"; shift 2 ;;
         --skip-gen) SKIP_GEN=1; shift ;;
         --skip-notebook) SKIP_NOTEBOOK=1; shift ;;
         --skip-reset) SKIP_RESET=1; shift ;;
+        --smoke)
+            # Smoke preset — overrides any defaults set above.
+            TRIALS=2
+            BATCH=2000
+            BATCH_NOIDX=500
+            SCALES="100000"
+            SKIP_GEN=1
+            SKIP_NOTEBOOK=1
+            shift
+            ;;
         -h|--help)
             sed -n '1,30p' "$0"
             exit 0
@@ -79,6 +95,7 @@ cat <<BANNER
   Trials:                  ${TRIALS}
   Batch (Phase B/fast):    ${BATCH}
   Batch (Phase A/no-idx):  ${BATCH_NOIDX}
+  Scales override:         ${SCALES:-(default 500k/1M/10M)}
   Database target:         ${DATABASE}
   Skip generation:         ${SKIP_GEN}
   Skip reset:              ${SKIP_RESET}
@@ -150,11 +167,16 @@ ok "bin/bench built."
 
 # ── 4. Run benchmark ─────────────────────────────────────────────────────────
 step "Step 5/6 — Run benchmark (this is the long phase)"
-./bin/bench \
-    -trials="$TRIALS" \
-    -batch="$BATCH" \
-    -batch-noidx="$BATCH_NOIDX" \
+BENCH_ARGS=(
+    -trials="$TRIALS"
+    -batch="$BATCH"
+    -batch-noidx="$BATCH_NOIDX"
     -db="$DATABASE"
+)
+if [[ -n "$SCALES" ]]; then
+    BENCH_ARGS+=(-scales="$SCALES")
+fi
+./bin/bench "${BENCH_ARGS[@]}"
 LATEST_CSV=$(ls -t results/benchmark_results_*.csv 2>/dev/null | head -1 || true)
 LATEST_JSON=$(ls -t results/benchmark_results_*.json 2>/dev/null | head -1 || true)
 ok "Benchmark complete: $LATEST_CSV"

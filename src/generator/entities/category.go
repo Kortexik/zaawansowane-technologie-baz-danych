@@ -24,7 +24,11 @@ func NewCategoryGenerator(id int) *CategoryGenerator {
 // we explicitly index in CreateIndexes(). Filtering on PK would always hit
 // the implicit primary key index and hide the effect.
 func (g *CategoryGenerator) SQLSelect(id int) string {
-	return fmt.Sprintf("SELECT * FROM categories WHERE display_order = %d;", g.category.DisplayOrder)
+	return fmt.Sprintf("SELECT * FROM categories WHERE display_order = %d LIMIT 100;", g.category.DisplayOrder)
+}
+
+func (g *CategoryGenerator) MongoFind(id int) string {
+	return fmt.Sprintf("db.categories.find({displayOrder: %d}).limit(100);\n", g.category.DisplayOrder)
 }
 
 func (g *CategoryGenerator) SQLInsert() string {
